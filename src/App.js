@@ -12,8 +12,21 @@ import {
 import CONSTANTS from './constants';
 import { getStoredData, storeData } from './Storage';
 
-import RoundIcon from './components/RoundIcon';
+import RemindersListItem from './components/RemindersListItem';
 import Tag from './components/Tag';
+
+const getHeaderStyle = (key, customStyles = {}) => {
+  return [
+    styles.contentHeader,
+    styles.contentHeaderCustom,
+    customStyles,
+    {
+      color: !CONSTANTS.KEYS.includes(key)
+        ? { semantic: 'systemBlueColor' }
+        : CONSTANTS.COLORS[key],
+    },
+  ];
+};
 
 const App: () => Node = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -105,7 +118,8 @@ const App: () => Node = () => {
           ]}
           keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => (
-            <TouchableOpacity
+            <RemindersListItem
+              item={item}
               onPress={() => {
                 setSelectedKey(item.title);
                 setListData((prevState) => [
@@ -129,33 +143,7 @@ const App: () => Node = () => {
                   return finalData;
                 });
               }}
-              style={[
-                styles.listItem,
-                item.selected ? styles.listItemSelected : {},
-              ]}>
-              <RoundIcon
-                icon="☰"
-                color={item.color}
-                style={styles.listItemIcon}
-              />
-              <Text
-                style={[
-                  styles.listItemText,
-                  {
-                    color: item.selected ? '#fff' : { semantic: 'labelColor' },
-                  },
-                ]}>
-                {item.title}
-              </Text>
-              <Text
-                style={{
-                  color: item.selected
-                    ? '#fff'
-                    : { semantic: 'secondaryLabelColor' },
-                }}>
-                {item.count || 0}
-              </Text>
-            </TouchableOpacity>
+            />
           )}
           renderSectionHeader={({ section: { title } }) => (
             <Text style={styles.listHeader}>{title}</Text>
@@ -178,14 +166,14 @@ const App: () => Node = () => {
         </View>
       </View>
       <View style={styles.content}>
-        <Text>{isSearchMode}</Text>
-        <View
+        <TouchableOpacity
+          activeOpacity={isSearchMode ? 1.0 : 0.2}
           style={[
             styles.createButton,
             isSearchMode ? styles.createButtonDisabled : {},
           ]}>
           <Text style={styles.createButtonText}>+</Text>
-        </View>
+        </TouchableOpacity>
         {isSearchMode ? (
           <Text
             style={styles.contentHeader}
@@ -195,18 +183,18 @@ const App: () => Node = () => {
           </Text>
         ) : (
           <>
-            <Text
-              style={[
-                styles.contentHeader,
-                styles.contentHeaderCustom,
-                {
-                  color: !CONSTANTS.KEYS.includes(selectedKey)
-                    ? { semantic: 'systemBlueColor' }
-                    : CONSTANTS.COLORS[selectedKey],
-                },
-              ]}>
-              {selectedKey}
-            </Text>
+            <View style={styles.contentHeaderWrapper}>
+              <Text style={getHeaderStyle(selectedKey)}>{selectedKey}</Text>
+              {!CONSTANTS.KEYS.includes(selectedKey) ? (
+                <Text
+                  style={getHeaderStyle(
+                    selectedKey,
+                    styles.contentHeaderCounter,
+                  )}>
+                  0
+                </Text>
+              ) : null}
+            </View>
             {selectedKey !== 'today' ? (
               <View style={styles.completedHeader}>
                 <Text style={styles.completedText}>0 Completed</Text>
@@ -303,6 +291,10 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingTop: 42,
   },
+  contentHeaderWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   contentHeader: {
     fontSize: 32,
     fontWeight: '700',
@@ -311,6 +303,9 @@ const styles = StyleSheet.create({
   },
   contentHeaderCustom: {
     textTransform: 'capitalize',
+  },
+  contentHeaderCounter: {
+    fontWeight: '400',
   },
   completedHeader: {
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -348,7 +343,8 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   createButtonDisabled: {
-    opacity: 0.5,
+    color: { semantic: 'tertiaryLabelColor' },
+    backgroundColor: { semantic: 'quaternaryLabelColor' },
   },
 });
 

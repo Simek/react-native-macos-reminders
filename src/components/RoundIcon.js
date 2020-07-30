@@ -10,7 +10,9 @@ const RoundIcon: () => Node = ({
   style = undefined,
 }) => (
   <View style={[style, { backgroundColor: isActive ? '#fff' : color }]}>
-    <Text style={{ fontSize: 11, color: textColor }}>{icon}</Text>
+    <Text style={{ fontSize: 11, lineHeight: 14, color: textColor }}>
+      {icon}
+    </Text>
   </View>
 );
 
