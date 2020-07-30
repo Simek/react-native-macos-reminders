@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import type { Node } from 'react';
-import AsyncStorage from '@react-native-community/async-storage';
-
 import {
   SectionList,
   StyleSheet,
@@ -11,77 +9,11 @@ import {
   View,
 } from 'react-native';
 
-const PREDEFINED_KEYS = ['all', 'scheduled', 'today', 'flagged'];
-const PREDEFINED_COLORS = {
-  all: { semantic: 'secondaryLabelColor' },
-  scheduled: { semantic: 'systemOrangeColor' },
-  today: { semantic: 'systemBlueColor' },
-  flagged: { semantic: 'systemRedColor' },
-};
+import CONSTANTS from './constants';
+import { getStoredData, storeData } from './Storage';
 
-const storeData = async (key, value, fallback = undefined) => {
-  try {
-    const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem(key, jsonValue);
-  } catch (e) {
-    if (fallback) {
-      await storeData(key, fallback);
-    } else {
-      return undefined;
-    }
-  }
-};
-
-const getStoredData = async (key, fallback = undefined) => {
-  try {
-    const jsonValue = await AsyncStorage.getItem(key);
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
-  } catch (e) {
-    return fallback;
-  }
-};
-
-const RoundIcon: () => Node = ({
-  icon,
-  color = { semantic: 'systemBlueColor' },
-  textColor = '#fff',
-  isActive = false,
-  stylesKey = 'tagIcon',
-}) => (
-  <View
-    style={[styles[stylesKey], { backgroundColor: isActive ? '#fff' : color }]}>
-    <Text style={{ fontSize: 11, color: textColor }}>{icon}</Text>
-  </View>
-);
-
-const Tag: () => Node = ({
-  title,
-  icon,
-  onPress,
-  count = 0,
-  isActive = false,
-}) => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={[
-      styles.tag,
-      isActive
-        ? { backgroundColor: PREDEFINED_COLORS[title.toLowerCase()] }
-        : {},
-    ]}>
-    <RoundIcon
-      icon={icon}
-      isActive={isActive}
-      color={PREDEFINED_COLORS[title.toLowerCase()]}
-    />
-    <Text style={[styles.tagCount, isActive ? { color: '#fff' } : {}]}>
-      {count}
-    </Text>
-    <Text style={[styles.tagText, isActive ? { color: '#fff' } : {}]}>
-      {title}
-    </Text>
-  </TouchableOpacity>
-);
+import RoundIcon from './components/RoundIcon';
+import Tag from './components/Tag';
 
 const App: () => Node = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -90,7 +22,7 @@ const App: () => Node = () => {
     today: [],
     scheduled: [],
     flagged: [],
-    all: <Text>hi 👋</Text>,
+    all: [],
   });
   const [listData, setListData] = useState([]);
 
@@ -99,8 +31,8 @@ const App: () => Node = () => {
     setListData(item);
   };
 
-  const writeListDataToStorage = async (newValue) => {
-    await storeData('list', newValue);
+  const writeListDataToStorage = async (value) => {
+    await storeData('list', value);
   };
 
   const clearUserListSelection = () => {
@@ -177,7 +109,7 @@ const App: () => Node = () => {
                 setListData((prevState) => [
                   ...prevState.map((listItem) =>
                     Object.assign({}, listItem, {
-                      selected: listItem.title === item.title,
+                      selected: listItem.key === item.key,
                     }),
                   ),
                 ]);
@@ -188,7 +120,7 @@ const App: () => Node = () => {
                 setListData((prevState) => {
                   const finalData = [
                     ...prevState.filter(
-                      (listItem) => listItem.title !== item.title,
+                      (listItem) => listItem.key !== item.key,
                     ),
                   ];
                   writeListDataToStorage(finalData);
@@ -197,15 +129,13 @@ const App: () => Node = () => {
               }}
               style={[
                 styles.listItem,
-                item.selected
-                  ? {
-                      backgroundColor: {
-                        semantic: 'selectedContentBackgroundColor',
-                      },
-                    }
-                  : {},
+                item.selected ? styles.listItemSelected : {},
               ]}>
-              <RoundIcon icon="☰" color={item.color} stylesKey="listItemIcon" />
+              <RoundIcon
+                icon="☰"
+                color={item.color}
+                style={styles.listItemIcon}
+              />
               <Text
                 style={[
                   styles.listItemText,
@@ -233,7 +163,10 @@ const App: () => Node = () => {
           <TouchableOpacity
             onPress={() => {
               setListData((prevState) => {
-                const finalData = [...prevState, { title: 'New list' }];
+                const finalData = [
+                  ...prevState,
+                  { title: 'New list', key: `list-${Date.now()}` },
+                ];
                 writeListDataToStorage(finalData);
                 return finalData;
               });
@@ -242,43 +175,39 @@ const App: () => Node = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.content}>
-        {searchQuery ? (
-          <>
-            <Text style={styles.contentHeader}>
-              Results for "{searchQuery}"
-            </Text>
-            <View />
-          </>
-        ) : (
-          <>
-            <Text
-              style={[
-                styles.contentHeader,
-                {
-                  textTransform: 'capitalize',
-                  color: !PREDEFINED_KEYS.includes(selectedKey)
-                    ? { semantic: 'systemBlueColor' }
-                    : PREDEFINED_COLORS[selectedKey],
-                },
-              ]}>
-              {selectedKey}
-            </Text>
-            {selectedKey !== 'today' ? (
-              <View style={styles.completedHeader}>
-                <Text style={styles.completedText}>0 Completed</Text>
-              </View>
-            ) : null}
-            {data[selectedKey] && data[selectedKey].length ? (
-              data[selectedKey]
-            ) : (
-              <View style={styles.noContentWrapper}>
-                <Text style={styles.noContentText}>No Reminders</Text>
-              </View>
-            )}
-          </>
-        )}
-      </View>
+      {searchQuery ? (
+        <View style={styles.content}>
+          <Text style={styles.contentHeader}>Results for "{searchQuery}"</Text>
+          <View />
+        </View>
+      ) : (
+        <View style={styles.content}>
+          <Text
+            style={[
+              styles.contentHeader,
+              styles.contentHeaderCustom,
+              {
+                color: !CONSTANTS.KEYS.includes(selectedKey)
+                  ? { semantic: 'systemBlueColor' }
+                  : CONSTANTS.COLORS[selectedKey],
+              },
+            ]}>
+            {selectedKey}
+          </Text>
+          {selectedKey !== 'today' ? (
+            <View style={styles.completedHeader}>
+              <Text style={styles.completedText}>0 Completed</Text>
+            </View>
+          ) : null}
+          {data[selectedKey] && data[selectedKey].length ? (
+            data[selectedKey]
+          ) : (
+            <View style={styles.noContentWrapper}>
+              <Text style={styles.noContentText}>No Reminders</Text>
+            </View>
+          )}
+        </View>
+      )}
     </View>
   );
 };
@@ -313,36 +242,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingHorizontal: 16,
   },
-  tag: {
-    backgroundColor: 'rgba(140,140,140,.2)',
-    width: '48.25%',
-    paddingHorizontal: 10,
-    padding: 8,
-    marginBottom: 8,
-    borderRadius: 10,
-  },
-  tagText: {
-    fontWeight: '600',
-    fontSize: 13,
-    color: { semantic: 'systemGrayColor' },
-  },
-  tagIcon: {
-    width: 24,
-    height: 24,
-    padding: 2,
-    borderRadius: 14,
-    marginBottom: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  tagCount: {
-    position: 'absolute',
-    top: 8,
-    right: 10,
-    fontWeight: '700',
-    fontSize: 18,
-    color: { semantic: 'systemGrayColor' },
-  },
   listHeader: {
     fontSize: 11,
     marginBottom: 4,
@@ -354,6 +253,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 8,
+  },
+  listItemSelected: {
+    backgroundColor: {
+      semantic: 'selectedContentBackgroundColor',
+    },
   },
   listItemIcon: {
     width: 20,
@@ -389,6 +293,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontFamily: 'SF Pro Rounded',
     color: { semantic: 'secondaryLabelColor' },
+  },
+  contentHeaderCustom: {
+    textTransform: 'capitalize',
   },
   completedHeader: {
     borderBottomWidth: StyleSheet.hairlineWidth,
