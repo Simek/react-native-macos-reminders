@@ -26,6 +26,8 @@ const App: () => Node = () => {
   });
   const [listData, setListData] = useState([]);
 
+  const isSearchMode = searchQuery && searchQuery.length > 0;
+
   const readListDataFromStorage = async () => {
     const item = await getStoredData('list', []);
     setListData(item);
@@ -175,39 +177,51 @@ const App: () => Node = () => {
           </TouchableOpacity>
         </View>
       </View>
-      {searchQuery ? (
-        <View style={styles.content}>
-          <Text style={styles.contentHeader}>Results for "{searchQuery}"</Text>
-          <View />
+      <View style={styles.content}>
+        <Text>{isSearchMode}</Text>
+        <View
+          style={[
+            styles.createButton,
+            isSearchMode ? styles.createButtonDisabled : {},
+          ]}>
+          <Text style={styles.createButtonText}>+</Text>
         </View>
-      ) : (
-        <View style={styles.content}>
+        {isSearchMode ? (
           <Text
-            style={[
-              styles.contentHeader,
-              styles.contentHeaderCustom,
-              {
-                color: !CONSTANTS.KEYS.includes(selectedKey)
-                  ? { semantic: 'systemBlueColor' }
-                  : CONSTANTS.COLORS[selectedKey],
-              },
-            ]}>
-            {selectedKey}
+            style={styles.contentHeader}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            Results for "{searchQuery}"
           </Text>
-          {selectedKey !== 'today' ? (
-            <View style={styles.completedHeader}>
-              <Text style={styles.completedText}>0 Completed</Text>
-            </View>
-          ) : null}
-          {data[selectedKey] && data[selectedKey].length ? (
-            data[selectedKey]
-          ) : (
-            <View style={styles.noContentWrapper}>
-              <Text style={styles.noContentText}>No Reminders</Text>
-            </View>
-          )}
-        </View>
-      )}
+        ) : (
+          <>
+            <Text
+              style={[
+                styles.contentHeader,
+                styles.contentHeaderCustom,
+                {
+                  color: !CONSTANTS.KEYS.includes(selectedKey)
+                    ? { semantic: 'systemBlueColor' }
+                    : CONSTANTS.COLORS[selectedKey],
+                },
+              ]}>
+              {selectedKey}
+            </Text>
+            {selectedKey !== 'today' ? (
+              <View style={styles.completedHeader}>
+                <Text style={styles.completedText}>0 Completed</Text>
+              </View>
+            ) : null}
+            {data[selectedKey] && data[selectedKey].length ? (
+              data[selectedKey]
+            ) : (
+              <View style={styles.noContentWrapper}>
+                <Text style={styles.noContentText}>No Reminders</Text>
+              </View>
+            )}
+          </>
+        )}
+      </View>
     </View>
   );
 };
@@ -283,6 +297,7 @@ const styles = StyleSheet.create({
   },
   content: {
     backgroundColor: { semantic: 'controlBackgroundColor' },
+    flex: 1,
     flexGrow: 2,
     padding: 24,
     paddingLeft: 20,
@@ -299,7 +314,7 @@ const styles = StyleSheet.create({
   },
   completedHeader: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: { semantic: 'gridColor' },
+    borderBottomColor: { semantic: 'separatorColor' },
     paddingVertical: 8,
     marginTop: 12,
   },
@@ -316,6 +331,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'SF Pro Rounded',
     color: { semantic: 'secondaryLabelColor' },
+  },
+  createButton: {
+    backgroundColor: { semantic: 'tertiaryLabelColor' },
+    paddingHorizontal: 14,
+    height: 20,
+    borderRadius: 3,
+    position: 'absolute',
+    top: 8,
+    right: 12,
+  },
+  createButtonText: {
+    color: { semantic: 'labelColor' },
+    fontWeight: '100',
+    fontSize: 24,
+    lineHeight: 22,
+  },
+  createButtonDisabled: {
+    opacity: 0.5,
   },
 });
 
