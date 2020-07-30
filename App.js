@@ -32,12 +32,12 @@ const storeData = async (key, value, fallback = undefined) => {
   }
 };
 
-const getStoredData = async (key) => {
+const getStoredData = async (key, fallback = undefined) => {
   try {
     const jsonValue = await AsyncStorage.getItem(key);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (e) {
-    return undefined;
+    return fallback;
   }
 };
 
@@ -95,7 +95,7 @@ const App: () => Node = () => {
   const [listData, setListData] = useState([]);
 
   const readListDataFromStorage = async () => {
-    const item = await getStoredData('list');
+    const item = await getStoredData('list', []);
     setListData(item);
   };
 
