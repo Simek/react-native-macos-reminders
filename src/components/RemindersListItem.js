@@ -1,24 +1,43 @@
 import React from 'react';
 import type { Node } from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 
 import RoundIcon from './RoundIcon';
 
-const RemindersListItem: () => Node = ({ item, onPress, onLongPress }) => (
+const RemindersListItem: () => Node = ({
+  item,
+  onPress,
+  onLongPress,
+  onEdit,
+  onEditEnd,
+}) => (
   <TouchableOpacity
     onPress={onPress}
     onLongPress={onLongPress}
     style={[styles.listItem, item.selected ? styles.listItemSelected : {}]}>
     <RoundIcon icon="☰" color={item.color} style={styles.listItemIcon} />
-    <Text
-      style={[
-        styles.listItemText,
-        {
-          color: item.selected ? '#fff' : { semantic: 'labelColor' },
-        },
-      ]}>
-      {item.title}
-    </Text>
+    {item.editMode ? (
+      <TextInput
+        autoFocus={true}
+        value={item.title}
+        style={styles.listItemInput}
+        blurOnSubmit={true}
+        onBlur={onEditEnd}
+        onChangeText={onEdit}
+      />
+    ) : (
+      <Text
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[
+          styles.listItemText,
+          {
+            color: item.selected ? '#fff' : { semantic: 'labelColor' },
+          },
+        ]}>
+        {item.title}
+      </Text>
+    )}
     <Text
       style={{
         color: item.selected ? '#fff' : { semantic: 'secondaryLabelColor' },
@@ -53,6 +72,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     flexGrow: 99,
+  },
+  listItemInput: {
+    flex: 1,
+    marginRight: 12,
+    fontSize: 13,
+    height: 16,
+    marginTop: 2,
+    color: { semantic: 'labelColor' },
+    backgroundColor: {
+      semantic: 'controlBackgroundColor',
+    },
   },
 });
 

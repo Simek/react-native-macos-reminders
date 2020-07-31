@@ -15,11 +15,10 @@ import { getStoredData, storeData } from './Storage';
 import RemindersListItem from './components/RemindersListItem';
 import Tag from './components/Tag';
 
-const getHeaderStyle = (key, customStyles = {}) => {
+const getHeaderStyle = (key, customStyles = undefined) => {
   return [
     styles.contentHeader,
-    styles.contentHeaderCustom,
-    customStyles,
+    customStyles ? customStyles : styles.contentHeaderCustom,
     {
       color: !CONSTANTS.KEYS.includes(key)
         ? { semantic: 'systemBlueColor' }
@@ -47,13 +46,32 @@ const App: () => Node = () => {
   };
 
   const writeListDataToStorage = async (value) => {
-    await storeData('list', value);
+    await storeData(
+      'list',
+      value.map((item) =>
+        Object.assign({}, item, { selected: false, editMode: false }),
+      ),
+    );
   };
 
-  const clearUserListSelection = () => {
-    setListData((prevState) =>
-      prevState.map((item) => Object.assign({}, item, { selected: false })),
-    );
+  const overwriteListItemsData = (overwriteFunc) => {
+    setListData((prevState) => [
+      ...prevState.map((listItem) =>
+        Object.assign({}, listItem, overwriteFunc(listItem)),
+      ),
+    ]);
+  };
+
+  const overwriteListItemsDataAndStore = (overwriteFunc) => {
+    setListData((prevState) => {
+      const finalData = overwriteFunc(prevState);
+      writeListDataToStorage(finalData);
+      return finalData;
+    });
+  };
+
+  const clearListTempData = () => {
+    overwriteListItemsData(() => ({ selected: false, editMode: false }));
   };
 
   useEffect(() => {
@@ -77,7 +95,7 @@ const App: () => Node = () => {
             icon="🗓"
             isActive={selectedKey === 'today'}
             onPress={() => {
-              clearUserListSelection();
+              clearListTempData();
               setSelectedKey('today');
             }}
           />
@@ -86,7 +104,7 @@ const App: () => Node = () => {
             icon="🕘"
             isActive={selectedKey === 'scheduled'}
             onPress={() => {
-              clearUserListSelection();
+              clearListTempData();
               setSelectedKey('scheduled');
             }}
           />
@@ -95,7 +113,7 @@ const App: () => Node = () => {
             icon="📥"
             isActive={selectedKey === 'all'}
             onPress={() => {
-              clearUserListSelection();
+              clearListTempData();
               setSelectedKey('all');
             }}
           />
@@ -104,7 +122,7 @@ const App: () => Node = () => {
             icon="🏳"
             isActive={selectedKey === 'flagged'}
             onPress={() => {
-              clearUserListSelection();
+              clearListTempData();
               setSelectedKey('flagged');
             }}
           />
@@ -121,27 +139,36 @@ const App: () => Node = () => {
             <RemindersListItem
               item={item}
               onPress={() => {
-                setSelectedKey(item.title);
-                setListData((prevState) => [
-                  ...prevState.map((listItem) =>
-                    Object.assign({}, listItem, {
-                      selected: listItem.key === item.key,
-                    }),
-                  ),
-                ]);
+                if (selectedKey === item.key) {
+                  overwriteListItemsData((listItem) => ({
+                    editMode: listItem.key === item.key,
+                  }));
+                } else {
+                  setSelectedKey(item.key);
+                  overwriteListItemsData((listItem) => ({
+                    selected: listItem.key === item.key,
+                    editMode: false,
+                  }));
+                }
               }}
               onLongPress={() => {
-                clearUserListSelection();
+                clearListTempData();
                 setSelectedKey('all');
-                setListData((prevState) => {
-                  const finalData = [
-                    ...prevState.filter(
-                      (listItem) => listItem.key !== item.key,
-                    ),
-                  ];
-                  writeListDataToStorage(finalData);
-                  return finalData;
-                });
+                overwriteListItemsDataAndStore((list) => [
+                  ...list.filter((listItem) => listItem.key !== item.key),
+                ]);
+              }}
+              onEdit={(title) => {
+                overwriteListItemsData((listItem) =>
+                  listItem.editMode ? { title } : listItem,
+                );
+              }}
+              onEditEnd={() => {
+                overwriteListItemsDataAndStore((list) => [
+                  ...list.map((listItem) =>
+                    Object.assign({}, listItem, { editMode: false }),
+                  ),
+                ]);
               }}
             />
           )}
@@ -152,14 +179,14 @@ const App: () => Node = () => {
         <View style={styles.listFooter}>
           <TouchableOpacity
             onPress={() => {
-              setListData((prevState) => {
-                const finalData = [
-                  ...prevState,
-                  { title: 'New list', key: `list-${Date.now()}` },
-                ];
-                writeListDataToStorage(finalData);
-                return finalData;
-              });
+              overwriteListItemsDataAndStore((list) => [
+                ...list,
+                {
+                  title: 'New list',
+                  key: `list-${Date.now()}`,
+                  editMode: true,
+                },
+              ]);
             }}>
             <Text style={styles.listFooterText}>+ Add List</Text>
           </TouchableOpacity>
@@ -184,7 +211,14 @@ const App: () => Node = () => {
         ) : (
           <>
             <View style={styles.contentHeaderWrapper}>
-              <Text style={getHeaderStyle(selectedKey)}>{selectedKey}</Text>
+              <Text
+                style={getHeaderStyle(selectedKey)}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {selectedKey.startsWith('list-')
+                  ? listData.find((item) => item.key === selectedKey)?.title
+                  : selectedKey}
+              </Text>
               {!CONSTANTS.KEYS.includes(selectedKey) ? (
                 <Text
                   style={getHeaderStyle(
@@ -227,7 +261,8 @@ const styles = StyleSheet.create({
     paddingTop: 52,
   },
   searchInput: {
-    height: 20,
+    height: 22,
+    lineHeight: 18,
     backgroundColor: { semantic: 'gridColor' },
     marginHorizontal: 16,
     borderRadius: 2,
@@ -289,6 +324,7 @@ const styles = StyleSheet.create({
     flexGrow: 2,
     padding: 24,
     paddingLeft: 20,
+    paddingRight: 16,
     paddingTop: 42,
   },
   contentHeaderWrapper: {
@@ -305,13 +341,14 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   contentHeaderCounter: {
+    marginLeft: 36,
     fontWeight: '400',
   },
   completedHeader: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: { semantic: 'separatorColor' },
     paddingVertical: 8,
-    marginTop: 12,
+    marginTop: 16,
   },
   completedText: {
     color: { semantic: 'labelColor' },
