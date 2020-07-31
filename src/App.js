@@ -30,7 +30,7 @@ const getHeaderStyle = (key, customStyles = undefined) => {
 const App: () => Node = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedKey, setSelectedKey] = useState('all');
-  const [data] = useState({
+  const [data, setData] = useState({
     today: [],
     scheduled: [],
     flagged: [],
@@ -41,22 +41,31 @@ const App: () => Node = () => {
   const isSearchMode = searchQuery && searchQuery.length > 0;
 
   const readListDataFromStorage = async () => {
-    const item = await getStoredData('list', []);
+    const item = await getStoredData('remindersLists', []);
     setListData(item);
   };
 
   const writeListDataToStorage = async (value) => {
     await storeData(
-      'list',
+      'remindersLists',
       value.map((item) =>
         Object.assign({}, item, { selected: false, editMode: false }),
       ),
     );
   };
 
+  const readDataFromStorage = async () => {
+    const item = await getStoredData('remindersData', []);
+    setData(item);
+  };
+
+  const writeDataToStorage = async (value) => {
+    await storeData('remindersData', value);
+  };
+
   const overwriteListItemsData = (overwriteFunc) => {
     setListData((prevState) => [
-      ...prevState.map((listItem) =>
+      ...(prevState || []).map((listItem) =>
         Object.assign({}, listItem, overwriteFunc(listItem)),
       ),
     ]);
@@ -74,9 +83,29 @@ const App: () => Node = () => {
     overwriteListItemsData(() => ({ selected: false, editMode: false }));
   };
 
+  const getTitle = (key) => listData.find((item) => item.key === key)?.title;
+
   useEffect(() => {
     readListDataFromStorage();
+    readDataFromStorage();
   }, []);
+
+  const allCount = Object.keys(data).filter((key) => key.startsWith('list-'))
+    .length;
+
+  const remindersSections =
+    selectedKey === 'all'
+      ? Object.keys(data)
+          .filter((key) => key.startsWith('list-'))
+          .map((key) =>
+            getTitle(key) ? { title: getTitle(key), data: data[key] } : null,
+          )
+          .filter(Boolean)
+      : [
+          (data[selectedKey] || []).length > 0
+            ? { data: data[selectedKey] }
+            : null,
+        ].filter(Boolean);
 
   return (
     <View style={styles.container}>
@@ -116,6 +145,7 @@ const App: () => Node = () => {
               clearListTempData();
               setSelectedKey('all');
             }}
+            count={allCount}
           />
           <Tag
             title="Flagged"
@@ -157,6 +187,11 @@ const App: () => Node = () => {
                 overwriteListItemsDataAndStore((list) => [
                   ...list.filter((listItem) => listItem.key !== item.key),
                 ]);
+                setData((prevState) => {
+                  delete prevState[item.key];
+                  writeDataToStorage(Object.assign({}, prevState));
+                  return Object.assign({}, prevState);
+                });
               }}
               onEdit={(title) => {
                 overwriteListItemsData((listItem) =>
@@ -179,14 +214,20 @@ const App: () => Node = () => {
         <View style={styles.listFooter}>
           <TouchableOpacity
             onPress={() => {
+              const key = `list-${Date.now()}`;
               overwriteListItemsDataAndStore((list) => [
                 ...list,
                 {
                   title: 'New list',
-                  key: `list-${Date.now()}`,
+                  key,
                   editMode: true,
                 },
               ]);
+              setData((prevState) => {
+                const finalData = Object.assign({}, prevState, { [key]: [] });
+                writeDataToStorage(finalData);
+                return finalData;
+              });
             }}>
             <Text style={styles.listFooterText}>+ Add List</Text>
           </TouchableOpacity>
@@ -234,13 +275,20 @@ const App: () => Node = () => {
                 <Text style={styles.completedText}>0 Completed</Text>
               </View>
             ) : null}
-            {data[selectedKey] && data[selectedKey].length ? (
-              data[selectedKey]
-            ) : (
-              <View style={styles.noContentWrapper}>
-                <Text style={styles.noContentText}>No Reminders</Text>
-              </View>
-            )}
+            <SectionList
+              contentContainerStyle={{ flex: 1 }}
+              sections={remindersSections}
+              keyExtractor={(item, index) => item + index}
+              renderItem={({ item }) => <Text>{item.text}</Text>}
+              renderSectionHeader={({ section }) => (
+                <Text style={styles.remindersHeader}>{section.title}</Text>
+              )}
+              ListEmptyComponent={
+                <View style={styles.noContentWrapper}>
+                  <Text style={styles.noContentText}>No Reminders</Text>
+                </View>
+              }
+            />
           </>
         )}
       </View>
@@ -382,6 +430,12 @@ const styles = StyleSheet.create({
   createButtonDisabled: {
     color: { semantic: 'tertiaryLabelColor' },
     backgroundColor: { semantic: 'quaternaryLabelColor' },
+  },
+  remindersHeader: {
+    paddingVertical: 6,
+    fontSize: 20,
+    fontFamily: 'SF Pro Rounded',
+    color: { semantic: 'systemBlueColor' },
   },
 });
 
