@@ -24,6 +24,8 @@ const Tag: () => Node = ({
       icon={icon}
       isActive={isActive}
       color={CONSTANTS.COLORS[title.toLowerCase()]}
+      iconColor={isActive ? CONSTANTS.COLORS[title.toLowerCase()] : '#fff'}
+      iconSize={14}
       style={styles.tagIcon}
     />
     <Text style={[styles.tagCount, isActive ? { color: '#fff' } : {}]}>
@@ -52,8 +54,8 @@ const styles = StyleSheet.create({
   tagIcon: {
     width: 24,
     height: 24,
-    padding: 2,
-    borderRadius: 14,
+    padding: 1,
+    borderRadius: 12,
     marginBottom: 4,
     justifyContent: 'center',
     alignItems: 'center',

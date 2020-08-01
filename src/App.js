@@ -121,7 +121,7 @@ const App: () => Node = () => {
         <View style={styles.tags}>
           <Tag
             title="Today"
-            icon="🗓"
+            icon="􀉉"
             isActive={selectedKey === 'today'}
             onPress={() => {
               clearListTempData();
@@ -130,7 +130,7 @@ const App: () => Node = () => {
           />
           <Tag
             title="Scheduled"
-            icon="🕘"
+            icon="􀐬"
             isActive={selectedKey === 'scheduled'}
             onPress={() => {
               clearListTempData();
@@ -139,7 +139,7 @@ const App: () => Node = () => {
           />
           <Tag
             title="All"
-            icon="📥"
+            icon="􀈤"
             isActive={selectedKey === 'all'}
             onPress={() => {
               clearListTempData();
@@ -149,7 +149,7 @@ const App: () => Node = () => {
           />
           <Tag
             title="Flagged"
-            icon="🏳"
+            icon="􀋊"
             isActive={selectedKey === 'flagged'}
             onPress={() => {
               clearListTempData();
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
   },
   createButtonDisabled: {
     color: { semantic: 'tertiaryLabelColor' },
-    backgroundColor: { semantic: 'quaternaryLabelColor' },
+    backgroundColor: { semantic: 'controlBackgroundColor' },
   },
   remindersHeader: {
     paddingVertical: 6,

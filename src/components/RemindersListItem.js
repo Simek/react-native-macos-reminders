@@ -15,7 +15,7 @@ const RemindersListItem: () => Node = ({
     onPress={onPress}
     onLongPress={onLongPress}
     style={[styles.listItem, item.selected ? styles.listItemSelected : {}]}>
-    <RoundIcon icon="☰" color={item.color} style={styles.listItemIcon} />
+    <RoundIcon icon="􀋲" color={item.color} style={styles.listItemIcon} />
     {item.editMode ? (
       <TextInput
         autoFocus={true}
