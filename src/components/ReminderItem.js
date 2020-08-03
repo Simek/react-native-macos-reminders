@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import type { Node } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
 const RemindersListItem: () => Node = ({
   item,
   color = 'systemBlueColor',
   onEdit,
   onEditEnd,
+  onStatusChange,
 }) => {
   const [text, setText] = useState(item.text);
 
   return (
     <View style={styles.listItem}>
-      <View
+      <TouchableOpacity
         style={[
           styles.listItemCheck,
           {
@@ -21,11 +22,16 @@ const RemindersListItem: () => Node = ({
               : { semantic: 'systemGrayColor' },
           },
         ]}
-      />
+        onPress={onStatusChange}>
+        {item.done ? <View style={styles.listItemCheckInner} /> : null}
+      </TouchableOpacity>
       <TextInput
         autoFocus={item.text === ''}
         value={text}
-        style={styles.listItemInput}
+        style={[
+          styles.listItemInput,
+          item.done ? styles.listItemInputDone : {},
+        ]}
         blurOnSubmit={true}
         onBlur={(e) => onEditEnd(e.nativeEvent.text)}
         onChangeText={(newValue) => {
@@ -59,6 +65,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderRadius: 9,
     borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  listItemCheckInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: {
+      semantic: 'systemBlueColor',
+    },
   },
   listItemInput: {
     flex: 1,
@@ -69,6 +85,9 @@ const styles = StyleSheet.create({
     backgroundColor: {
       semantic: 'controlBackgroundColor',
     },
+  },
+  listItemInputDone: {
+    color: { semantic: 'secondaryLabelColor' },
   },
 });
 

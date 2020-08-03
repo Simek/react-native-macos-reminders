@@ -78,6 +78,14 @@ const App: () => Node = () => {
     });
   };
 
+  const overwriteSingleListData = (listKey, overwriteFunc) => {
+    setData((prevData) =>
+      Object.assign({}, prevData, {
+        [listKey]: overwriteFunc(prevData[listKey]),
+      }),
+    );
+  };
+
   const clearListTempData = (
     content = { selected: false, editMode: false },
   ) => {
@@ -86,15 +94,22 @@ const App: () => Node = () => {
 
   const getTitle = (key) => listData.find((item) => item.key === key)?.title;
 
+  const getCount = (filterFunc = (e) => e) =>
+    Object.keys(data)
+      .filter((key) => key.startsWith('list-'))
+      .map((key) => data[key].filter(filterFunc).length)
+      .reduce((acc, value) => acc + value, 0);
+
+  const basicSort = (a, b) => a.done - b.done || a.createdAt > b.createdAt;
+
   useEffect(() => {
     readListDataFromStorage();
     readDataFromStorage();
   }, []);
 
-  const allCount = Object.keys(data)
-    .filter((key) => key.startsWith('list-'))
-    .map((key) => data[key].length)
-    .reduce((acc, value) => acc + value, 0);
+  const totalCount = getCount();
+  const allCount = getCount((entry) => !entry.done);
+  const allCompletedCount = totalCount - allCount;
 
   const isSearchMode = searchQuery && searchQuery.length > 0;
   const remindersSections =
@@ -103,13 +118,13 @@ const App: () => Node = () => {
           .filter((key) => key.startsWith('list-'))
           .map((key) =>
             getTitle(key)
-              ? { key, title: getTitle(key), data: data[key] }
+              ? { key, title: getTitle(key), data: data[key].sort(basicSort) }
               : null,
           )
           .filter(Boolean)
       : [
           (data[selectedKey] || []).length > 0
-            ? { data: data[selectedKey] }
+            ? { data: data[selectedKey].sort(basicSort) }
             : null,
         ].filter(Boolean);
 
@@ -214,11 +229,12 @@ const App: () => Node = () => {
       <View style={styles.content}>
         <TouchableOpacity
           onPress={() => {
+            const ts = Date.now();
             setData((prevData) =>
               Object.assign({}, prevData, {
                 [selectedKey]: [
                   ...prevData[selectedKey],
-                  { text: '', key: `entry-${Date.now()}` },
+                  { text: '', key: `entry-${ts}`, createdAt: ts, done: false },
                 ],
               }),
             );
@@ -263,7 +279,13 @@ const App: () => Node = () => {
             </View>
             {selectedKey !== 'today' ? (
               <View style={styles.completedHeader}>
-                <Text style={styles.completedText}>0 Completed</Text>
+                <Text style={styles.completedText}>
+                  {selectedKey === 'all'
+                    ? allCompletedCount
+                    : data[selectedKey].filter((entry) => entry.done)
+                        .length}{' '}
+                  Completed
+                </Text>
               </View>
             ) : null}
             <SectionList
@@ -275,27 +297,32 @@ const App: () => Node = () => {
                   item={item}
                   onEdit={(text) => {
                     const dataKey = section.key || selectedKey;
-                    setData((prevData) =>
-                      Object.assign({}, prevData, {
-                        [dataKey]: prevData[dataKey].map((entry) =>
-                          entry.key === item.key
-                            ? Object.assign({}, entry, { text })
-                            : entry,
-                        ),
-                      }),
+                    overwriteSingleListData(dataKey, (list) =>
+                      list.map((entry) =>
+                        entry.key === item.key
+                          ? Object.assign({}, entry, { text })
+                          : entry,
+                      ),
                     );
                   }}
                   onEditEnd={(text) => {
                     if (!text) {
                       const dataKey = section.key || selectedKey;
-                      setData((prevData) =>
-                        Object.assign({}, prevData, {
-                          [dataKey]: prevData[dataKey].filter(
-                            (entry) => entry.key !== item.key,
-                          ),
-                        }),
+                      overwriteSingleListData(dataKey, (list) =>
+                        list.filter((entry) => entry.key !== item.key),
                       );
                     }
+                    writeDataToStorage(data);
+                  }}
+                  onStatusChange={() => {
+                    const dataKey = section.key || selectedKey;
+                    overwriteSingleListData(dataKey, (list) =>
+                      list.map((entry) =>
+                        entry.key === item.key
+                          ? Object.assign({}, entry, { done: !entry.done })
+                          : entry,
+                      ),
+                    );
                     writeDataToStorage(data);
                   }}
                 />
