@@ -439,7 +439,7 @@
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" sceneMemberID="viewController">
-                    <visualEffectView key="view" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" id="a9o-Z5-sWa">
+                    <visualEffectView key="view" blendingMode="behindWindow" material="sidebar" state="followsWindowActiveState" id="a9o-Z5-sWa">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </visualEffectView>
