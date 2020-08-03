@@ -173,9 +173,9 @@ const App: () => Node = () => {
               onLongPress={() => {
                 clearListTempData();
                 setSelectedKey('all');
-                overwriteListItemsDataAndStore((list) => [
-                  ...list.filter((listItem) => listItem.key !== item.key),
-                ]);
+                overwriteListItemsDataAndStore((list) =>
+                  list.filter((listItem) => listItem.key !== item.key),
+                );
                 setData((prevState) => {
                   delete prevState[item.key];
                   writeDataToStorage(Object.assign({}, prevState));
@@ -184,15 +184,22 @@ const App: () => Node = () => {
               }}
               onEdit={(title) => {
                 overwriteListItemsData((listItem) =>
-                  listItem.editMode ? { title } : listItem,
+                  listItem.key === item.key ? { title } : {},
+                );
+              }}
+              onRename={() => {
+                overwriteListItemsData((listItem) =>
+                  listItem.key === item.key
+                    ? { editMode: true, selected: true }
+                    : {},
                 );
               }}
               onEditEnd={() => {
-                overwriteListItemsDataAndStore((list) => [
-                  ...list.map((listItem) =>
+                overwriteListItemsDataAndStore((list) =>
+                  list.map((listItem) =>
                     Object.assign({}, listItem, { editMode: false }),
                   ),
-                ]);
+                );
               }}
             />
           )}

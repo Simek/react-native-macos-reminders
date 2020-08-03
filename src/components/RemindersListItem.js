@@ -1,6 +1,13 @@
 import React from 'react';
 import type { Node } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import {
+  ActionSheetIOS,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 
 import RoundIcon from './RoundIcon';
 
@@ -11,11 +18,47 @@ const RemindersListItem: () => Node = ({
   onLongPress,
   onEdit,
   onEditEnd,
+  onRename,
 }) => (
   <TouchableOpacity
-    onPress={onPress}
+    onPress={(e) => {
+      if (e.nativeEvent.button === 2) {
+        ActionSheetIOS.showActionSheetWithOptions(
+          {
+            options: ['Show Info', 'Rename', 'Delete'],
+          },
+          (buttonIndex) => {
+            if (buttonIndex === 0) {
+              Alert.prompt(
+                `"${item.title}" Info`,
+                undefined,
+                [
+                  {
+                    text: 'OK',
+                    onPress: (text) => {
+                      onEdit(text);
+                      onEditEnd(text);
+                    },
+                  },
+                  { text: 'Cancel' },
+                ],
+                undefined,
+                item.title,
+              );
+            } else if (buttonIndex === 1) {
+              onRename(e);
+            } else if (buttonIndex === 2) {
+              onLongPress(e);
+            }
+          },
+        );
+      } else {
+        onPress(e);
+      }
+    }}
     onLongPress={onLongPress}
-    style={[styles.listItem, item.selected ? styles.listItemSelected : {}]}>
+    style={[styles.listItem, item.selected ? styles.listItemSelected : {}]}
+    activeOpacity={0.66}>
     <RoundIcon icon="􀋲" color={item.color} style={styles.listItemIcon} />
     {item.editMode ? (
       <TextInput
