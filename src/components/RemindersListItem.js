@@ -6,6 +6,7 @@ import RoundIcon from './RoundIcon';
 
 const RemindersListItem: () => Node = ({
   item,
+  count,
   onPress,
   onLongPress,
   onEdit,
@@ -22,7 +23,7 @@ const RemindersListItem: () => Node = ({
         value={item.title}
         style={styles.listItemInput}
         blurOnSubmit={true}
-        onBlur={onEditEnd}
+        onBlur={(e) => onEditEnd(e.nativeEvent.text)}
         onChangeText={onEdit}
       />
     ) : (
@@ -42,7 +43,7 @@ const RemindersListItem: () => Node = ({
       style={{
         color: item.selected ? '#fff' : { semantic: 'secondaryLabelColor' },
       }}>
-      {item.count || 0}
+      {count || 0}
     </Text>
   </TouchableOpacity>
 );

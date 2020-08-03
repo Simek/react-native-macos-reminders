@@ -21,3 +21,19 @@ export const getStoredData = async (key, fallback = undefined) => {
     return fallback;
   }
 };
+
+export const getAllStoredKeys = async (fallback = []) => {
+  try {
+    return await AsyncStorage.getAllKeys();
+  } catch (e) {
+    return fallback;
+  }
+};
+
+export const removeEntry = async (key) => {
+  try {
+    await AsyncStorage.removeItem(key);
+  } catch (e) {
+    console.log(e);
+  }
+};

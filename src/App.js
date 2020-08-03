@@ -12,8 +12,9 @@ import {
 import CONSTANTS from './constants';
 import { getStoredData, storeData } from './Storage';
 
+import ReminderItem from './components/ReminderItem';
 import RemindersListItem from './components/RemindersListItem';
-import Tag from './components/Tag';
+import Tags from './components/Tags';
 
 const getHeaderStyle = (key, customStyles = undefined) => {
   return [
@@ -29,7 +30,7 @@ const getHeaderStyle = (key, customStyles = undefined) => {
 
 const App: () => Node = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedKey, setSelectedKey] = useState('all');
+  const [selectedKey, setSelectedKey] = useState(CONSTANTS.KEYS[0]);
   const [data, setData] = useState({
     today: [],
     scheduled: [],
@@ -37,8 +38,6 @@ const App: () => Node = () => {
     all: [],
   });
   const [listData, setListData] = useState([]);
-
-  const isSearchMode = searchQuery && searchQuery.length > 0;
 
   const readListDataFromStorage = async () => {
     const item = await getStoredData('remindersLists', []);
@@ -79,8 +78,10 @@ const App: () => Node = () => {
     });
   };
 
-  const clearListTempData = () => {
-    overwriteListItemsData(() => ({ selected: false, editMode: false }));
+  const clearListTempData = (
+    content = { selected: false, editMode: false },
+  ) => {
+    overwriteListItemsData(() => content);
   };
 
   const getTitle = (key) => listData.find((item) => item.key === key)?.title;
@@ -90,15 +91,20 @@ const App: () => Node = () => {
     readDataFromStorage();
   }, []);
 
-  const allCount = Object.keys(data).filter((key) => key.startsWith('list-'))
-    .length;
+  const allCount = Object.keys(data)
+    .filter((key) => key.startsWith('list-'))
+    .map((key) => data[key].length)
+    .reduce((acc, value) => acc + value, 0);
 
+  const isSearchMode = searchQuery && searchQuery.length > 0;
   const remindersSections =
     selectedKey === 'all'
       ? Object.keys(data)
           .filter((key) => key.startsWith('list-'))
           .map((key) =>
-            getTitle(key) ? { title: getTitle(key), data: data[key] } : null,
+            getTitle(key)
+              ? { key, title: getTitle(key), data: data[key] }
+              : null,
           )
           .filter(Boolean)
       : [
@@ -118,45 +124,12 @@ const App: () => Node = () => {
           clearButtonMode="while-editing"
           blurOnSubmit={true}
         />
-        <View style={styles.tags}>
-          <Tag
-            title="Today"
-            icon="􀉉"
-            isActive={selectedKey === 'today'}
-            onPress={() => {
-              clearListTempData();
-              setSelectedKey('today');
-            }}
-          />
-          <Tag
-            title="Scheduled"
-            icon="􀐬"
-            isActive={selectedKey === 'scheduled'}
-            onPress={() => {
-              clearListTempData();
-              setSelectedKey('scheduled');
-            }}
-          />
-          <Tag
-            title="All"
-            icon="􀈤"
-            isActive={selectedKey === 'all'}
-            onPress={() => {
-              clearListTempData();
-              setSelectedKey('all');
-            }}
-            count={allCount}
-          />
-          <Tag
-            title="Flagged"
-            icon="􀋊"
-            isActive={selectedKey === 'flagged'}
-            onPress={() => {
-              clearListTempData();
-              setSelectedKey('flagged');
-            }}
-          />
-        </View>
+        <Tags
+          selectedKey={selectedKey}
+          setSelectedKey={setSelectedKey}
+          onPress={() => clearListTempData()}
+          allCount={allCount}
+        />
         <SectionList
           sections={[
             {
@@ -168,6 +141,7 @@ const App: () => Node = () => {
           renderItem={({ item }) => (
             <RemindersListItem
               item={item}
+              count={data && data[item.key] ? data[item.key].length : 0}
               onPress={() => {
                 if (selectedKey === item.key) {
                   overwriteListItemsData((listItem) => ({
@@ -207,22 +181,26 @@ const App: () => Node = () => {
               }}
             />
           )}
-          renderSectionHeader={({ section: { title } }) => (
-            <Text style={styles.listHeader}>{title}</Text>
-          )}
+          renderSectionHeader={({ section: { title } }) =>
+            title ? <Text style={styles.listHeader}>{title}</Text> : null
+          }
         />
         <View style={styles.listFooter}>
           <TouchableOpacity
             onPress={() => {
               const key = `list-${Date.now()}`;
               overwriteListItemsDataAndStore((list) => [
-                ...list,
+                ...list.map((listItem) =>
+                  Object.assign({}, listItem, { selected: false }),
+                ),
                 {
                   title: 'New list',
                   key,
+                  selected: true,
                   editMode: true,
                 },
               ]);
+              setSelectedKey(key);
               setData((prevState) => {
                 const finalData = Object.assign({}, prevState, { [key]: [] });
                 writeDataToStorage(finalData);
@@ -235,6 +213,16 @@ const App: () => Node = () => {
       </View>
       <View style={styles.content}>
         <TouchableOpacity
+          onPress={() => {
+            setData((prevData) =>
+              Object.assign({}, prevData, {
+                [selectedKey]: [
+                  ...prevData[selectedKey],
+                  { text: '', key: `entry-${Date.now()}` },
+                ],
+              }),
+            );
+          }}
           activeOpacity={isSearchMode ? 1.0 : 0.2}
           style={[
             styles.createButton,
@@ -253,7 +241,10 @@ const App: () => Node = () => {
           <>
             <View style={styles.contentHeaderWrapper}>
               <Text
-                style={getHeaderStyle(selectedKey)}
+                style={getHeaderStyle(
+                  selectedKey,
+                  selectedKey.startsWith('list-') ? {} : undefined,
+                )}
                 numberOfLines={1}
                 ellipsizeMode="tail">
                 {selectedKey.startsWith('list-')
@@ -266,7 +257,7 @@ const App: () => Node = () => {
                     selectedKey,
                     styles.contentHeaderCounter,
                   )}>
-                  0
+                  {data[selectedKey].length}
                 </Text>
               ) : null}
             </View>
@@ -278,11 +269,44 @@ const App: () => Node = () => {
             <SectionList
               contentContainerStyle={{ flex: 1 }}
               sections={remindersSections}
-              keyExtractor={(item, index) => item + index}
-              renderItem={({ item }) => <Text>{item.text}</Text>}
-              renderSectionHeader={({ section }) => (
-                <Text style={styles.remindersHeader}>{section.title}</Text>
+              keyExtractor={(item) => item.key}
+              renderItem={({ item, index, section }) => (
+                <ReminderItem
+                  item={item}
+                  onEdit={(text) => {
+                    const dataKey = section.key || selectedKey;
+                    setData((prevData) =>
+                      Object.assign({}, prevData, {
+                        [dataKey]: prevData[dataKey].map((entry) =>
+                          entry.key === item.key
+                            ? Object.assign({}, entry, { text })
+                            : entry,
+                        ),
+                      }),
+                    );
+                  }}
+                  onEditEnd={(text) => {
+                    if (!text) {
+                      const dataKey = section.key || selectedKey;
+                      setData((prevData) =>
+                        Object.assign({}, prevData, {
+                          [dataKey]: prevData[dataKey].filter(
+                            (entry) => entry.key !== item.key,
+                          ),
+                        }),
+                      );
+                    }
+                    writeDataToStorage(data);
+                  }}
+                />
               )}
+              renderSectionHeader={({ section: { title } }) =>
+                title ? (
+                  <Text style={[styles.contentHeader, styles.allListHeader]}>
+                    {title}
+                  </Text>
+                ) : null
+              }
               ListEmptyComponent={
                 <View style={styles.noContentWrapper}>
                   <Text style={styles.noContentText}>No Reminders</Text>
@@ -303,7 +327,7 @@ const styles = StyleSheet.create({
   },
   sourceList: {
     borderRightWidth: StyleSheet.hairlineWidth,
-    borderRightColor: { semantic: 'separatorColor' },
+    borderRightColor: '#8c8c8c33',
     maxWidth: 280,
     flexGrow: 1,
     paddingTop: 52,
@@ -311,21 +335,12 @@ const styles = StyleSheet.create({
   searchInput: {
     height: 22,
     lineHeight: 18,
-    backgroundColor: { semantic: 'gridColor' },
+    backgroundColor: { semantic: 'separatorColor' },
     marginHorizontal: 16,
     borderRadius: 2,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: { semantic: 'tertiaryLabelColor' },
+    borderColor: '#8c8c8c50',
     color: { semantic: 'secondaryLabelColor' },
-  },
-  tags: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-    marginTop: 16,
-    paddingHorizontal: 16,
   },
   listHeader: {
     fontSize: 11,
@@ -394,9 +409,10 @@ const styles = StyleSheet.create({
   },
   completedHeader: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: { semantic: 'separatorColor' },
+    borderBottomColor: '#8c8c8c50',
     paddingVertical: 8,
     marginTop: 16,
+    marginBottom: 8,
   },
   completedText: {
     color: { semantic: 'labelColor' },
@@ -435,6 +451,12 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     fontSize: 20,
     fontFamily: 'SF Pro Rounded',
+    color: { semantic: 'systemBlueColor' },
+  },
+  allListHeader: {
+    fontSize: 18,
+    marginTop: 4,
+    marginBottom: 12,
     color: { semantic: 'systemBlueColor' },
   },
 });
