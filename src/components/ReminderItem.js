@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
   listItemInput: {
     flex: 1,
-    fontSize: 12,
+    fontSize: 13,
     height: 16,
     marginTop: -6,
     color: { semantic: 'labelColor' },

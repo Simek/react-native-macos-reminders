@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableHighlight,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -113,14 +114,27 @@ const App: () => Node = () => {
 
   const isSearchMode = searchQuery && searchQuery.length > 0;
   const remindersSections =
-    selectedKey === 'all'
+    selectedKey === 'all' || isSearchMode
       ? Object.keys(data)
           .filter((key) => key.startsWith('list-'))
           .map((key) =>
             getTitle(key)
-              ? { key, title: getTitle(key), data: data[key].sort(basicSort) }
+              ? {
+                  key,
+                  title: getTitle(key),
+                  data: isSearchMode
+                    ? data[key]
+                        .filter((entry) =>
+                          entry.text
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase()),
+                        )
+                        .sort(basicSort)
+                    : data[key].sort(basicSort),
+                }
               : null,
           )
+          .filter((section) => (isSearchMode ? section.data.length > 0 : true))
           .filter(Boolean)
       : [
           (data[selectedKey] || []).length > 0
@@ -131,14 +145,27 @@ const App: () => Node = () => {
   return (
     <View style={styles.container}>
       <View style={styles.sourceList}>
-        <TextInput
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-          style={styles.searchInput}
-          placeholder="Search"
-          clearButtonMode="while-editing"
-          blurOnSubmit={true}
-        />
+        <View>
+          <TextInput
+            onChangeText={setSearchQuery}
+            value={searchQuery}
+            style={styles.searchInput}
+            placeholder="Search"
+            placeholderTextColor={{ semantic: 'secondaryLabelColor' }}
+            clearButtonMode="while-editing"
+            blurOnSubmit={true}
+          />
+          <Text style={[styles.searchInputIcon, styles.searchInputSearchIcon]}>
+            􀊫
+          </Text>
+          {searchQuery !== '' ? (
+            <TouchableOpacity
+              onPress={() => setSearchQuery('')}
+              style={[styles.searchInputIcon, styles.searchInputClearIcon]}>
+              <Text style={styles.searchInputClearIconText}>􀁑</Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
         <Tags
           selectedKey={selectedKey}
           setSelectedKey={setSelectedKey}
@@ -207,34 +234,40 @@ const App: () => Node = () => {
             title ? <Text style={styles.listHeader}>{title}</Text> : null
           }
         />
-        <View style={styles.listFooter}>
-          <TouchableOpacity
-            onPress={() => {
-              const key = `list-${Date.now()}`;
-              overwriteListItemsDataAndStore((list) => [
-                ...list.map((listItem) =>
-                  Object.assign({}, listItem, { selected: false }),
-                ),
-                {
-                  title: 'New list',
-                  key,
-                  selected: true,
-                  editMode: true,
-                },
-              ]);
-              setSelectedKey(key);
-              setData((prevState) => {
-                const finalData = Object.assign({}, prevState, { [key]: [] });
-                writeDataToStorage(finalData);
-                return finalData;
-              });
-            }}>
-            <Text style={styles.listFooterText}>+ Add List</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.listFooter}
+          onPress={() => {
+            const key = `list-${Date.now()}`;
+            overwriteListItemsDataAndStore((list) => [
+              ...list.map((listItem) =>
+                Object.assign({}, listItem, { selected: false }),
+              ),
+              {
+                title: 'New list',
+                key,
+                selected: true,
+                editMode: true,
+              },
+            ]);
+            setSelectedKey(key);
+            setData((prevState) => {
+              const finalData = Object.assign({}, prevState, { [key]: [] });
+              writeDataToStorage(finalData);
+              return finalData;
+            });
+          }}>
+          <Text style={styles.listFooterText}>
+            <Text style={styles.listFooterTextIcon}>􀁍 </Text> Add List
+          </Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <TouchableOpacity
+        <TouchableHighlight
+          underlayColor={
+            isSearchMode
+              ? { semantic: 'controlColor' }
+              : { semantic: 'selectedContentBackgroundColor' }
+          }
           onPress={() => {
             const ts = Date.now();
             setData((prevData) =>
@@ -246,16 +279,16 @@ const App: () => Node = () => {
               }),
             );
           }}
-          activeOpacity={isSearchMode ? 1.0 : 0.2}
+          pointerEvents={isSearchMode ? 'auto' : 'none'}
           style={[
             styles.createButton,
             isSearchMode ? styles.createButtonDisabled : {},
           ]}>
           <Text style={styles.createButtonText}>+</Text>
-        </TouchableOpacity>
+        </TouchableHighlight>
         {isSearchMode ? (
           <Text
-            style={styles.contentHeader}
+            style={[styles.contentHeader, styles.searchHeader]}
             numberOfLines={1}
             ellipsizeMode="tail">
             Results for "{searchQuery}"
@@ -295,60 +328,62 @@ const App: () => Node = () => {
                 </Text>
               </View>
             ) : null}
-            <SectionList
-              contentContainerStyle={{ flex: 1 }}
-              sections={remindersSections}
-              keyExtractor={(item) => item.key}
-              renderItem={({ item, index, section }) => (
-                <ReminderItem
-                  item={item}
-                  onEdit={(text) => {
-                    const dataKey = section.key || selectedKey;
-                    overwriteSingleListData(dataKey, (list) =>
-                      list.map((entry) =>
-                        entry.key === item.key
-                          ? Object.assign({}, entry, { text })
-                          : entry,
-                      ),
-                    );
-                  }}
-                  onEditEnd={(text) => {
-                    if (!text) {
-                      const dataKey = section.key || selectedKey;
-                      overwriteSingleListData(dataKey, (list) =>
-                        list.filter((entry) => entry.key !== item.key),
-                      );
-                    }
-                    writeDataToStorage(data);
-                  }}
-                  onStatusChange={() => {
-                    const dataKey = section.key || selectedKey;
-                    overwriteSingleListData(dataKey, (list) =>
-                      list.map((entry) =>
-                        entry.key === item.key
-                          ? Object.assign({}, entry, { done: !entry.done })
-                          : entry,
-                      ),
-                    );
-                    writeDataToStorage(data);
-                  }}
-                />
-              )}
-              renderSectionHeader={({ section: { title } }) =>
-                title ? (
-                  <Text style={[styles.contentHeader, styles.allListHeader]}>
-                    {title}
-                  </Text>
-                ) : null
-              }
-              ListEmptyComponent={
-                <View style={styles.noContentWrapper}>
-                  <Text style={styles.noContentText}>No Reminders</Text>
-                </View>
-              }
-            />
           </>
         )}
+        <SectionList
+          contentContainerStyle={{ flex: 1 }}
+          sections={remindersSections}
+          keyExtractor={(item) => item.key}
+          renderItem={({ item, section }) => (
+            <ReminderItem
+              item={item}
+              onEdit={(text) => {
+                const dataKey = section.key || selectedKey;
+                overwriteSingleListData(dataKey, (list) =>
+                  list.map((entry) =>
+                    entry.key === item.key
+                      ? Object.assign({}, entry, { text })
+                      : entry,
+                  ),
+                );
+              }}
+              onEditEnd={(text) => {
+                if (!text) {
+                  const dataKey = section.key || selectedKey;
+                  overwriteSingleListData(dataKey, (list) =>
+                    list.filter((entry) => entry.key !== item.key),
+                  );
+                }
+                writeDataToStorage(data);
+              }}
+              onStatusChange={() => {
+                const dataKey = section.key || selectedKey;
+                overwriteSingleListData(dataKey, (list) =>
+                  list.map((entry) =>
+                    entry.key === item.key
+                      ? Object.assign({}, entry, { done: !entry.done })
+                      : entry,
+                  ),
+                );
+                writeDataToStorage(data);
+              }}
+            />
+          )}
+          renderSectionHeader={({ section: { title } }) =>
+            title ? (
+              <Text style={[styles.contentHeader, styles.allListHeader]}>
+                {title}
+              </Text>
+            ) : null
+          }
+          ListEmptyComponent={
+            !isSearchMode ? (
+              <View style={styles.noContentWrapper}>
+                <Text style={styles.noContentText}>No Reminders</Text>
+              </View>
+            ) : null
+          }
+        />
       </View>
     </View>
   );
@@ -369,12 +404,29 @@ const styles = StyleSheet.create({
   searchInput: {
     height: 22,
     lineHeight: 18,
-    backgroundColor: { semantic: 'separatorColor' },
+    fontSize: 12,
+    backgroundColor: { semantic: 'disabledControlTextColor' },
     marginHorizontal: 16,
-    borderRadius: 2,
+    paddingHorizontal: 20,
+    borderRadius: 4,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#8c8c8c50',
-    color: { semantic: 'secondaryLabelColor' },
+    borderColor: '#8c8c8c80',
+    color: { semantic: 'labelColor' },
+  },
+  searchInputIcon: {
+    position: 'absolute',
+    fontSize: 14,
+    top: 3,
+    color: { semantic: 'labelColor' },
+  },
+  searchInputSearchIcon: {
+    left: 20,
+  },
+  searchInputClearIcon: {
+    right: 20,
+  },
+  searchInputClearIconText: {
+    color: { semantic: 'labelColor' },
   },
   listHeader: {
     fontSize: 11,
@@ -410,10 +462,16 @@ const styles = StyleSheet.create({
   listFooter: {
     paddingVertical: 12,
     paddingHorizontal: 16,
+    paddingTop: 8,
+    flexDirection: 'row',
   },
   listFooterText: {
     color: { semantic: 'systemGrayColor' },
     fontSize: 13,
+  },
+  listFooterTextIcon: {
+    fontSize: 16,
+    lineHeight: 17,
   },
   content: {
     backgroundColor: { semantic: 'controlBackgroundColor' },
@@ -463,9 +521,11 @@ const styles = StyleSheet.create({
     color: { semantic: 'secondaryLabelColor' },
   },
   createButton: {
-    backgroundColor: { semantic: 'tertiaryLabelColor' },
-    paddingHorizontal: 14,
-    height: 20,
+    backgroundColor: { semantic: 'controlColor' },
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#8c8c8c70',
+    paddingHorizontal: 12,
+    height: 18,
     borderRadius: 3,
     position: 'absolute',
     top: 8,
@@ -474,12 +534,11 @@ const styles = StyleSheet.create({
   createButtonText: {
     color: { semantic: 'labelColor' },
     fontWeight: '100',
-    fontSize: 24,
-    lineHeight: 22,
+    fontSize: 22,
+    lineHeight: 20,
   },
   createButtonDisabled: {
-    color: { semantic: 'tertiaryLabelColor' },
-    backgroundColor: { semantic: 'controlBackgroundColor' },
+    opacity: 0.5,
   },
   remindersHeader: {
     paddingVertical: 6,
@@ -492,6 +551,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 12,
     color: { semantic: 'systemBlueColor' },
+  },
+  searchHeader: {
+    marginBottom: 16,
   },
 });
 

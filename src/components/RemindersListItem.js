@@ -106,11 +106,8 @@ const styles = StyleSheet.create({
   listItemIcon: {
     width: 20,
     height: 20,
-    padding: 2,
+    paddingLeft: 1,
     marginRight: 8,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   listItemText: {
     fontSize: 13,
