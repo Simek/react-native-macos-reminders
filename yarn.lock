@@ -1166,6 +1166,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/eslint-plugin/-/eslint-plugin-1.1.0.tgz#e42b1bef12d2415411519fd528e64b593b1363dc"
   integrity sha512-W/J0fNYVO01tioHjvYWQ9m6RgndVtbElzYozBq1ZPrHO/iCzlqoySHl4gO/fpCl9QEFjvJfjPgtPMTMlsoq5DQ==
 
+"@rn-macos/popover@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@rn-macos/popover/-/popover-0.0.2.tgz#69f76c8aee515b6de75e371466c291d02213804d"
+  integrity sha512-VnVFbS+uojnPWTUnUKqmJMBhEPOm9mhWHrloZ/H2uwfpnHyPC6Vgh9iEq3wXPKipiGQe8RqT3x+8b5KxQNn4FA==
+
 "@types/babel__core@^7.1.0":
   version "7.1.7"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.7.tgz#1dacad8840364a57c98d0dd4855c6dd3752c6b89"
@@ -5395,10 +5400,10 @@ react-is@^16.12.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.9.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-native-macos@0.61.63:
-  version "0.61.63"
-  resolved "https://registry.yarnpkg.com/react-native-macos/-/react-native-macos-0.61.63.tgz#cb4493401412fe1249d9748a2d6390a095b0a79a"
-  integrity sha512-S+eDq15AAy/dQu/rFTbt8dINwmPBdIpg96u0PggdpV9ckY/0T5OmSAFBF9U03elhlkqTaRYZz+HIu4OPlunJxg==
+react-native-macos@0.61.65:
+  version "0.61.65"
+  resolved "https://registry.yarnpkg.com/react-native-macos/-/react-native-macos-0.61.65.tgz#99e285aa34d3b6456cf238106d2c4e95b2e4496d"
+  integrity sha512-EsxE4gDXjemEzU6fYMlm7EHmRBDty4ccrY+vfoxrVPdsXviag5I2P/q86QHQj9ki8JKJ0gpURcdAZsSXFgcfqA==
   dependencies:
     "@babel/runtime" "^7.0.0"
     "@react-native-community/cli" "^3.0.0"

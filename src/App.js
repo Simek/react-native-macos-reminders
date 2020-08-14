@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Popover } from '@rn-macos/popover';
 
 import CONSTANTS from './constants';
 import { getStoredData, storeData } from './Storage';
@@ -39,6 +40,7 @@ const App: () => Node = () => {
     all: [],
   });
   const [listData, setListData] = useState([]);
+  const [popoverData, setPopoverData] = useState(null);
 
   const readListDataFromStorage = async () => {
     const item = await getStoredData('remindersLists', []);
@@ -146,6 +148,7 @@ const App: () => Node = () => {
     <View style={styles.container}>
       <View style={styles.sourceList}>
         <View>
+          <Popover style={{ position: 'absolute' }}>{popoverData}</Popover>
           <TextInput
             onChangeText={setSearchQuery}
             value={searchQuery}
@@ -336,6 +339,7 @@ const App: () => Node = () => {
           keyExtractor={(item) => item.key}
           renderItem={({ item, section }) => (
             <ReminderItem
+              setPopoverData={setPopoverData}
               item={item}
               onEdit={(text) => {
                 const dataKey = section.key || selectedKey;
@@ -553,7 +557,7 @@ const styles = StyleSheet.create({
     color: { semantic: 'systemBlueColor' },
   },
   searchHeader: {
-    marginBottom: 16,
+    marginBottom: 19.5,
   },
 });
 

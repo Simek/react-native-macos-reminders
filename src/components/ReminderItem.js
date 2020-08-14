@@ -1,6 +1,14 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import type { Node } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { PopoverManager } from '@rn-macos/popover';
 
 const RemindersListItem: () => Node = ({
   item,
@@ -8,11 +16,22 @@ const RemindersListItem: () => Node = ({
   onEdit,
   onEditEnd,
   onStatusChange,
+  setPopoverData,
 }) => {
   const [text, setText] = useState(item.text);
+  const [layout, setLayout] = useState(null);
+  const rowRef = useRef(null);
+  const window = Dimensions.get('window');
 
   return (
-    <View style={styles.listItem}>
+    <View
+      ref={rowRef}
+      style={styles.listItem}
+      onLayout={() => {
+        rowRef.current.measure((x, y, width, height, pageX, pageY) => {
+          setLayout({ x, y, width, height, pageX, pageY });
+        });
+      }}>
       <TouchableOpacity
         style={[
           styles.listItemCheck,
@@ -41,6 +60,26 @@ const RemindersListItem: () => Node = ({
           }
         }}
       />
+      <TouchableOpacity
+        style={styles.popoverIconWrapper}
+        onPress={() => {
+          setPopoverData(
+            <View style={{ paddingHorizontal: 10, paddingVertical: 12 }}>
+              <Text style={styles.popoverTitle}>{item.text}</Text>
+              <Text style={styles.popoverSecondary}>Notes</Text>
+            </View>,
+          );
+          setTimeout(() => {
+            PopoverManager.show(
+              150,
+              62,
+              layout.pageX + layout.width - 6,
+              window.height - (layout.height / 2 - 4.5 + layout.pageY),
+            );
+          }, 100);
+        }}>
+        <Text style={styles.popoverIcon}>􀅴</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -88,6 +127,30 @@ const styles = StyleSheet.create({
   },
   listItemInputDone: {
     color: { semantic: 'secondaryLabelColor' },
+  },
+  popoverIconWrapper: {
+    position: 'absolute',
+    right: 4,
+  },
+  popoverIcon: {
+    color: {
+      semantic: 'systemBlueColor',
+    },
+    fontSize: 16,
+  },
+  popoverTitle: {
+    color: {
+      semantic: 'labelColor',
+    },
+    fontSize: 15,
+    lineHeight: 28,
+    fontWeight: '500',
+  },
+  popoverSecondary: {
+    color: {
+      semantic: 'secondaryLabelColor',
+    },
+    fontSize: 13,
   },
 });
 
