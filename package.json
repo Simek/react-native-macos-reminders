@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "1.11.0",
-    "@rn-macos/popover": "0.0.2",
+    "@rn-macos/popover": "0.0.4",
     "react": "16.9.0",
     "react-native": "0.61.5",
     "react-native-macos": "0.61.65"
