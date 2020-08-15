@@ -46,6 +46,7 @@ const App: () => Node = () => {
   });
   const [listData, setListData] = useState([]);
   const [popoverData, setPopoverData] = useState(null);
+  const [lastSelectedTarget, setLastSelectedTarget] = useState(null);
 
   const readListDataFromStorage = async () => {
     const item = await getStoredData('remindersLists', []);
@@ -161,12 +162,12 @@ const App: () => Node = () => {
               count={data && data[item.key] ? data[item.key].length : 0}
               onPress={() => {
                 if (selectedKey === item.key) {
-                  overwriteListData((listItem) => ({
+                  overwriteListData(setListData, (listItem) => ({
                     editMode: listItem.key === item.key,
                   }));
                 } else {
                   setSelectedKey(item.key);
-                  overwriteListData((listItem) => ({
+                  overwriteListData(setListData, (listItem) => ({
                     selected: listItem.key === item.key,
                     editMode: false,
                   }));
@@ -185,12 +186,12 @@ const App: () => Node = () => {
                 });
               }}
               onEdit={(title) => {
-                overwriteListData((listItem) =>
+                overwriteListData(setListData, (listItem) =>
                   listItem.key === item.key ? { title } : {},
                 );
               }}
               onRename={() => {
-                overwriteListData((listItem) =>
+                overwriteListData(setListData, (listItem) =>
                   listItem.key === item.key
                     ? { editMode: true, selected: true }
                     : {},
@@ -303,13 +304,15 @@ const App: () => Node = () => {
           renderItem={({ item, section }) => (
             <ReminderItem
               setPopoverData={setPopoverData}
+              lastSelectedTarget={lastSelectedTarget}
+              setLastSelectedTarget={setLastSelectedTarget}
               item={item}
-              onEdit={(text) => {
+              onEdit={(text, fieldName = 'text') => {
                 const dataKey = section.key || selectedKey;
                 overwriteSelectedListData(setData, dataKey, (list) =>
                   list.map((entry) =>
                     entry.key === item.key
-                      ? Object.assign({}, entry, { text })
+                      ? Object.assign({}, entry, { [fieldName]: text })
                       : entry,
                   ),
                 );
