@@ -2,6 +2,6 @@
 <h2 align="center">react-native-macos-reminders</h2>
 <p align="center">
 A macOS "Reminders" app clone written using <a href="https://github.com/microsoft/react-native-macos"><code>react-native-macos</code></a>.
-<img width="891" src="https://user-images.githubusercontent.com/719641/89351747-eef86380-d6b2-11ea-8e1d-e51598839f1a.png">
-<img width="891" src="https://user-images.githubusercontent.com/719641/89351753-f28bea80-d6b2-11ea-9557-66a01760de45.png">
+<img width="1074" src="https://user-images.githubusercontent.com/719641/90318125-920c7100-df2e-11ea-852e-74c39ff22e0f.png">
+<img width="1074" src="https://user-images.githubusercontent.com/719641/90318123-8e78ea00-df2e-11ea-93da-c8063f29d9a9.png">
 </p>
