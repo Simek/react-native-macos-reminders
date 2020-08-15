@@ -98,7 +98,6 @@ const RemindersListItem: () => Node = ({
               setId(e.target);
               setLastSelectedTarget(e.target);
             }}
-            onSubmitEditing={(e) => onEditEnd(e.nativeEvent.text)}
             onChangeText={(newValue) => {
               setTextNote(newValue);
               if (onEdit && typeof onEdit === 'function') {
@@ -111,7 +110,7 @@ const RemindersListItem: () => Node = ({
       {id && id === lastSelectedTarget ? (
         <TouchableOpacity
           style={styles.popoverIconWrapper}
-          onPress={(e) => {
+          onPress={() => {
             setPopoverData(
               <View style={{ paddingHorizontal: 10, paddingVertical: 12 }}>
                 <Text style={styles.popoverTitle}>{item.text}</Text>
@@ -122,7 +121,7 @@ const RemindersListItem: () => Node = ({
             );
             setTimeout(() => {
               PopoverManager.show(
-                150,
+                180,
                 62,
                 layout.pageX + layout.width - 6,
                 window.height - (layout.pageY + 8),
