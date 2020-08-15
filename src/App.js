@@ -4,19 +4,24 @@ import {
   SectionList,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableHighlight,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { Popover } from '@rn-macos/popover';
 
 import CONSTANTS from './constants';
-import { getStoredData, storeData } from './Storage';
+import {
+  getStoredData,
+  storeData,
+  overwriteListData,
+  overwriteSelectedListData,
+} from './Storage';
 
 import ReminderItem from './components/ReminderItem';
 import RemindersListItem from './components/RemindersListItem';
 import Tags from './components/Tags';
+import Button from './components/Button';
+import SearchInput from './components/SearchInput';
 
 const getHeaderStyle = (key, customStyles = undefined) => {
   return [
@@ -65,14 +70,6 @@ const App: () => Node = () => {
     await storeData('remindersData', value);
   };
 
-  const overwriteListItemsData = (overwriteFunc) => {
-    setListData((prevState) => [
-      ...(prevState || []).map((listItem) =>
-        Object.assign({}, listItem, overwriteFunc(listItem)),
-      ),
-    ]);
-  };
-
   const overwriteListItemsDataAndStore = (overwriteFunc) => {
     setListData((prevState) => {
       const finalData = overwriteFunc(prevState);
@@ -81,18 +78,10 @@ const App: () => Node = () => {
     });
   };
 
-  const overwriteSingleListData = (listKey, overwriteFunc) => {
-    setData((prevData) =>
-      Object.assign({}, prevData, {
-        [listKey]: overwriteFunc(prevData[listKey]),
-      }),
-    );
-  };
-
   const clearListTempData = (
     content = { selected: false, editMode: false },
   ) => {
-    overwriteListItemsData(() => content);
+    overwriteListData(setListData, () => content);
   };
 
   const getTitle = (key) => listData.find((item) => item.key === key)?.title;
@@ -147,28 +136,11 @@ const App: () => Node = () => {
   return (
     <View style={styles.container}>
       <View style={styles.sourceList}>
-        <View>
-          <Popover style={{ position: 'absolute' }}>{popoverData}</Popover>
-          <TextInput
-            onChangeText={setSearchQuery}
-            value={searchQuery}
-            style={styles.searchInput}
-            placeholder="Search"
-            placeholderTextColor={{ semantic: 'secondaryLabelColor' }}
-            clearButtonMode="while-editing"
-            blurOnSubmit={true}
-          />
-          <Text style={[styles.searchInputIcon, styles.searchInputSearchIcon]}>
-            􀊫
-          </Text>
-          {searchQuery !== '' ? (
-            <TouchableOpacity
-              onPress={() => setSearchQuery('')}
-              style={[styles.searchInputIcon, styles.searchInputClearIcon]}>
-              <Text style={styles.searchInputClearIconText}>􀁑</Text>
-            </TouchableOpacity>
-          ) : null}
-        </View>
+        <Popover style={{ position: 'absolute' }}>{popoverData}</Popover>
+        <SearchInput
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
         <Tags
           selectedKey={selectedKey}
           setSelectedKey={setSelectedKey}
@@ -189,12 +161,12 @@ const App: () => Node = () => {
               count={data && data[item.key] ? data[item.key].length : 0}
               onPress={() => {
                 if (selectedKey === item.key) {
-                  overwriteListItemsData((listItem) => ({
+                  overwriteListData((listItem) => ({
                     editMode: listItem.key === item.key,
                   }));
                 } else {
                   setSelectedKey(item.key);
-                  overwriteListItemsData((listItem) => ({
+                  overwriteListData((listItem) => ({
                     selected: listItem.key === item.key,
                     editMode: false,
                   }));
@@ -213,12 +185,12 @@ const App: () => Node = () => {
                 });
               }}
               onEdit={(title) => {
-                overwriteListItemsData((listItem) =>
+                overwriteListData((listItem) =>
                   listItem.key === item.key ? { title } : {},
                 );
               }}
               onRename={() => {
-                overwriteListItemsData((listItem) =>
+                overwriteListData((listItem) =>
                   listItem.key === item.key
                     ? { editMode: true, selected: true }
                     : {},
@@ -265,12 +237,9 @@ const App: () => Node = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <TouchableHighlight
-          underlayColor={
-            isSearchMode
-              ? { semantic: 'controlColor' }
-              : { semantic: 'selectedContentBackgroundColor' }
-          }
+        <Button
+          text="+"
+          disabled={isSearchMode}
           onPress={() => {
             const ts = Date.now();
             setData((prevData) =>
@@ -282,13 +251,7 @@ const App: () => Node = () => {
               }),
             );
           }}
-          pointerEvents={isSearchMode ? 'auto' : 'none'}
-          style={[
-            styles.createButton,
-            isSearchMode ? styles.createButtonDisabled : {},
-          ]}>
-          <Text style={styles.createButtonText}>+</Text>
-        </TouchableHighlight>
+        />
         {isSearchMode ? (
           <Text
             style={[styles.contentHeader, styles.searchHeader]}
@@ -343,7 +306,7 @@ const App: () => Node = () => {
               item={item}
               onEdit={(text) => {
                 const dataKey = section.key || selectedKey;
-                overwriteSingleListData(dataKey, (list) =>
+                overwriteSelectedListData(setData, dataKey, (list) =>
                   list.map((entry) =>
                     entry.key === item.key
                       ? Object.assign({}, entry, { text })
@@ -354,7 +317,7 @@ const App: () => Node = () => {
               onEditEnd={(text) => {
                 if (!text) {
                   const dataKey = section.key || selectedKey;
-                  overwriteSingleListData(dataKey, (list) =>
+                  overwriteSelectedListData(setData, dataKey, (list) =>
                     list.filter((entry) => entry.key !== item.key),
                   );
                 }
@@ -362,7 +325,7 @@ const App: () => Node = () => {
               }}
               onStatusChange={() => {
                 const dataKey = section.key || selectedKey;
-                overwriteSingleListData(dataKey, (list) =>
+                overwriteSelectedListData(setData, dataKey, (list) =>
                   list.map((entry) =>
                     entry.key === item.key
                       ? Object.assign({}, entry, { done: !entry.done })
@@ -404,33 +367,6 @@ const styles = StyleSheet.create({
     maxWidth: 280,
     flexGrow: 1,
     paddingTop: 52,
-  },
-  searchInput: {
-    height: 22,
-    lineHeight: 18,
-    fontSize: 12,
-    backgroundColor: { semantic: 'disabledControlTextColor' },
-    marginHorizontal: 16,
-    paddingHorizontal: 20,
-    borderRadius: 4,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#8c8c8c80',
-    color: { semantic: 'labelColor' },
-  },
-  searchInputIcon: {
-    position: 'absolute',
-    fontSize: 14,
-    top: 3,
-    color: { semantic: 'labelColor' },
-  },
-  searchInputSearchIcon: {
-    left: 20,
-  },
-  searchInputClearIcon: {
-    right: 20,
-  },
-  searchInputClearIconText: {
-    color: { semantic: 'labelColor' },
   },
   listHeader: {
     fontSize: 11,
@@ -523,26 +459,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'SF Pro Rounded',
     color: { semantic: 'secondaryLabelColor' },
-  },
-  createButton: {
-    backgroundColor: { semantic: 'controlColor' },
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#8c8c8c70',
-    paddingHorizontal: 12,
-    height: 18,
-    borderRadius: 3,
-    position: 'absolute',
-    top: 8,
-    right: 12,
-  },
-  createButtonText: {
-    color: { semantic: 'labelColor' },
-    fontWeight: '100',
-    fontSize: 22,
-    lineHeight: 20,
-  },
-  createButtonDisabled: {
-    opacity: 0.5,
   },
   remindersHeader: {
     paddingVertical: 6,

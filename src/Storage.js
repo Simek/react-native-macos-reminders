@@ -37,3 +37,19 @@ export const removeEntry = async (key) => {
     console.log(e);
   }
 };
+
+export const overwriteListData = (setter, overwriteFunc) => {
+  setter((prevState) => [
+    ...(prevState || []).map((listItem) =>
+      Object.assign({}, listItem, overwriteFunc(listItem)),
+    ),
+  ]);
+};
+
+export const overwriteSelectedListData = (setter, listKey, overwriteFunc) => {
+  setter((prevData) =>
+    Object.assign({}, prevData, {
+      [listKey]: overwriteFunc(prevData[listKey]),
+    }),
+  );
+};
