@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import { Popover } from '@rn-macos/popover';
@@ -94,6 +95,18 @@ const App: () => Node = () => {
       .reduce((acc, value) => acc + value, 0);
 
   const basicSort = (a, b) => a.done - b.done || a.createdAt > b.createdAt;
+
+  const addNewReminder = () => {
+    const ts = Date.now();
+    setData((prevData) =>
+      Object.assign({}, prevData, {
+        [selectedKey]: [
+          ...prevData[selectedKey],
+          { text: '', key: `entry-${ts}`, createdAt: ts, done: false },
+        ],
+      }),
+    );
+  };
 
   useEffect(() => {
     readListDataFromStorage();
@@ -238,21 +251,7 @@ const App: () => Node = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <Button
-          text="+"
-          disabled={isSearchMode}
-          onPress={() => {
-            const ts = Date.now();
-            setData((prevData) =>
-              Object.assign({}, prevData, {
-                [selectedKey]: [
-                  ...prevData[selectedKey],
-                  { text: '', key: `entry-${ts}`, createdAt: ts, done: false },
-                ],
-              }),
-            );
-          }}
-        />
+        <Button text="+" disabled={isSearchMode} onPress={addNewReminder} />
         {isSearchMode ? (
           <Text
             style={[styles.contentHeader, styles.searchHeader]}
@@ -298,7 +297,9 @@ const App: () => Node = () => {
           </>
         )}
         <SectionList
-          contentContainerStyle={{ flex: 1 }}
+          contentContainerStyle={
+            remindersSections.length === 0 ? { flex: 1 } : null
+          }
           sections={remindersSections}
           keyExtractor={(item) => item.key}
           renderItem={({ item, section }) => (
@@ -317,8 +318,8 @@ const App: () => Node = () => {
                   ),
                 );
               }}
-              onEditEnd={(text) => {
-                if (!text) {
+              onEditEnd={(e) => {
+                if (!e.nativeEvent.text) {
                   const dataKey = section.key || selectedKey;
                   overwriteSelectedListData(setData, dataKey, (list) =>
                     list.filter((entry) => entry.key !== item.key),
@@ -344,6 +345,13 @@ const App: () => Node = () => {
               <Text style={[styles.contentHeader, styles.allListHeader]}>
                 {title}
               </Text>
+            ) : null
+          }
+          ListFooterComponent={
+            !isSearchMode && !CONSTANTS.KEYS.includes(selectedKey) ? (
+              <TouchableWithoutFeedback onPress={addNewReminder}>
+                <View style={styles.addReminderRow} />
+              </TouchableWithoutFeedback>
             ) : null
           }
           ListEmptyComponent={
@@ -420,9 +428,7 @@ const styles = StyleSheet.create({
     backgroundColor: { semantic: 'controlBackgroundColor' },
     flex: 1,
     flexGrow: 2,
-    padding: 24,
     paddingLeft: 20,
-    paddingRight: 16,
     paddingTop: 42,
   },
   contentHeaderWrapper: {
@@ -440,6 +446,7 @@ const styles = StyleSheet.create({
   },
   contentHeaderCounter: {
     marginLeft: 36,
+    marginRight: 16,
     fontWeight: '400',
   },
   completedHeader: {
@@ -477,6 +484,10 @@ const styles = StyleSheet.create({
   },
   searchHeader: {
     marginBottom: 19.5,
+  },
+  addReminderRow: {
+    width: '100%',
+    height: 48,
   },
 });
 

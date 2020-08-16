@@ -75,7 +75,7 @@ const RemindersListItem: () => Node = ({
             setId(e.target);
             setLastSelectedTarget(e.target);
           }}
-          onSubmitEditing={(e) => onEditEnd(e.nativeEvent.text)}
+          onBlur={onEditEnd}
           onChangeText={(newValue) => {
             setText(newValue);
             if (onEdit && typeof onEdit === 'function') {
@@ -123,8 +123,8 @@ const RemindersListItem: () => Node = ({
               PopoverManager.show(
                 180,
                 62,
-                layout.pageX + layout.width - 6,
-                window.height - (layout.pageY + 8),
+                layout.pageX + layout.width - 18,
+                window.height - (layout.pageY + 9),
               );
             }, 100);
           }}>
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   listItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingRight: 32,
+    paddingRight: 42,
     paddingVertical: 8,
     marginLeft: 32,
     marginBottom: 8,
@@ -197,13 +197,13 @@ const styles = StyleSheet.create({
   },
   popoverIconWrapper: {
     position: 'absolute',
-    right: 4,
+    right: 16,
   },
   popoverIcon: {
     color: {
       semantic: 'systemBlueColor',
     },
-    fontSize: 16,
+    fontSize: 17,
   },
   popoverTitle: {
     color: {
