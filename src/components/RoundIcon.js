@@ -11,12 +11,7 @@ const RoundIcon: () => Node = ({
   style = undefined,
   iconStyle = undefined,
 }) => (
-  <View
-    style={[
-      styles.icon,
-      style,
-      { backgroundColor: isActive ? '#fff' : color },
-    ]}>
+  <View style={[styles.icon, style, { backgroundColor: isActive ? '#fff' : color }]}>
     <Text
       style={[
         {

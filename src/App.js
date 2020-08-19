@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import type { Node } from 'react';
-import {
-  SectionList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { SectionList, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { Popover } from '@rn-macos/popover';
 
 import CONSTANTS from './constants';
-import {
-  getStoredData,
-  storeData,
-  overwriteListData,
-  overwriteSelectedListData,
-} from './Storage';
+import styles from './styles';
+import { getStoredData, storeData, overwriteListData, overwriteSelectedListData } from './Storage';
 
 import ReminderItem from './components/ReminderItem';
 import RemindersListItem from './components/RemindersListItem';
@@ -57,9 +46,7 @@ const App: () => Node = () => {
   const writeListDataToStorage = async (value) => {
     await storeData(
       'remindersLists',
-      value.map((item) =>
-        Object.assign({}, item, { selected: false, editMode: false }),
-      ),
+      value.map((item) => Object.assign({}, item, { selected: false, editMode: false })),
     );
   };
 
@@ -80,9 +67,7 @@ const App: () => Node = () => {
     });
   };
 
-  const clearListTempData = (
-    content = { selected: false, editMode: false },
-  ) => {
+  const clearListTempData = (content = { selected: false, editMode: false }) => {
     overwriteListData(setListData, () => content);
   };
 
@@ -108,6 +93,19 @@ const App: () => Node = () => {
     );
   };
 
+  const multiListMapper = (key) =>
+    getTitle(key)
+      ? {
+          key,
+          title: getTitle(key),
+          data: isSearchMode
+            ? data[key]
+                .filter((entry) => searchMatch(entry.text) || searchMatch(entry.textNote))
+                .sort(basicSort)
+            : data[key].sort(basicSort),
+        }
+      : null;
+
   useEffect(() => {
     readListDataFromStorage();
     readDataFromStorage();
@@ -118,43 +116,24 @@ const App: () => Node = () => {
   const allCompletedCount = totalCount - allCount;
 
   const isSearchMode = searchQuery && searchQuery.length > 0;
+  const searchMatch = (text) => text && text.toLowerCase().includes(searchQuery.toLowerCase());
+
   const remindersSections =
     selectedKey === 'all' || isSearchMode
       ? Object.keys(data)
           .filter((key) => key.startsWith('list-'))
-          .map((key) =>
-            getTitle(key)
-              ? {
-                  key,
-                  title: getTitle(key),
-                  data: isSearchMode
-                    ? data[key]
-                        .filter((entry) =>
-                          entry.text
-                            .toLowerCase()
-                            .includes(searchQuery.toLowerCase()),
-                        )
-                        .sort(basicSort)
-                    : data[key].sort(basicSort),
-                }
-              : null,
-          )
+          .map(multiListMapper)
           .filter((section) => (isSearchMode ? section.data.length > 0 : true))
           .filter(Boolean)
       : [
-          (data[selectedKey] || []).length > 0
-            ? { data: data[selectedKey].sort(basicSort) }
-            : null,
+          (data[selectedKey] || []).length > 0 ? { data: data[selectedKey].sort(basicSort) } : null,
         ].filter(Boolean);
 
   return (
     <View style={styles.container}>
       <View style={styles.sourceList}>
         <Popover style={{ position: 'absolute' }}>{popoverData}</Popover>
-        <SearchInput
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
+        <SearchInput searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         <Tags
           selectedKey={selectedKey}
           setSelectedKey={setSelectedKey}
@@ -205,16 +184,12 @@ const App: () => Node = () => {
               }}
               onRename={() => {
                 overwriteListData(setListData, (listItem) =>
-                  listItem.key === item.key
-                    ? { editMode: true, selected: true }
-                    : {},
+                  listItem.key === item.key ? { editMode: true, selected: true } : {},
                 );
               }}
               onEditEnd={() => {
                 overwriteListItemsDataAndStore((list) =>
-                  list.map((listItem) =>
-                    Object.assign({}, listItem, { editMode: false }),
-                  ),
+                  list.map((listItem) => Object.assign({}, listItem, { editMode: false })),
                 );
               }}
             />
@@ -228,9 +203,7 @@ const App: () => Node = () => {
           onPress={() => {
             const key = `list-${Date.now()}`;
             overwriteListItemsDataAndStore((list) => [
-              ...list.map((listItem) =>
-                Object.assign({}, listItem, { selected: false }),
-              ),
+              ...list.map((listItem) => Object.assign({}, listItem, { selected: false })),
               {
                 title: 'New list',
                 key,
@@ -274,11 +247,7 @@ const App: () => Node = () => {
                   : selectedKey}
               </Text>
               {!CONSTANTS.KEYS.includes(selectedKey) ? (
-                <Text
-                  style={getHeaderStyle(
-                    selectedKey,
-                    styles.contentHeaderCounter,
-                  )}>
+                <Text style={getHeaderStyle(selectedKey, styles.contentHeaderCounter)}>
                   {data[selectedKey].length}
                 </Text>
               ) : null}
@@ -288,8 +257,7 @@ const App: () => Node = () => {
                 <Text style={styles.completedText}>
                   {selectedKey === 'all'
                     ? allCompletedCount
-                    : data[selectedKey].filter((entry) => entry.done)
-                        .length}{' '}
+                    : data[selectedKey].filter((entry) => entry.done).length}{' '}
                   Completed
                 </Text>
               </View>
@@ -297,9 +265,7 @@ const App: () => Node = () => {
           </>
         )}
         <SectionList
-          contentContainerStyle={
-            remindersSections.length === 0 ? { flex: 1 } : null
-          }
+          contentContainerStyle={remindersSections.length === 0 ? { flex: 1 } : null}
           sections={remindersSections}
           keyExtractor={(item) => item.key}
           renderItem={({ item, section }) => (
@@ -341,11 +307,7 @@ const App: () => Node = () => {
             />
           )}
           renderSectionHeader={({ section: { title } }) =>
-            title ? (
-              <Text style={[styles.contentHeader, styles.allListHeader]}>
-                {title}
-              </Text>
-            ) : null
+            title ? <Text style={[styles.contentHeader, styles.allListHeader]}>{title}</Text> : null
           }
           ListFooterComponent={
             !isSearchMode && !CONSTANTS.KEYS.includes(selectedKey) ? (
@@ -366,129 +328,5 @@ const App: () => Node = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  sourceList: {
-    borderRightWidth: StyleSheet.hairlineWidth,
-    borderRightColor: '#8c8c8c33',
-    maxWidth: 280,
-    flexGrow: 1,
-    paddingTop: 52,
-  },
-  listHeader: {
-    fontSize: 11,
-    marginBottom: 4,
-    paddingHorizontal: 16,
-    color: { semantic: 'systemGrayColor' },
-  },
-  listItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  listItemSelected: {
-    backgroundColor: {
-      semantic: 'selectedContentBackgroundColor',
-    },
-  },
-  listItemIcon: {
-    width: 20,
-    height: 20,
-    padding: 2,
-    marginRight: 8,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  listItemText: {
-    fontSize: 13,
-    lineHeight: 20,
-    flexGrow: 99,
-  },
-  listFooter: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    flexDirection: 'row',
-  },
-  listFooterText: {
-    color: { semantic: 'systemGrayColor' },
-    fontSize: 13,
-  },
-  listFooterTextIcon: {
-    fontSize: 16,
-    lineHeight: 17,
-  },
-  content: {
-    backgroundColor: { semantic: 'controlBackgroundColor' },
-    flex: 1,
-    flexGrow: 2,
-    paddingLeft: 20,
-    paddingTop: 42,
-  },
-  contentHeaderWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  contentHeader: {
-    fontSize: 32,
-    fontWeight: '700',
-    fontFamily: 'SF Pro Rounded',
-    color: { semantic: 'secondaryLabelColor' },
-  },
-  contentHeaderCustom: {
-    textTransform: 'capitalize',
-  },
-  contentHeaderCounter: {
-    marginLeft: 36,
-    marginRight: 16,
-    fontWeight: '400',
-  },
-  completedHeader: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#8c8c8c50',
-    paddingVertical: 8,
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  completedText: {
-    color: { semantic: 'labelColor' },
-    fontSize: 13,
-  },
-  noContentWrapper: {
-    justifyContent: 'center',
-    flex: 1,
-  },
-  noContentText: {
-    fontSize: 32,
-    textAlign: 'center',
-    fontFamily: 'SF Pro Rounded',
-    color: { semantic: 'secondaryLabelColor' },
-  },
-  remindersHeader: {
-    paddingVertical: 6,
-    fontSize: 20,
-    fontFamily: 'SF Pro Rounded',
-    color: { semantic: 'systemBlueColor' },
-  },
-  allListHeader: {
-    fontSize: 18,
-    marginTop: 4,
-    marginBottom: 12,
-    color: { semantic: 'systemBlueColor' },
-  },
-  searchHeader: {
-    marginBottom: 19.5,
-  },
-  addReminderRow: {
-    width: '100%',
-    height: 48,
-  },
-});
 
 export default App;

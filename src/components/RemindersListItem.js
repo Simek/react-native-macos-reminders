@@ -1,13 +1,6 @@
 import React from 'react';
 import type { Node } from 'react';
-import {
-  ActionSheetIOS,
-  Alert,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import { ActionSheetIOS, Alert, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 
 import RoundIcon from './RoundIcon';
 

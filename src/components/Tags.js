@@ -4,12 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import Tag from './Tag';
 
-const Tags: () => Node = ({
-  selectedKey,
-  setSelectedKey,
-  onPress,
-  allCount,
-}) => (
+const Tags: () => Node = ({ selectedKey, setSelectedKey, onPress, allCount }) => (
   <View style={styles.tags}>
     <Tag
       title="Today"

@@ -2,17 +2,21 @@ import React from 'react';
 import type { Node } from 'react';
 import { StyleSheet, Text, TouchableHighlight } from 'react-native';
 
-const Button: () => Node = ({ onPress, text = '', disabled = false }) => (
+const Button: () => Node = ({
+  onPress,
+  text = '',
+  disabled = false,
+  style = null,
+  textStyle = null,
+}) => (
   <TouchableHighlight
     underlayColor={
-      disabled
-        ? { semantic: 'controlColor' }
-        : { semantic: 'selectedContentBackgroundColor' }
+      disabled ? { semantic: 'controlColor' } : { semantic: 'selectedContentBackgroundColor' }
     }
     onPress={onPress}
     pointerEvents={disabled ? 'none' : 'auto'}
-    style={[styles.button, disabled ? styles.buttonDisabled : {}]}>
-    <Text style={styles.buttonText}>{text}</Text>
+    style={[styles.button, style, disabled ? styles.buttonDisabled : {}]}>
+    <Text style={[styles.buttonText, textStyle]}>{text}</Text>
   </TouchableHighlight>
 );
 

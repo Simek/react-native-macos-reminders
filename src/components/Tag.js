@@ -5,20 +5,12 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import CONSTANTS from '../constants';
 import RoundIcon from './RoundIcon';
 
-const Tag: () => Node = ({
-  title,
-  icon,
-  onPress,
-  count = 0,
-  isActive = false,
-}) => (
+const Tag: () => Node = ({ title, icon, onPress, count = 0, isActive = false }) => (
   <TouchableOpacity
     onPress={onPress}
     style={[
       styles.tag,
-      isActive
-        ? { backgroundColor: CONSTANTS.COLORS[title.toLowerCase()] }
-        : {},
+      isActive ? { backgroundColor: CONSTANTS.COLORS[title.toLowerCase()] } : {},
     ]}>
     <RoundIcon
       icon={icon}
@@ -28,12 +20,8 @@ const Tag: () => Node = ({
       iconSize={14}
       style={styles.tagIcon}
     />
-    <Text style={[styles.tagCount, isActive ? { color: '#fff' } : {}]}>
-      {count}
-    </Text>
-    <Text style={[styles.tagText, isActive ? { color: '#fff' } : {}]}>
-      {title}
-    </Text>
+    <Text style={[styles.tagCount, isActive ? { color: '#fff' } : {}]}>{count}</Text>
+    <Text style={[styles.tagText, isActive ? { color: '#fff' } : {}]}>{title}</Text>
   </TouchableOpacity>
 );
 

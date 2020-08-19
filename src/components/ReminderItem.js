@@ -1,14 +1,8 @@
 import React, { useRef, useState } from 'react';
 import type { Node } from 'react';
-import {
-  Dimensions,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { PopoverManager } from '@rn-macos/popover';
+import Button from './Button';
 
 const RemindersListItem: () => Node = ({
   item,
@@ -53,9 +47,7 @@ const RemindersListItem: () => Node = ({
         style={[
           styles.listItemCheck,
           {
-            borderColor: item.done
-              ? { semantic: color }
-              : { semantic: 'systemGrayColor' },
+            borderColor: item.done ? { semantic: color } : { semantic: 'systemGrayColor' },
           },
         ]}
         onPress={onStatusChange}>
@@ -112,17 +104,28 @@ const RemindersListItem: () => Node = ({
           style={styles.popoverIconWrapper}
           onPress={() => {
             setPopoverData(
-              <View style={{ paddingHorizontal: 10, paddingVertical: 12 }}>
-                <Text style={styles.popoverTitle}>{item.text}</Text>
-                <Text style={styles.popoverSecondary}>
-                  {item.textNote || 'Notes'}
-                </Text>
+              <View style={styles.popoverWrapper}>
+                <View>
+                  <Text style={styles.popoverTitle}>{item.text}</Text>
+                  <Button
+                    onPress={() => undefined}
+                    text="􀋊"
+                    textStyle={{ fontSize: 13 }}
+                    style={styles.popoverFlagButton}
+                  />
+                </View>
+                <Text style={styles.popoverSecondary}>{item.textNote || 'Notes'}</Text>
+                <View style={styles.popoverSeparator} />
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={[styles.popoverSecondary, styles.popoverLabel]}>priority</Text>
+                  <Text style={{ color: { semantic: 'labelColor' } }}>None</Text>
+                </View>
               </View>,
             );
             setTimeout(() => {
               PopoverManager.show(
-                180,
-                62,
+                280,
+                102,
                 layout.pageX + layout.width - 18,
                 window.height - (layout.pageY + 9),
               );
@@ -205,19 +208,48 @@ const styles = StyleSheet.create({
     },
     fontSize: 17,
   },
+  popoverWrapper: {
+    width: 280,
+    height: 102,
+    paddingHorizontal: 12,
+    paddingTop: 10,
+    paddingBottom: 8,
+  },
   popoverTitle: {
     color: {
       semantic: 'labelColor',
     },
-    fontSize: 15,
+    fontSize: 16,
     lineHeight: 28,
     fontWeight: '500',
+    marginBottom: 4,
   },
   popoverSecondary: {
     color: {
-      semantic: 'secondaryLabelColor',
+      semantic: 'systemGrayColor',
     },
     fontSize: 13,
+  },
+  popoverSeparator: {
+    height: 1,
+    width: '100%',
+    backgroundColor: {
+      semantic: 'tertiaryLabelColor',
+    },
+    marginVertical: 8,
+  },
+  popoverFlagButton: {
+    height: 21,
+    paddingHorizontal: 8,
+    right: 0,
+    top: 4,
+  },
+  popoverLabel: {
+    fontSize: 12,
+    minWidth: 64,
+    textAlign: 'right',
+    paddingRight: 8,
+    lineHeight: 18,
   },
 });
 

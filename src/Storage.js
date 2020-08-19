@@ -40,9 +40,7 @@ export const removeEntry = async (key) => {
 
 export const overwriteListData = (setter, overwriteFunc) => {
   setter((prevState) => [
-    ...(prevState || []).map((listItem) =>
-      Object.assign({}, listItem, overwriteFunc(listItem)),
-    ),
+    ...(prevState || []).map((listItem) => Object.assign({}, listItem, overwriteFunc(listItem))),
   ]);
 };
 

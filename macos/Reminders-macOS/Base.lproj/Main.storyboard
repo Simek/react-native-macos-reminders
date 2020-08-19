@@ -451,14 +451,14 @@
         <!--Popover View Controller-->
         <scene sceneID="b77-Od-EnW">
             <objects>
-                <viewController storyboardIdentifier="popoverViewController" id="Yg5-fW-f32" customClass="PopoverViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="popoverViewController" id="Yg5-fW-f32" sceneMemberID="viewController">
                     <view key="view" identifier="popover" id="Ooy-Mp-5Da">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     </view>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="669" y="392"/>
+            <point key="canvasLocation" x="620" y="399"/>
         </scene>
     </scenes>
 </document>
