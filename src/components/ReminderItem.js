@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
     minHeight: 16,
     maxHeight: 16,
     marginTop: -3,
+    zIndex: 10,
   },
   listItemNoteInput: {
     fontSize: 12,
@@ -201,6 +202,7 @@ const styles = StyleSheet.create({
     backgroundColor: {
       semantic: 'controlBackgroundColor',
     },
+    zIndex: 9,
   },
   listItemInputDone: {
     color: { semantic: 'secondaryLabelColor' },
