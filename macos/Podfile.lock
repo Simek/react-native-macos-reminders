@@ -217,7 +217,7 @@ PODS:
     - React-cxxreact (= 0.61.65)
     - React-jsi (= 0.61.65)
     - ReactCommon/jscallinvoker (= 0.61.65)
-  - rn-macos-popover (0.0.2):
+  - rn-macos-popover (0.0.5):
     - React
   - RNCAsyncStorage (1.11.0):
     - React
@@ -340,7 +340,7 @@ SPEC CHECKSUMS:
   React-RCTText: c12ee32bf86f44a6c312a2bcb46a268fc3a24cf1
   React-RCTVibration: 5b931df94c5f63ec91f75044aed93c8e8fdb581b
   ReactCommon: e76c2639c36d4e4acd507041eddc580a90bc06c8
-  rn-macos-popover: 4b42984457c4d777f819cd0ec6c13c406b316e5d
+  rn-macos-popover: 461df83eb61640cc32e58067b7796be4058816b9
   RNCAsyncStorage: d059c3ee71738c39834a627476322a5a8cd5bf36
   Yoga: 7d784f976888661a2cea9333ab06125b1133e435
 
