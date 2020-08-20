@@ -4,6 +4,9 @@ import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 
 import { PopoverManager } from '@rn-macos/popover';
 import Button from './Button';
 
+const calcPopoverHeight = (item) =>
+  item.textNote ? 102 + parseInt(item.textNote.length / 24 - 1, 10) * 16 : 102;
+
 const RemindersListItem: () => Node = ({
   item,
   color = 'systemBlueColor',
@@ -55,6 +58,9 @@ const RemindersListItem: () => Node = ({
       </TouchableOpacity>
       <View style={styles.listItemContent}>
         <TextInput
+          multiline={true}
+          numberOfLines={1}
+          scrollEnabled={false}
           autoFocus={item.text === ''}
           value={text}
           style={[
@@ -77,6 +83,7 @@ const RemindersListItem: () => Node = ({
         />
         {isExpanded ? (
           <TextInput
+            multiline={true}
             ref={noteInputRef}
             placeholder="Notes"
             value={textNote}
@@ -85,6 +92,7 @@ const RemindersListItem: () => Node = ({
               styles.listItemNoteInput,
               item.done ? styles.listItemInputDone : {},
             ]}
+            placeholderTextColor={{ semantic: 'placeholderTextColor' }}
             blurOnSubmit={true}
             onFocus={(e) => {
               setId(e.target);
@@ -125,7 +133,7 @@ const RemindersListItem: () => Node = ({
             setTimeout(() => {
               PopoverManager.show(
                 280,
-                102,
+                calcPopoverHeight(item),
                 layout.pageX + layout.width - 18,
                 window.height - (layout.pageY + 9),
               );
@@ -144,7 +152,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingRight: 42,
     paddingVertical: 8,
-    marginLeft: 32,
+    marginLeft: 34,
     marginBottom: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#8c8c8c50',
@@ -183,14 +191,13 @@ const styles = StyleSheet.create({
     fontSize: 13,
     minHeight: 16,
     maxHeight: 16,
-    marginTop: -6,
+    marginTop: -3,
   },
   listItemNoteInput: {
     fontSize: 12,
-    minHeight: 15,
-    maxHeight: 15,
-    marginTop: 4,
-    color: { semantic: 'secondaryLabelColor' },
+    marginTop: -6,
+    marginBottom: 4,
+    color: { semantic: 'systemGrayColor' },
     backgroundColor: {
       semantic: 'controlBackgroundColor',
     },
