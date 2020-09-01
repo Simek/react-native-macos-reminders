@@ -13,7 +13,7 @@
     "@rn-macos/popover": "0.0.6",
     "react": "16.11.0",
     "react-native": "0.62.2",
-    "react-native-macos": "0.62.0-prerelease.8"
+    "react-native-macos": "0.62.1"
   },
   "devDependencies": {
     "@babel/core": "7.10.5",

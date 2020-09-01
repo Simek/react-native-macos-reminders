@@ -3,16 +3,20 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 
-@interface AppDelegate () <RCTBridgeDelegate>
-
-@end
+#if DEBUG
+#import <React/RCTDevLoadingView.h>
+#endif
 
 @implementation AppDelegate
 
 - (void)awakeFromNib {
   [super awakeFromNib];
 
-  _bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:nil];
+  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:nil];
+  #if DEBUG
+    [bridge moduleForClass:[RCTDevLoadingView class]];
+  #endif
+  _bridge = bridge;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -26,7 +30,11 @@
 #pragma mark - RCTBridgeDelegate Methods
 
 - (NSURL *)sourceURLForBridge:(__unused RCTBridge *)bridge {
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:@"main"]; // .jsbundle;
+  #if DEBUG
+    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:@"main"];
+  #else
+    return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  #endif
 }
 
 @end
