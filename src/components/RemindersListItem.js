@@ -59,7 +59,9 @@ const RemindersListItem: () => Node = ({
         value={item.title}
         style={styles.listItemInput}
         blurOnSubmit={true}
-        onBlur={(e) => onEditEnd(e.nativeEvent.text)}
+        onSubmitEditing={(e) => {
+          onEditEnd(e.nativeEvent.text);
+        }}
         onChangeText={onEdit}
       />
     ) : (
