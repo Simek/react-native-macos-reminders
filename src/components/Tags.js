@@ -8,7 +8,7 @@ const Tags: () => Node = ({ selectedKey, setSelectedKey, onPress, allCount }) =>
   <View style={styles.tags}>
     <Tag
       title="Today"
-      icon="􀉉"
+      icon="􀧵"
       isActive={selectedKey === 'today'}
       onPress={() => {
         onPress();
@@ -17,7 +17,7 @@ const Tags: () => Node = ({ selectedKey, setSelectedKey, onPress, allCount }) =>
     />
     <Tag
       title="Scheduled"
-      icon="􀐬"
+      icon="􀉉"
       isActive={selectedKey === 'scheduled'}
       onPress={() => {
         onPress();
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 8,
     marginTop: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
   },
 });
 

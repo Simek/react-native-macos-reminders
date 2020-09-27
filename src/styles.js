@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   listHeader: {
     fontSize: 11,
     marginBottom: 4,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     color: { semantic: 'systemGrayColor' },
   },
   listItem: {
@@ -54,15 +54,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   listFooterTextIcon: {
-    fontSize: 16,
-    lineHeight: 17,
+    color: { semantic: 'systemGrayColor' },
+    fontSize: 14,
+    lineHeight: 14,
   },
   content: {
     backgroundColor: { semantic: 'controlBackgroundColor' },
     flex: 1,
     flexGrow: 2,
     paddingLeft: 20,
-    paddingTop: 42,
+    paddingTop: 52,
   },
   contentHeaderWrapper: {
     flexDirection: 'row',

@@ -52,7 +52,7 @@ const RemindersListItem: () => Node = ({
     onLongPress={onLongPress}
     style={[styles.listItem, item.selected ? styles.listItemSelected : {}]}
     activeOpacity={0.66}>
-    <RoundIcon icon="􀋲" color={item.color} style={styles.listItemIcon} />
+    <RoundIcon icon="􀋲" iconSize={13} color={item.color} style={styles.listItemIcon} />
     {item.editMode ? (
       <TextInput
         autoFocus={true}
@@ -78,9 +78,12 @@ const RemindersListItem: () => Node = ({
       </Text>
     )}
     <Text
-      style={{
-        color: item.selected ? '#fff' : { semantic: 'secondaryLabelColor' },
-      }}>
+      style={[
+        styles.listItemCounter,
+        {
+          color: item.selected ? '#fff' : { semantic: 'secondaryLabelColor' },
+        },
+      ]}>
       {count || 0}
     </Text>
   </TouchableOpacity>
@@ -90,8 +93,10 @@ const styles = StyleSheet.create({
   listItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 6,
+    marginHorizontal: 10,
   },
   listItemSelected: {
     backgroundColor: {
@@ -99,14 +104,14 @@ const styles = StyleSheet.create({
     },
   },
   listItemIcon: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
     paddingLeft: 1,
     marginRight: 8,
   },
   listItemText: {
     fontSize: 13,
-    lineHeight: 20,
+    lineHeight: 24,
     flexGrow: 99,
   },
   listItemInput: {
@@ -119,6 +124,11 @@ const styles = StyleSheet.create({
     backgroundColor: {
       semantic: 'controlBackgroundColor',
     },
+  },
+  listItemCounter: {
+    fontSize: 13,
+    lineHeight: 23,
+    fontWeight: '300',
   },
 });
 

@@ -219,12 +219,14 @@ const App: () => Node = () => {
             });
           }}>
           <Text style={styles.listFooterText}>
-            <Text style={styles.listFooterTextIcon}>􀁍 </Text> Add List
+            <Text style={styles.listFooterTextIcon}>􀁌 </Text> Add List
           </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <Button text="+" disabled={isSearchMode} onPress={addNewReminder} />
+        {!isSearchMode ? (
+          <Button text="􀅼" disabled={isSearchMode} onPress={addNewReminder} />
+        ) : null}
         {isSearchMode ? (
           <Text
             style={[styles.contentHeader, styles.searchHeader]}

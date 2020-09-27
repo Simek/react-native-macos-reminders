@@ -28,10 +28,10 @@ const Tag: () => Node = ({ title, icon, onPress, count = 0, isActive = false }) 
 const styles = StyleSheet.create({
   tag: {
     backgroundColor: 'rgba(140,140,140,.2)',
-    width: '48.25%',
+    width: '48.5%',
     paddingHorizontal: 10,
     padding: 8,
-    marginBottom: 8,
+    marginBottom: 7,
     borderRadius: 10,
   },
   tagText: {

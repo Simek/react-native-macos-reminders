@@ -26,13 +26,13 @@ const SearchInput: () => Node = ({ searchQuery, setSearchQuery }) => (
 
 const styles = StyleSheet.create({
   searchInput: {
-    height: 22,
-    lineHeight: 18,
-    fontSize: 12,
+    height: 28,
+    lineHeight: 21,
+    fontSize: 13,
     backgroundColor: { semantic: 'disabledControlTextColor' },
-    marginHorizontal: 16,
-    paddingHorizontal: 20,
-    borderRadius: 4,
+    marginHorizontal: 12,
+    paddingLeft: 24,
+    borderRadius: 6,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#8c8c8c80',
     color: { semantic: 'labelColor' },
@@ -40,11 +40,11 @@ const styles = StyleSheet.create({
   searchInputIcon: {
     position: 'absolute',
     fontSize: 14,
-    top: 3,
+    top: 6,
     color: { semantic: 'labelColor' },
   },
   searchInputSearchIcon: {
-    left: 20,
+    left: 18,
   },
   searchInputClearIcon: {
     right: 20,

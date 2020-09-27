@@ -10,9 +10,8 @@ const Button: () => Node = ({
   textStyle = null,
 }) => (
   <TouchableHighlight
-    underlayColor={
-      disabled ? { semantic: 'controlColor' } : { semantic: 'selectedContentBackgroundColor' }
-    }
+    activeOpacity={1}
+    underlayColor={disabled ? { semantic: 'controlColor' } : 'rgba(140,140,140,.1)'}
     onPress={onPress}
     pointerEvents={disabled ? 'none' : 'auto'}
     style={[styles.button, style, disabled ? styles.buttonDisabled : {}]}>
@@ -22,21 +21,17 @@ const Button: () => Node = ({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: { semantic: 'controlColor' },
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#8c8c8c70',
-    paddingHorizontal: 12,
-    height: 18,
-    borderRadius: 3,
+    paddingHorizontal: 7,
+    paddingVertical: 5,
+    borderRadius: 6,
     position: 'absolute',
-    top: 8,
+    top: 12,
     right: 12,
+    zIndex: 9999,
   },
   buttonText: {
-    color: { semantic: 'labelColor' },
-    fontWeight: '100',
-    fontSize: 22,
-    lineHeight: 20,
+    color: { semantic: 'secondaryLabelColor' },
+    fontSize: 17,
   },
   buttonDisabled: {
     opacity: 0.4,

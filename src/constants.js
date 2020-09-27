@@ -2,8 +2,8 @@ export default {
   KEYS: ['all', 'scheduled', 'today', 'flagged'],
   COLORS: {
     all: { semantic: 'secondaryLabelColor' },
-    scheduled: { semantic: 'systemOrangeColor' },
+    scheduled: { semantic: 'systemRedColor' },
     today: { semantic: 'systemBlueColor' },
-    flagged: { semantic: 'systemRedColor' },
+    flagged: { semantic: 'systemOrangeColor' },
   },
 };
