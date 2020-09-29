@@ -9,7 +9,7 @@ const calcPopoverHeight = (item) =>
 
 const RemindersListItem: () => Node = ({
   item,
-  color = 'systemBlueColor',
+  color = { semantic: 'systemBlueColor' },
   onEdit,
   onEditEnd,
   onStatusChange,
@@ -50,7 +50,7 @@ const RemindersListItem: () => Node = ({
         style={[
           styles.listItemCheck,
           {
-            borderColor: item.done ? { semantic: color } : { semantic: 'systemGrayColor' },
+            borderColor: item.done ? color : '#8c8c8c70',
           },
         ]}
         onPress={onStatusChange}>
@@ -92,7 +92,6 @@ const RemindersListItem: () => Node = ({
               styles.listItemNoteInput,
               item.done ? styles.listItemInputDone : {},
             ]}
-            placeholderTextColor={{ semantic: 'placeholderTextColor' }}
             blurOnSubmit={true}
             onFocus={(e) => {
               setId(e.target);
@@ -117,8 +116,8 @@ const RemindersListItem: () => Node = ({
                   <Text style={styles.popoverTitle}>{item.text}</Text>
                   <Button
                     onPress={() => undefined}
-                    text="􀋊"
-                    textStyle={{ fontSize: 13 }}
+                    text="􀋉"
+                    textStyle={{ fontSize: 12 }}
                     style={styles.popoverFlagButton}
                   />
                 </View>
@@ -137,9 +136,9 @@ const RemindersListItem: () => Node = ({
                 layout.pageX + layout.width - 18,
                 window.height - (layout.pageY + 9),
               );
-            }, 100);
+            }, 50);
           }}>
-          <Text style={styles.popoverIcon}>􀅴</Text>
+          <Text style={[styles.popoverIcon, { color: color }]}>􀅴</Text>
         </TouchableOpacity>
       ) : null}
     </View>
@@ -212,9 +211,6 @@ const styles = StyleSheet.create({
     right: 16,
   },
   popoverIcon: {
-    color: {
-      semantic: 'systemBlueColor',
-    },
     fontSize: 17,
   },
   popoverWrapper: {

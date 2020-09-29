@@ -13,15 +13,14 @@ import Tags from './components/Tags';
 import Button from './components/Button';
 import SearchInput from './components/SearchInput';
 
+const getListColor = (key) =>
+  !CONSTANTS.KEYS.includes(key) ? { semantic: 'systemBlueColor' } : CONSTANTS.COLORS[key];
+
 const getHeaderStyle = (key, customStyles = undefined) => {
   return [
     styles.contentHeader,
     customStyles ? customStyles : styles.contentHeaderCustom,
-    {
-      color: !CONSTANTS.KEYS.includes(key)
-        ? { semantic: 'systemBlueColor' }
-        : CONSTANTS.COLORS[key],
-    },
+    { color: getListColor(key) },
   ];
 };
 
@@ -276,6 +275,7 @@ const App: () => Node = () => {
               lastSelectedTarget={lastSelectedTarget}
               setLastSelectedTarget={setLastSelectedTarget}
               item={item}
+              color={getListColor(selectedKey === 'all' ? null : selectedKey)}
               onEdit={(text, fieldName = 'text') => {
                 const dataKey = section.key || selectedKey;
                 overwriteSelectedListData(setData, dataKey, (list) =>

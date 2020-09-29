@@ -44,9 +44,7 @@ const styles = StyleSheet.create({
     flexGrow: 99,
   },
   listFooter: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    paddingTop: 8,
+    padding: 8,
     flexDirection: 'row',
   },
   listFooterText: {

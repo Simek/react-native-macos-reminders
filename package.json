@@ -7,24 +7,25 @@
     "test": "jest",
     "lint": "eslint .",
     "pods": "npx pod-install",
-    "update-lock": "npx yarn-deduplicate"
+    "update-lock": "npx yarn-deduplicate",
+    "postinstall": "yarn update-lock"
   },
   "dependencies": {
     "@react-native-community/async-storage": "1.12.0",
     "@rn-macos/popover": "0.0.6",
     "react": "16.11.0",
     "react-native": "0.62.2",
-    "react-native-macos": "0.62.14"
+    "react-native-macos": "0.62.15"
   },
   "devDependencies": {
     "@babel/core": "7.10.5",
     "@babel/runtime": "7.10.5",
     "@react-native-community/eslint-config": "2.0.0",
     "babel-jest": "24.9.0",
-    "eslint": "7.8.1",
+    "eslint": "7.10.0",
     "jest": "24.9.0",
-    "metro-react-native-babel-preset": "0.59.0",
-    "react-test-renderer": "16.9.0"
+    "metro-react-native-babel-preset": "0.62.0",
+    "react-test-renderer": "16.11.0"
   },
   "jest": {
     "preset": "react-native"

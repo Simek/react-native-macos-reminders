@@ -117,9 +117,10 @@ const styles = StyleSheet.create({
   listItemInput: {
     flex: 1,
     marginRight: 12,
+    marginLeft: -2,
+    marginTop: 4,
     fontSize: 13,
     height: 16,
-    marginTop: 2,
     color: { semantic: 'labelColor' },
     backgroundColor: {
       semantic: 'controlBackgroundColor',
