@@ -253,21 +253,13 @@ const App: () => Node = () => {
                 </Text>
               ) : null}
             </View>
-            {selectedKey !== 'today' ? (
-              <View style={styles.completedHeader}>
-                <Text style={styles.completedText}>
-                  {selectedKey === 'all'
-                    ? allCompletedCount
-                    : data[selectedKey].filter((entry) => entry.done).length}{' '}
-                  Completed
-                </Text>
-              </View>
-            ) : null}
           </>
         )}
         <SectionList
           contentContainerStyle={remindersSections.length === 0 ? { flex: 1 } : null}
           sections={remindersSections}
+          stickySectionHeadersEnabled={true}
+          contentOffset={{ y: 52 }}
           keyExtractor={(item) => item.key}
           renderItem={({ item, section }) => (
             <ReminderItem
@@ -309,7 +301,23 @@ const App: () => Node = () => {
             />
           )}
           renderSectionHeader={({ section: { title } }) =>
-            title ? <Text style={[styles.contentHeader, styles.allListHeader]}>{title}</Text> : null
+            title ? (
+              <View style={styles.contentStickyHeaderWrapper}>
+                <Text style={[styles.contentHeader, styles.allListHeader]}>{title}</Text>
+              </View>
+            ) : null
+          }
+          ListHeaderComponent={
+            selectedKey !== 'today' ? (
+              <View style={styles.completedHeader}>
+                <Text style={styles.completedText}>
+                  {selectedKey === 'all'
+                    ? allCompletedCount
+                    : data[selectedKey].filter((entry) => entry.done).length}{' '}
+                  Completed
+                </Text>
+              </View>
+            ) : null
           }
           ListFooterComponent={
             !isSearchMode && !CONSTANTS.KEYS.includes(selectedKey) ? (

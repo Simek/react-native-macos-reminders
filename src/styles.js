@@ -67,6 +67,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  contentStickyHeaderWrapper: {
+    backgroundColor: { semantic: 'controlBackgroundColor' },
+  },
   contentHeader: {
     fontSize: 32,
     fontWeight: '700',
@@ -97,7 +100,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   noContentText: {
-    fontSize: 32,
+    fontSize: 24,
     textAlign: 'center',
     fontFamily: 'SF Pro Rounded',
     color: { semantic: 'secondaryLabelColor' },

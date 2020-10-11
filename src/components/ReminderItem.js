@@ -54,7 +54,16 @@ const RemindersListItem: () => Node = ({
           },
         ]}
         onPress={onStatusChange}>
-        {item.done ? <View style={styles.listItemCheckInner} /> : null}
+        {item.done ? (
+          <View
+            style={[
+              styles.listItemCheckInner,
+              {
+                backgroundColor: color,
+              },
+            ]}
+          />
+        ) : null}
       </TouchableOpacity>
       <View style={styles.listItemContent}>
         <TextInput
@@ -138,7 +147,7 @@ const RemindersListItem: () => Node = ({
               );
             }, 50);
           }}>
-          <Text style={[styles.popoverIcon, { color: color }]}>􀅴</Text>
+          <Text style={[styles.popoverIcon, { color }]}>􀅴</Text>
         </TouchableOpacity>
       ) : null}
     </View>
@@ -171,9 +180,6 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: {
-      semantic: 'systemBlueColor',
-    },
   },
   listItemContent: {
     flex: 1,
