@@ -223,9 +223,6 @@ const App: () => Node = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        {!isSearchMode ? (
-          <Button text="􀅼" disabled={isSearchMode} onPress={addNewReminder} />
-        ) : null}
         {isSearchMode ? (
           <Text
             style={[styles.contentHeader, styles.searchHeader]}
@@ -235,6 +232,12 @@ const App: () => Node = () => {
           </Text>
         ) : (
           <>
+            <Button
+              icon="􀅼"
+              disabled={isSearchMode}
+              onPress={addNewReminder}
+              style={styles.addItemButton}
+            />
             <View style={styles.contentHeaderWrapper}>
               <Text
                 style={getHeaderStyle(

@@ -1,21 +1,30 @@
 import React from 'react';
 import type { Node } from 'react';
-import { StyleSheet, Text, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 
 const Button: () => Node = ({
   onPress,
   text = '',
+  icon = '',
   disabled = false,
   style = null,
   textStyle = null,
+  iconStyle = null,
 }) => (
   <TouchableHighlight
     activeOpacity={1}
-    underlayColor={disabled ? { semantic: 'controlColor' } : 'rgba(140,140,140,.1)'}
+    underlayColor={disabled ? 'transparent' : 'rgba(140,140,140,.1)'}
     onPress={onPress}
     pointerEvents={disabled ? 'none' : 'auto'}
     style={[styles.button, style, disabled ? styles.buttonDisabled : {}]}>
-    <Text style={[styles.buttonText, textStyle]}>{text}</Text>
+    <View style={styles.buttonContent}>
+      {icon ? <Text style={[styles.buttonIcon, iconStyle]}>{icon}</Text> : null}
+      {text ? (
+        <Text style={[styles.buttonText, icon ? styles.buttonTextWithIcon : {}, textStyle]}>
+          {text}
+        </Text>
+      ) : null}
+    </View>
   </TouchableHighlight>
 );
 
@@ -24,17 +33,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     paddingVertical: 5,
     borderRadius: 6,
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    zIndex: 9999,
   },
-  buttonText: {
+  buttonContent: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  buttonIcon: {
     color: { semantic: 'secondaryLabelColor' },
     fontSize: 17,
+    padding: 2,
+  },
+  buttonText: {
+    color: { semantic: 'systemGrayColor' },
+    fontSize: 13,
   },
   buttonDisabled: {
-    opacity: 0.4,
+    opacity: 0.5,
+  },
+  buttonTextWithIcon: {
+    paddingLeft: 4,
   },
 });
 

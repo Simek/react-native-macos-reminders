@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import type { Node } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { PopoverManager } from '@rn-macos/popover';
+
 import Button from './Button';
 
 const calcPopoverHeight = (item) =>
@@ -114,6 +115,32 @@ const RemindersListItem: () => Node = ({
             }}
           />
         ) : null}
+        {isExpanded && id && id === lastSelectedTarget ? (
+          <View style={styles.listItemButtonsWrapper}>
+            <Button
+              disabled={true}
+              onPress={() => null}
+              icon="􀉉"
+              text="Add Date"
+              style={styles.listItemButton}
+              iconStyle={styles.listItemButtonIcon}
+            />
+            <Button
+              disabled={true}
+              onPress={() => null}
+              icon="􀋒"
+              text="Add Location"
+              style={styles.listItemButton}
+              iconStyle={styles.listItemButtonIcon}
+            />
+            <Button
+              onPress={() => null}
+              icon="􀋉"
+              style={styles.listItemButton}
+              iconStyle={styles.listItemButtonIcon}
+            />
+          </View>
+        ) : null}
       </View>
       {id && id === lastSelectedTarget ? (
         <TouchableOpacity
@@ -168,8 +195,8 @@ const styles = StyleSheet.create({
   listItemCheck: {
     width: 18,
     height: 18,
-    left: -30,
-    top: 1,
+    left: -32,
+    top: 2,
     position: 'absolute',
     borderRadius: 9,
     borderWidth: 1,
@@ -212,6 +239,23 @@ const styles = StyleSheet.create({
   listItemInputDone: {
     color: { semantic: 'secondaryLabelColor' },
   },
+  listItemButtonsWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    marginTop: 4,
+  },
+  listItemButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    borderRadius: 4,
+    backgroundColor: {
+      semantic: 'gridColor',
+    },
+    marginRight: 6,
+  },
+  listItemButtonIcon: {
+    fontSize: 10,
+  },
   popoverIconWrapper: {
     position: 'absolute',
     right: 16,
@@ -250,6 +294,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   popoverFlagButton: {
+    position: 'absolute',
     height: 21,
     paddingHorizontal: 8,
     right: 0,

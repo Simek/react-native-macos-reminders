@@ -124,6 +124,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 48,
   },
+  addItemButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    zIndex: 9999,
+  },
 });
 
 export default styles;
