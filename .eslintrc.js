@@ -1,6 +1,7 @@
 module.exports = {
   root: true,
-  extends: '@react-native-community',
+  plugins: ['prettier'],
+  extends: ['plugin:prettier/recommended', '@react-native-community'],
   rules: {
     'react-native/no-inline-styles': 'off',
   },

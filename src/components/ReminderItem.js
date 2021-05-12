@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import type { Node } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { PopoverManager } from '@rn-macos/popover';
 
@@ -8,7 +7,7 @@ import Button from './Button';
 const calcPopoverHeight = (item) =>
   item.textNote ? 102 + parseInt(item.textNote.length / 24 - 1, 10) * 16 : 102;
 
-const RemindersListItem: () => Node = ({
+const RemindersListItem = ({
   item,
   color = { semantic: 'systemBlueColor' },
   onEdit,
@@ -97,6 +96,7 @@ const RemindersListItem: () => Node = ({
             ref={noteInputRef}
             placeholder="Notes"
             value={textNote}
+            scrollEnabled={false}
             style={[
               styles.listInput,
               styles.listItemNoteInput,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingRight: 42,
-    paddingVertical: 8,
+    paddingVertical: 6,
     marginLeft: 34,
     marginBottom: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -223,13 +223,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     minHeight: 16,
     maxHeight: 16,
-    marginTop: -3,
+    marginTop: -4,
     zIndex: 10,
   },
   listItemNoteInput: {
     fontSize: 12,
-    marginTop: -6,
-    marginBottom: 4,
+    marginTop: 2,
     color: { semantic: 'systemGrayColor' },
     backgroundColor: {
       semantic: 'controlBackgroundColor',
@@ -242,7 +241,7 @@ const styles = StyleSheet.create({
   listItemButtonsWrapper: {
     flex: 1,
     flexDirection: 'row',
-    marginTop: 4,
+    marginVertical: 2,
   },
   listItemButton: {
     paddingVertical: 4,
