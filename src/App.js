@@ -240,10 +240,7 @@ const App: () => Node = () => {
             />
             <View style={styles.contentHeaderWrapper}>
               <Text
-                style={getHeaderStyle(
-                  selectedKey,
-                  selectedKey.startsWith('list-') ? {} : undefined,
-                )}
+                style={getHeaderStyle(selectedKey, selectedKey.startsWith('list-'))}
                 numberOfLines={1}
                 ellipsizeMode="tail">
                 {selectedKey.startsWith('list-')

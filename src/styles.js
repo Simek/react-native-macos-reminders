@@ -14,9 +14,11 @@ const styles = StyleSheet.create({
   },
   listHeader: {
     fontSize: 11,
+    fontWeight: '600',
     marginBottom: 4,
     paddingHorizontal: 20,
-    color: { semantic: 'systemGrayColor' },
+    color: { semantic: 'secondaryLabelColor' },
+    opacity: 0.65,
   },
   listItem: {
     flexDirection: 'row',

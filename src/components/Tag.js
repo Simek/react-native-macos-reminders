@@ -8,20 +8,22 @@ import RoundIcon from './RoundIcon';
 const Tag: () => Node = ({ title, icon, onPress, count = 0, isActive = false }) => (
   <TouchableOpacity
     onPress={onPress}
-    style={[
-      styles.tag,
-      isActive ? { backgroundColor: CONSTANTS.COLORS[title.toLowerCase()] } : {},
-    ]}>
+    style={[styles.tag, isActive ? { backgroundColor: CONSTANTS.COLORS[title] } : {}]}>
     <RoundIcon
       icon={icon}
       isActive={isActive}
-      color={CONSTANTS.COLORS[title.toLowerCase()]}
-      iconColor={isActive ? CONSTANTS.COLORS[title.toLowerCase()] : '#fff'}
+      color={CONSTANTS.COLORS[title]}
+      iconColor={isActive ? CONSTANTS.COLORS[title] : '#fff'}
       iconSize={14}
       style={styles.tagIcon}
     />
-    <Text style={[styles.tagCount, isActive ? { color: '#fff' } : {}]}>{count}</Text>
-    <Text style={[styles.tagText, isActive ? { color: '#fff' } : {}]}>{title}</Text>
+    <Text style={[styles.tagCount, isActive && { color: '#fff' }]}>{count}</Text>
+    <Text style={[styles.tagText, isActive && { color: '#fff' }]}>{title}</Text>
+    {title === 'today' && (
+      <Text style={[styles.tagTodayDay, isActive && { color: CONSTANTS.COLORS[title] }]}>
+        {new Date().getDate()}
+      </Text>
+    )}
   </TouchableOpacity>
 );
 
@@ -39,6 +41,7 @@ const styles = StyleSheet.create({
     fontSize: 13.5,
     fontFamily: 'SF Pro Rounded',
     color: { semantic: 'systemGrayColor' },
+    textTransform: 'capitalize',
   },
   tagIcon: {
     width: 24,
@@ -54,6 +57,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'SF Pro Rounded',
     color: { semantic: 'systemGrayColor' },
+  },
+  tagTodayDay: {
+    position: 'absolute',
+    width: 9,
+    top: 17.5,
+    left: 17.5,
+    fontSize: 6.5,
+    color: '#fff',
+    textAlign: 'center',
   },
 });
 

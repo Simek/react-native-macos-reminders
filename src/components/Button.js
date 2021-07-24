@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Node } from 'react';
 import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 
@@ -10,23 +10,44 @@ const Button: () => Node = ({
   style = null,
   textStyle = null,
   iconStyle = null,
-}) => (
-  <TouchableHighlight
-    activeOpacity={1}
-    underlayColor={disabled ? 'transparent' : 'rgba(140,140,140,.1)'}
-    onPress={onPress}
-    pointerEvents={disabled ? 'none' : 'auto'}
-    style={[styles.button, style, disabled ? styles.buttonDisabled : {}]}>
-    <View style={styles.buttonContent}>
-      {icon ? <Text style={[styles.buttonIcon, iconStyle]}>{icon}</Text> : null}
-      {text ? (
-        <Text style={[styles.buttonText, icon ? styles.buttonTextWithIcon : {}, textStyle]}>
-          {text}
-        </Text>
-      ) : null}
-    </View>
-  </TouchableHighlight>
-);
+}) => {
+  const [focused, setFocused] = useState(false);
+  return (
+    <TouchableHighlight
+      activeOpacity={1}
+      underlayColor={disabled ? 'transparent' : 'rgba(140,140,140,.1)'}
+      onPressIn={(e) => {
+        setFocused(true);
+        onPress(e);
+      }}
+      onPressOut={() => setFocused(false)}
+      pointerEvents={disabled ? 'none' : 'auto'}
+      style={[
+        styles.button,
+        style,
+        disabled && styles.buttonDisabled,
+        icon && !text && styles.buttonIconOnly,
+      ]}>
+      <View style={styles.buttonContent}>
+        {icon ? (
+          <Text
+            style={[
+              styles.buttonIcon,
+              iconStyle,
+              focused && { color: { semantic: 'labelColor' } },
+            ]}>
+            {icon}
+          </Text>
+        ) : null}
+        {text ? (
+          <Text style={[styles.buttonText, icon && styles.buttonTextWithIcon, textStyle]}>
+            {text}
+          </Text>
+        ) : null}
+      </View>
+    </TouchableHighlight>
+  );
+};
 
 const styles = StyleSheet.create({
   button: {
@@ -46,6 +67,10 @@ const styles = StyleSheet.create({
   buttonText: {
     color: { semantic: 'systemGrayColor' },
     fontSize: 13,
+  },
+  buttonIconOnly: {
+    paddingHorizontal: 5,
+    paddingVertical: 3,
   },
   buttonDisabled: {
     opacity: 0.5,

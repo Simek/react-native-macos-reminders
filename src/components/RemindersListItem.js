@@ -81,6 +81,7 @@ const RemindersListItem: () => Node = ({
             onEditEnd(e.nativeEvent.text);
           }}
           onChangeText={onEdit}
+          numberOfLines={1}
         />
       ) : (
         <Text
@@ -124,9 +125,6 @@ const styles = StyleSheet.create({
     backgroundColor: {
       semantic: 'selectedContentBackgroundColor',
     },
-    borderColor: {
-      semantic: 'selectedContentBackgroundColor',
-    },
   },
   listItemIcon: {
     width: 24,
@@ -135,9 +133,11 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   listItemText: {
+    flex: 1,
+    flexGrow: 1,
     fontSize: 13,
     lineHeight: 24,
-    flexGrow: 99,
+    marginRight: 12,
   },
   listItemInput: {
     flex: 1,
@@ -152,9 +152,10 @@ const styles = StyleSheet.create({
     },
   },
   listItemCounter: {
+    fontFamily: 'SF Pro Rounded',
     fontSize: 13,
     lineHeight: 23,
-    fontWeight: '300',
+    opacity: 0.65,
   },
 });
 

@@ -247,7 +247,7 @@ PODS:
     - React-jsi (= 0.63.37)
   - rn-macos-popover (0.0.6):
     - React
-  - RNCAsyncStorage (1.15.4):
+  - RNCAsyncStorage (1.15.5):
     - React-Core
   - Yoga (1.14.0)
 
@@ -372,7 +372,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: db89493e2520ad419eeb59e40059e246d9e71607
   ReactCommon: 014dd1ff02eab367fa6676b7b408d1a08893a98d
   rn-macos-popover: 7bfb5570a7c1cc30ed73958e9041828254d54db2
-  RNCAsyncStorage: f47a7e8f927f7c9da947491fc55752eb9ce17f2d
+  RNCAsyncStorage: 56a3355a10b5d660c48c6e37325ac85ebfd09885
   Yoga: 77d9987384e26b4aaf3e7a01808838cc2d4304f2
 
 PODFILE CHECKSUM: d788d05d84ec76f91dc1716444393488d58634bf

@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "pods": "npx pod-install",
     "update-lock": "npx yarn-deduplicate",
-    "postinstall": "yarn update-lock"
+    "postinstall": "yarn update-lock && yarn pods"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.15.5",
@@ -18,14 +18,14 @@
     "react-native-macos": "0.63.37"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.6",
-    "@babel/runtime": "^7.14.6",
+    "@babel/core": "^7.14.8",
+    "@babel/runtime": "^7.14.8",
     "@react-native-community/eslint-config": "^3.0.0",
     "babel-jest": "^26.6.3",
-    "eslint": "^7.30.0",
+    "eslint": "^7.31.0",
     "eslint-plugin-prettier": "^3.4.0",
     "jest": "^26.6.3",
-    "metro-react-native-babel-preset": "^0.66.0",
+    "metro-react-native-babel-preset": "^0.66.2",
     "prettier": "^2.3.2",
     "react-test-renderer": "16.13.1"
   },

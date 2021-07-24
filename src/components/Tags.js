@@ -7,7 +7,7 @@ import Tag from './Tag';
 const Tags: () => Node = ({ selectedKey, setSelectedKey, onPress, allCount }) => (
   <View style={styles.tags}>
     <Tag
-      title="Today"
+      title="today"
       icon="􀧵"
       isActive={selectedKey === 'today'}
       onPress={() => {
@@ -16,7 +16,7 @@ const Tags: () => Node = ({ selectedKey, setSelectedKey, onPress, allCount }) =>
       }}
     />
     <Tag
-      title="Scheduled"
+      title="scheduled"
       icon="􀉉"
       isActive={selectedKey === 'scheduled'}
       onPress={() => {
@@ -25,7 +25,7 @@ const Tags: () => Node = ({ selectedKey, setSelectedKey, onPress, allCount }) =>
       }}
     />
     <Tag
-      title="All"
+      title="all"
       icon="􀈤"
       isActive={selectedKey === 'all'}
       onPress={() => {
@@ -35,7 +35,7 @@ const Tags: () => Node = ({ selectedKey, setSelectedKey, onPress, allCount }) =>
       count={allCount}
     />
     <Tag
-      title="Flagged"
+      title="flagged"
       icon="􀋊"
       isActive={selectedKey === 'flagged'}
       onPress={() => {
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginBottom: 12,
     marginTop: 16,
     paddingHorizontal: 12,
   },
