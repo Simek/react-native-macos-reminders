@@ -11,23 +11,23 @@
     "postinstall": "yarn update-lock && yarn pods"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.15.5",
+    "@react-native-async-storage/async-storage": "^1.15.11",
     "@rn-macos/popover": "^0.0.6",
-    "react": "16.13.1",
-    "react-native": "0.63.4",
-    "react-native-macos": "0.63.37"
+    "react": "17.0.1",
+    "react-native": "0.64.3",
+    "react-native-macos": "0.64.12"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.8",
-    "@babel/runtime": "^7.14.8",
-    "@react-native-community/eslint-config": "^3.0.0",
+    "@babel/core": "^7.16.0",
+    "@babel/runtime": "^7.16.3",
+    "@react-native-community/eslint-config": "^3.0.1",
     "babel-jest": "^26.6.3",
-    "eslint": "^7.31.0",
-    "eslint-plugin-prettier": "^3.4.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.66.2",
-    "prettier": "^2.3.2",
-    "react-test-renderer": "16.13.1"
+    "prettier": "^2.4.1",
+    "react-test-renderer": "17.0.1"
   },
   "jest": {
     "preset": "react-native"
