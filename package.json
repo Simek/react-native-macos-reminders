@@ -11,11 +11,11 @@
     "postinstall": "yarn update-lock && yarn pods"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.15.11",
-    "@rn-macos/popover": "^0.0.6",
+    "@react-native-async-storage/async-storage": "^1.15.14",
+    "@rn-macos/popover": "^0.0.7",
     "react": "17.0.1",
     "react-native": "0.64.3",
-    "react-native-macos": "0.64.12"
+    "react-native-macos": "0.64.17"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

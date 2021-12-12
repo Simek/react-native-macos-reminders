@@ -1009,10 +1009,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@react-native-async-storage/async-storage@^1.15.11":
-  version "1.15.11"
-  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.15.11.tgz#da625b906529076414c32fd337d813b565149858"
-  integrity sha512-l/I+PK+lh5M25QSdk44aX+UR63ian2d2CSx6WbydwU+RUZmKP7eOEPe+OeaTWgfOFSVtlEqEcP2AbW2YM7ukMA==
+"@react-native-async-storage/async-storage@^1.15.14":
+  version "1.15.14"
+  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.15.14.tgz#8165d3f78798b46e693169795b62e40142064273"
+  integrity sha512-eJF2horabXazwszCyyXDe4w7sBSWlB0WPA8akKXuN2n7WXKHYeQJPN41lS9OahrhSZuZwqftNFE9VWgPXA8wyA==
   dependencies:
     merge-options "^3.0.4"
 
@@ -1179,10 +1179,10 @@
   resolved "https://registry.yarnpkg.com/@react-native/polyfills/-/polyfills-1.0.0.tgz#05bb0031533598f9458cf65a502b8df0eecae780"
   integrity sha512-0jbp4RxjYopTsIdLl+/Fy2TiwVYHy4mgeu07DG4b/LyM0OS/+lPP5c9sbnt/AMlnF6qz2JRZpPpGw1eMNS6A4w==
 
-"@rn-macos/popover@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@rn-macos/popover/-/popover-0.0.6.tgz#409fef32b10a5625ba69ab82a525af1876831a20"
-  integrity sha512-kGbOlA5yglwlw2zJzrYFhtPe/8ledfj8PB9dS1f886TetuUX2B4fsiJ/4xf/9Rgb3jX77gA/ZJox+JkdDq+b5g==
+"@rn-macos/popover@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@rn-macos/popover/-/popover-0.0.7.tgz#2f793adb51db3e34c8c45778a8f1836d49f1ba09"
+  integrity sha512-ntDHlC2v1QFoiqz0kKZ3SMOAGyo3/+y9I+0DffeVx173H1DzOZufE0UizduxNz9Yyh9OKSD/Uh07nYTU8oV+0g==
 
 "@sideway/address@^4.1.0":
   version "4.1.2"
@@ -5458,10 +5458,10 @@ react-native-codegen@^0.0.6:
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
 
-react-native-macos@0.64.12:
-  version "0.64.12"
-  resolved "https://registry.yarnpkg.com/react-native-macos/-/react-native-macos-0.64.12.tgz#f4e647ef4b84b5d3c8ca20ee35c1a191ce18d967"
-  integrity sha512-zyZxCNhu1CdcPBOECHUiAdH9gwB5hTjMiTy3HTe60EbuAT6IMpopeymwbnWZUYpR/e1BxpwWG1VbadLsZtGA6g==
+react-native-macos@0.64.17:
+  version "0.64.17"
+  resolved "https://registry.yarnpkg.com/react-native-macos/-/react-native-macos-0.64.17.tgz#5939ed91da866aae1432c6844b2574d61e80b058"
+  integrity sha512-F1AFuKTDRb1uEm0fHIrt3tVaqeC+bK4wy5yxNK5Ta1EltcFW0rbgVekTtzGJLQGxRvou2nDlH0EAIx0IsUTcMQ==
   dependencies:
     "@jest/create-cache-key-function" "^26.5.0"
     "@react-native-community/cli" "^5.0.1-alpha.1"
