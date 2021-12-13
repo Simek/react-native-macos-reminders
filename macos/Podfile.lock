@@ -267,7 +267,7 @@ PODS:
     - React-cxxreact (= 0.64.17)
     - React-jsi (= 0.64.17)
     - React-perflogger (= 0.64.17)
-  - rn-macos-popover (0.0.7):
+  - rn-macos-popover (0.1.0):
     - React
   - RNCAsyncStorage (1.15.14):
     - React-Core
@@ -401,7 +401,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: d579194175d272e0a2f709eae851acfb63ba33f0
   React-runtimeexecutor: fb6350cc6217b45f5e85fbcf129c48f9b116b191
   ReactCommon: 1a39a22b1ac9c4bfc7e1d670586940e48181f1ae
-  rn-macos-popover: 74ef547cf3454fe492387d86d4fed930d4c1e8cf
+  rn-macos-popover: 8bd8c15895a741f3ee53c681c13d3a74d7384921
   RNCAsyncStorage: ea6b5c280997b2b32a587793163b1f10e580c4f7
   Yoga: 30e50042b33e88c817468b4ea4e7701a9e46284d
 

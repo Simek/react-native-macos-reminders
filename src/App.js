@@ -72,13 +72,13 @@ const App = () => {
 
   const getTitle = (key) => listData.find((item) => item.key === key)?.title;
 
-  const getCount = (filterFunc = (e) => e) =>
+  const getTotalCount = (filterFunc = (e) => e) =>
     Object.keys(data)
       .filter((key) => key.startsWith('list-'))
       .map((key) => data[key].filter(filterFunc).length)
       .reduce((acc, value) => acc + value, 0);
 
-  const basicSort = (a, b) => a.done - b.done || a.createdAt > b.createdAt;
+  const remindersSort = (a, b) => a.done - b.done || a.createdAt > b.createdAt;
 
   const addNewReminder = () => {
     const ts = Date.now();
@@ -93,7 +93,7 @@ const App = () => {
   };
 
   const processListData = (list) =>
-    list.filter((entry) => (completedVisible ? true : !entry.done)).sort(basicSort);
+    list.filter((entry) => (completedVisible ? true : !entry.done)).sort(remindersSort);
 
   const multiListMapper = (key) =>
     getTitle(key)
@@ -113,8 +113,8 @@ const App = () => {
     readDataFromStorage();
   }, []);
 
-  const totalCount = getCount();
-  const allCount = getCount((entry) => !entry.done);
+  const totalCount = getTotalCount();
+  const allCount = getTotalCount((entry) => !entry.done);
   const allCompletedCount = totalCount - allCount;
 
   const isSearchMode = searchQuery && searchQuery.length > 0;
@@ -160,7 +160,9 @@ const App = () => {
           renderItem={({ item }) => (
             <RemindersListItem
               item={item}
-              count={data && data[item.key] ? data[item.key].length : 0}
+              count={
+                data && data[item.key] ? data[item.key].filter((entry) => !entry.done).length : 0
+              }
               onPress={() => {
                 if (selectedKey === item.key) {
                   overwriteListData(setListData, (listItem) => ({
@@ -259,13 +261,14 @@ const App = () => {
               </Text>
               {!CONSTANTS.KEYS.includes(selectedKey) ? (
                 <Text style={getHeaderStyle(selectedKey, styles.contentHeaderCounter)}>
-                  {data[selectedKey].length}
+                  {data[selectedKey].filter((entry) => !entry.done).length}
                 </Text>
               ) : null}
             </View>
           </>
         )}
         <SectionList
+          contentContainerStyle={remindersSections?.length ? {} : { flexGrow: 2 }}
           sections={remindersSections}
           stickySectionHeadersEnabled={true}
           contentOffset={{ y: 52 }}
@@ -344,7 +347,9 @@ const App = () => {
             !isSearchMode ? (
               <View style={styles.noContentWrapper}>
                 <Text style={styles.noContentText}>
-                  {completedVisible ? 'No Reminders' : 'All Items Completed'}
+                  {completedVisible || remindersSections?.length === 0
+                    ? 'No Reminders'
+                    : 'All Items Completed'}
                 </Text>
               </View>
             ) : null

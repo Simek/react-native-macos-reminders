@@ -4,15 +4,6 @@ import { PopoverManager } from '@rn-macos/popover';
 
 import Button from './Button';
 
-const POPOVER_WIDTH = 280;
-
-const calcPopoverHeight = ({ text, textNote }) => {
-  const titleHeight = text ? parseInt(text.length / 18 - 1, 10) * 20 : 0;
-  const noteHeight = textNote ? parseInt(textNote.length / 24 - 1, 10) * 16 : 0;
-
-  return 100 + titleHeight + noteHeight;
-};
-
 const RemindersListItem = ({
   item,
   color = { semantic: 'systemBlueColor' },
@@ -179,8 +170,6 @@ const RemindersListItem = ({
             );
             setTimeout(() => {
               PopoverManager.show(
-                POPOVER_WIDTH,
-                calcPopoverHeight(item),
                 layout.pageX + layout.width - 18,
                 window.height - (layout.pageY + 9),
               );
@@ -278,7 +267,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   popoverWrapper: {
-    width: POPOVER_WIDTH,
+    minWidth: 280,
     paddingHorizontal: 12,
     paddingVertical: 14,
   },
