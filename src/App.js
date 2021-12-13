@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import type { Node } from 'react';
 import { SectionList, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { Popover } from '@rn-macos/popover';
 
@@ -24,7 +23,7 @@ const getHeaderStyle = (key, customStyles = undefined) => {
   ];
 };
 
-const App: () => Node = () => {
+const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedKey, setSelectedKey] = useState(CONSTANTS.KEYS[0]);
   const [data, setData] = useState({
@@ -36,6 +35,7 @@ const App: () => Node = () => {
   const [listData, setListData] = useState([]);
   const [popoverData, setPopoverData] = useState(null);
   const [lastSelectedTarget, setLastSelectedTarget] = useState(null);
+  const [completedVisible, setCompletedVisible] = useState(true);
 
   const readListDataFromStorage = async () => {
     const item = await getStoredData('remindersLists', []);
@@ -92,16 +92,19 @@ const App: () => Node = () => {
     );
   };
 
+  const processListData = (list) =>
+    list.filter((entry) => (completedVisible ? true : !entry.done)).sort(basicSort);
+
   const multiListMapper = (key) =>
     getTitle(key)
       ? {
           key,
           title: getTitle(key),
-          data: isSearchMode
-            ? data[key]
-                .filter((entry) => searchMatch(entry.text) || searchMatch(entry.textNote))
-                .sort(basicSort)
-            : data[key].sort(basicSort),
+          data: processListData(
+            isSearchMode
+              ? data[key].filter((entry) => searchMatch(entry.text) || searchMatch(entry.textNote))
+              : data[key],
+          ),
         }
       : null;
 
@@ -125,8 +128,15 @@ const App: () => Node = () => {
           .filter((section) => (isSearchMode ? section.data.length > 0 : true))
           .filter(Boolean)
       : [
-          (data[selectedKey] || []).length > 0 ? { data: data[selectedKey].sort(basicSort) } : null,
+          data[selectedKey]?.length > 0 ? { data: processListData(data[selectedKey]) } : null,
         ].filter(Boolean);
+
+  const calculateCompleted = () =>
+    isSearchMode
+      ? remindersSections[0]?.data?.filter((entry) => entry.done).length || 0
+      : selectedKey === 'all'
+      ? allCompletedCount
+      : data[selectedKey].filter((entry) => entry.done).length;
 
   return (
     <View style={styles.container}>
@@ -228,7 +238,7 @@ const App: () => Node = () => {
             style={[styles.contentHeader, styles.searchHeader]}
             numberOfLines={1}
             ellipsizeMode="tail">
-            Results for "{searchQuery}"
+            Results for “{searchQuery}”
           </Text>
         ) : (
           <>
@@ -256,7 +266,6 @@ const App: () => Node = () => {
           </>
         )}
         <SectionList
-          contentContainerStyle={remindersSections.length === 0 ? { flex: 1 } : null}
           sections={remindersSections}
           stickySectionHeadersEnabled={true}
           contentOffset={{ y: 52 }}
@@ -310,12 +319,17 @@ const App: () => Node = () => {
           ListHeaderComponent={
             selectedKey !== 'today' ? (
               <View style={styles.completedHeader}>
-                <Text style={styles.completedText}>
-                  {selectedKey === 'all'
-                    ? allCompletedCount
-                    : data[selectedKey].filter((entry) => entry.done).length}{' '}
-                  Completed
-                </Text>
+                <Text style={styles.completedText}>{calculateCompleted()} Completed</Text>
+                <TouchableOpacity onPress={() => setCompletedVisible((prevState) => !prevState)}>
+                  <Text
+                    style={[
+                      styles.completedVisibleText,
+                      selectedKey !== 'all' &&
+                        !isSearchMode && { color: getListColor(selectedKey) },
+                    ]}>
+                    {completedVisible ? 'Hide' : 'Show'}
+                  </Text>
+                </TouchableOpacity>
               </View>
             ) : null
           }
@@ -329,7 +343,9 @@ const App: () => Node = () => {
           ListEmptyComponent={
             !isSearchMode ? (
               <View style={styles.noContentWrapper}>
-                <Text style={styles.noContentText}>No Reminders</Text>
+                <Text style={styles.noContentText}>
+                  {completedVisible ? 'No Reminders' : 'All Items Completed'}
+                </Text>
               </View>
             ) : null
           }

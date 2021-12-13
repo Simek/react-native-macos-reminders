@@ -51,8 +51,8 @@ const Button: () => Node = ({
 
 const styles = StyleSheet.create({
   button: {
-    paddingHorizontal: 7,
-    paddingVertical: 5,
+    paddingHorizontal: 6,
+    paddingVertical: 4,
     borderRadius: 6,
   },
   buttonContent: {

@@ -4,8 +4,14 @@ import { PopoverManager } from '@rn-macos/popover';
 
 import Button from './Button';
 
-const calcPopoverHeight = (item) =>
-  item.textNote ? 102 + parseInt(item.textNote.length / 24 - 1, 10) * 16 : 102;
+const POPOVER_WIDTH = 280;
+
+const calcPopoverHeight = ({ text, textNote }) => {
+  const titleHeight = text ? parseInt(text.length / 18 - 1, 10) * 20 : 0;
+  const noteHeight = textNote ? parseInt(textNote.length / 24 - 1, 10) * 16 : 0;
+
+  return 100 + titleHeight + noteHeight;
+};
 
 const RemindersListItem = ({
   item,
@@ -135,9 +141,15 @@ const RemindersListItem = ({
             />
             <Button
               onPress={() => null}
+              icon="􀆃"
+              style={styles.listItemButton}
+              iconStyle={styles.listItemButtonBigIcon}
+            />
+            <Button
+              onPress={() => null}
               icon="􀋉"
               style={styles.listItemButton}
-              iconStyle={styles.listItemButtonIcon}
+              iconStyle={styles.listItemButtonBigIcon}
             />
           </View>
         ) : null}
@@ -148,7 +160,7 @@ const RemindersListItem = ({
           onPress={() => {
             setPopoverData(
               <View style={styles.popoverWrapper}>
-                <View>
+                <View style={styles.popoverTitleWrapper}>
                   <Text style={styles.popoverTitle}>{item.text}</Text>
                   <Button
                     onPress={() => undefined}
@@ -167,7 +179,7 @@ const RemindersListItem = ({
             );
             setTimeout(() => {
               PopoverManager.show(
-                280,
+                POPOVER_WIDTH,
                 calcPopoverHeight(item),
                 layout.pageX + layout.width - 18,
                 window.height - (layout.pageY + 9),
@@ -255,26 +267,34 @@ const styles = StyleSheet.create({
   listItemButtonIcon: {
     fontSize: 10,
   },
+  listItemButtonBigIcon: {
+    fontSize: 12,
+  },
   popoverIconWrapper: {
     position: 'absolute',
     right: 16,
   },
   popoverIcon: {
-    fontSize: 17,
+    fontSize: 15,
   },
   popoverWrapper: {
-    width: 280,
-    height: 102,
+    width: POPOVER_WIDTH,
     paddingHorizontal: 12,
-    paddingTop: 10,
-    paddingBottom: 8,
+    paddingVertical: 14,
+  },
+  popoverTitleWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    maxWidth: '100%',
   },
   popoverTitle: {
     color: {
       semantic: 'labelColor',
     },
-    fontSize: 16,
-    lineHeight: 28,
+    fontFamily: 'SF Pro Rounded',
+    fontSize: 17,
+    lineHeight: 20,
     fontWeight: '500',
     marginBottom: 4,
   },
@@ -293,11 +313,15 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   popoverFlagButton: {
-    position: 'absolute',
-    height: 21,
-    paddingHorizontal: 8,
-    right: 0,
-    top: 4,
+    backgroundColor: { semantic: 'controlColor' },
+    borderColor: {
+      semantic: 'quaternaryLabelColor',
+    },
+    borderWidth: 1,
+    borderStyle: 'solid',
+    height: 19,
+    paddingVertical: 2,
+    paddingHorizontal: 6,
   },
   popoverLabel: {
     fontSize: 12,

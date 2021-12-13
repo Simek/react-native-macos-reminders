@@ -87,19 +87,27 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   completedHeader: {
+    flex: 1,
+    flexDirection: 'row',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#8c8c8c50',
+    justifyContent: 'space-between',
     paddingVertical: 8,
+    paddingRight: 16,
     marginTop: 16,
     marginBottom: 8,
   },
   completedText: {
-    color: { semantic: 'labelColor' },
+    color: { semantic: 'systemGrayColor' },
+    fontSize: 13,
+  },
+  completedVisibleText: {
+    color: { semantic: 'tertiaryLabelColor' },
     fontSize: 13,
   },
   noContentWrapper: {
-    justifyContent: 'center',
     flex: 1,
+    justifyContent: 'center',
   },
   noContentText: {
     fontSize: 24,
@@ -118,9 +126,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 12,
     color: { semantic: 'systemBlueColor' },
-  },
-  searchHeader: {
-    marginBottom: 19.5,
   },
   addReminderRow: {
     width: '100%',
