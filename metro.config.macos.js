@@ -3,8 +3,8 @@
  * integration tests during local development or on CI services.
  */
 
-const path = require('path');
 const blacklist = require('metro-config/src/defaults/blacklist');
+const path = require('path');
 
 const rnmPath = path.resolve(__dirname, 'node_modules/react-native-macos');
 

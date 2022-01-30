@@ -73,10 +73,10 @@ const RemindersListItem: () => Node = ({
       <RoundIcon icon="􀋲" iconSize={13} color={item.color} style={styles.listItemIcon} />
       {item.editMode ? (
         <TextInput
-          autoFocus={true}
+          autoFocus
           value={item.title}
           style={styles.listItemInput}
-          blurOnSubmit={true}
+          blurOnSubmit
           onSubmitEditing={(e) => {
             onEditEnd(e.nativeEvent.text);
           }}

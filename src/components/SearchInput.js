@@ -11,7 +11,7 @@ const SearchInput: () => Node = ({ searchQuery, setSearchQuery }) => (
       placeholder="Search"
       placeholderTextColor={{ semantic: 'secondaryLabelColor' }}
       clearButtonMode="while-editing"
-      blurOnSubmit={true}
+      blurOnSubmit
     />
     <Text style={[styles.searchInputIcon, styles.searchInputSearchIcon]}>􀊫</Text>
     {searchQuery !== '' ? (

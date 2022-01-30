@@ -1,6 +1,6 @@
+import { PopoverManager } from '@rn-macos/popover';
 import React, { useRef, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { PopoverManager } from '@rn-macos/popover';
 
 import Button from './Button';
 
@@ -64,7 +64,7 @@ const RemindersListItem = ({
       </TouchableOpacity>
       <View style={styles.listItemContent}>
         <TextInput
-          multiline={true}
+          multiline
           numberOfLines={1}
           scrollEnabled={false}
           autoFocus={item.text === ''}
@@ -74,7 +74,7 @@ const RemindersListItem = ({
             styles.listItemInput,
             item.done ? styles.listItemInputDone : {},
           ]}
-          blurOnSubmit={true}
+          blurOnSubmit
           onFocus={(e) => {
             setId(e.target);
             setLastSelectedTarget(e.target);
@@ -89,7 +89,7 @@ const RemindersListItem = ({
         />
         {isExpanded ? (
           <TextInput
-            multiline={true}
+            multiline
             ref={noteInputRef}
             placeholder="Notes"
             value={textNote}
@@ -99,7 +99,7 @@ const RemindersListItem = ({
               styles.listItemNoteInput,
               item.done ? styles.listItemInputDone : {},
             ]}
-            blurOnSubmit={true}
+            blurOnSubmit
             onFocus={(e) => {
               setId(e.target);
               setLastSelectedTarget(e.target);
@@ -115,7 +115,7 @@ const RemindersListItem = ({
         {isExpanded && id && id === lastSelectedTarget ? (
           <View style={styles.listItemButtonsWrapper}>
             <Button
-              disabled={true}
+              disabled
               onPress={() => null}
               icon="􀉉"
               text="Add Date"
@@ -123,7 +123,7 @@ const RemindersListItem = ({
               iconStyle={styles.listItemButtonIcon}
             />
             <Button
-              disabled={true}
+              disabled
               onPress={() => null}
               icon="􀋒"
               text="Add Location"

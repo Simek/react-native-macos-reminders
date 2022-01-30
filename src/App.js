@@ -1,16 +1,15 @@
+import { Popover } from '@rn-macos/popover';
 import React, { useEffect, useState } from 'react';
 import { SectionList, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
-import { Popover } from '@rn-macos/popover';
 
-import CONSTANTS from './constants';
-import styles from './styles';
 import { getStoredData, storeData, overwriteListData, overwriteSelectedListData } from './Storage';
-
+import Button from './components/Button';
 import ReminderItem from './components/ReminderItem';
 import RemindersListItem from './components/RemindersListItem';
-import Tags from './components/Tags';
-import Button from './components/Button';
 import SearchInput from './components/SearchInput';
+import Tags from './components/Tags';
+import CONSTANTS from './constants';
+import styles from './styles';
 
 const getListColor = (key) =>
   !CONSTANTS.KEYS.includes(key) ? { semantic: 'systemBlueColor' } : CONSTANTS.COLORS[key];
@@ -270,7 +269,7 @@ const App = () => {
         <SectionList
           contentContainerStyle={remindersSections?.length ? {} : { flexGrow: 2 }}
           sections={remindersSections}
-          stickySectionHeadersEnabled={true}
+          stickySectionHeadersEnabled
           contentOffset={{ y: 52 }}
           keyExtractor={(item) => item.key}
           renderItem={({ item, section }) => (
