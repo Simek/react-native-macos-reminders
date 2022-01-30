@@ -1,8 +1,11 @@
 import { PopoverManager } from '@rn-macos/popover';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
+import CONSTANTS from '../constants';
 import Button from './Button';
+
+const FLAGGED_OFFSET = 24;
 
 const RemindersListItem = ({
   item,
@@ -23,7 +26,32 @@ const RemindersListItem = ({
   const noteInputRef = useRef(null);
   const window = Dimensions.get('window');
 
-  const isExpanded = item.textNote || (id && id === lastSelectedTarget);
+  const hasNote = textNote?.length > 0;
+  const isExpanded = id && id === lastSelectedTarget;
+  const isFlagVisible = item.flagged && !isExpanded;
+
+  const updatePopoverData = () =>
+    setPopoverData(
+      <View style={styles.popoverWrapper}>
+        <View style={styles.popoverTitleWrapper}>
+          <Text style={styles.popoverTitle}>{item.text}</Text>
+          <Button
+            onPress={() => onStatusChange('flagged')}
+            text={item.flagged ? '􀋊' : '􀋉'}
+            style={styles.popoverFlagButton}
+            textStyle={[{ fontSize: 12 }, item.flagged ? { color: CONSTANTS.COLORS.flagged } : {}]}
+          />
+        </View>
+        <Text style={styles.popoverSecondary}>{item.textNote || 'Notes'}</Text>
+        <View style={styles.popoverSeparator} />
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.popoverSecondary, styles.popoverLabel]}>priority</Text>
+          <Text style={{ color: { semantic: 'labelColor' } }}>None</Text>
+        </View>
+      </View>,
+    );
+
+  useEffect(() => updatePopoverData(), [item.flagged]);
 
   return (
     <View
@@ -50,7 +78,7 @@ const RemindersListItem = ({
             borderColor: item.done ? color : '#8c8c8c70',
           },
         ]}
-        onPress={onStatusChange}>
+        onPress={() => onStatusChange('done')}>
         {item.done ? (
           <View
             style={[
@@ -87,7 +115,7 @@ const RemindersListItem = ({
             }
           }}
         />
-        {isExpanded ? (
+        {hasNote || isExpanded ? (
           <TextInput
             multiline
             ref={noteInputRef}
@@ -112,7 +140,7 @@ const RemindersListItem = ({
             }}
           />
         ) : null}
-        {isExpanded && id && id === lastSelectedTarget ? (
+        {isExpanded ? (
           <View style={styles.listItemButtonsWrapper}>
             <Button
               disabled
@@ -137,40 +165,28 @@ const RemindersListItem = ({
               iconStyle={styles.listItemButtonBigIcon}
             />
             <Button
-              onPress={() => null}
-              icon="􀋉"
+              onPress={() => onStatusChange('flagged')}
+              icon={item.flagged ? '􀋊' : '􀋉'}
               style={styles.listItemButton}
-              iconStyle={styles.listItemButtonBigIcon}
+              iconStyle={[
+                styles.listItemButtonBigIcon,
+                item.flagged ? { color: CONSTANTS.COLORS.flagged } : {},
+              ]}
             />
           </View>
         ) : null}
       </View>
+      {isFlagVisible ? (
+        <Text style={[styles.flaggedIcon, { color: CONSTANTS.COLORS.flagged }]}>􀋊</Text>
+      ) : null}
       {id && id === lastSelectedTarget ? (
         <TouchableOpacity
-          style={styles.popoverIconWrapper}
+          style={[styles.popoverIconWrapper, { right: isFlagVisible ? 16 + FLAGGED_OFFSET : 16 }]}
           onPress={() => {
-            setPopoverData(
-              <View style={styles.popoverWrapper}>
-                <View style={styles.popoverTitleWrapper}>
-                  <Text style={styles.popoverTitle}>{item.text}</Text>
-                  <Button
-                    onPress={() => undefined}
-                    text="􀋉"
-                    textStyle={{ fontSize: 12 }}
-                    style={styles.popoverFlagButton}
-                  />
-                </View>
-                <Text style={styles.popoverSecondary}>{item.textNote || 'Notes'}</Text>
-                <View style={styles.popoverSeparator} />
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={[styles.popoverSecondary, styles.popoverLabel]}>priority</Text>
-                  <Text style={{ color: { semantic: 'labelColor' } }}>None</Text>
-                </View>
-              </View>,
-            );
+            updatePopoverData();
             setTimeout(() => {
               PopoverManager.show(
-                layout.pageX + layout.width - 18,
+                layout.pageX + layout.width - 18 - (isFlagVisible ? FLAGGED_OFFSET : 0),
                 window.height - (layout.pageY + 9),
               );
             }, 50);
@@ -259,12 +275,18 @@ const styles = StyleSheet.create({
   listItemButtonBigIcon: {
     fontSize: 12,
   },
+  flaggedIcon: {
+    position: 'absolute',
+    top: 3,
+    right: 16,
+    fontSize: 12,
+  },
   popoverIconWrapper: {
     position: 'absolute',
-    right: 16,
+    top: 2,
   },
   popoverIcon: {
-    fontSize: 15,
+    fontSize: 14,
   },
   popoverWrapper: {
     minWidth: 280,
@@ -302,12 +324,12 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   popoverFlagButton: {
-    backgroundColor: { semantic: 'controlColor' },
     borderColor: {
       semantic: 'quaternaryLabelColor',
     },
     borderWidth: 1,
     borderStyle: 'solid',
+    borderRadius: 4,
     height: 19,
     paddingVertical: 2,
     paddingHorizontal: 6,

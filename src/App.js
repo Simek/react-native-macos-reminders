@@ -2,7 +2,13 @@ import { Popover } from '@rn-macos/popover';
 import React, { useEffect, useState } from 'react';
 import { SectionList, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 
-import { getStoredData, storeData, overwriteListData, overwriteSelectedListData } from './Storage';
+import {
+  getStoredData,
+  storeData,
+  overwriteListData,
+  overwriteSelectedListData,
+  findAndReplaceEntry,
+} from './Storage';
 import Button from './components/Button';
 import ReminderItem from './components/ReminderItem';
 import RemindersListItem from './components/RemindersListItem';
@@ -272,45 +278,39 @@ const App = () => {
           stickySectionHeadersEnabled
           contentOffset={{ y: 52 }}
           keyExtractor={(item) => item.key}
-          renderItem={({ item, section }) => (
-            <ReminderItem
-              setPopoverData={setPopoverData}
-              lastSelectedTarget={lastSelectedTarget}
-              setLastSelectedTarget={setLastSelectedTarget}
-              item={item}
-              color={getListColor(selectedKey === 'all' ? null : selectedKey)}
-              onEdit={(text, fieldName = 'text') => {
-                const dataKey = section.key || selectedKey;
-                overwriteSelectedListData(setData, dataKey, (list) =>
-                  list.map((entry) =>
-                    entry.key === item.key
-                      ? Object.assign({}, entry, { [fieldName]: text })
-                      : entry,
-                  ),
-                );
-              }}
-              onEditEnd={(e) => {
-                if (!e.nativeEvent.text) {
-                  const dataKey = section.key || selectedKey;
+          renderItem={({ item, section }) => {
+            const dataKey = section.key || selectedKey;
+            return (
+              <ReminderItem
+                setPopoverData={setPopoverData}
+                lastSelectedTarget={lastSelectedTarget}
+                setLastSelectedTarget={setLastSelectedTarget}
+                item={item}
+                color={getListColor(selectedKey === 'all' ? null : selectedKey)}
+                onEdit={(text, fieldName = 'text') => {
                   overwriteSelectedListData(setData, dataKey, (list) =>
-                    list.filter((entry) => entry.key !== item.key),
+                    findAndReplaceEntry(list, item.key, () => ({ [fieldName]: text })),
                   );
-                }
-                writeDataToStorage(data);
-              }}
-              onStatusChange={() => {
-                const dataKey = section.key || selectedKey;
-                overwriteSelectedListData(setData, dataKey, (list) =>
-                  list.map((entry) =>
-                    entry.key === item.key
-                      ? Object.assign({}, entry, { done: !entry.done })
-                      : entry,
-                  ),
-                );
-                writeDataToStorage(data);
-              }}
-            />
-          )}
+                }}
+                onEditEnd={(e) => {
+                  if (!e.nativeEvent.text) {
+                    overwriteSelectedListData(setData, dataKey, (list) =>
+                      list.filter((entry) => entry.key !== item.key),
+                    );
+                    writeDataToStorage(data);
+                  }
+                }}
+                onStatusChange={(fieldName) => {
+                  overwriteSelectedListData(setData, dataKey, (list) =>
+                    findAndReplaceEntry(list, item.key, (entry) => ({
+                      [fieldName]: !entry[fieldName],
+                    })),
+                  );
+                  writeDataToStorage(data);
+                }}
+              />
+            );
+          }}
           renderSectionHeader={({ section: { title } }) =>
             title ? (
               <View style={styles.contentStickyHeaderWrapper}>

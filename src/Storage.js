@@ -51,3 +51,8 @@ export const overwriteSelectedListData = (setter, listKey, overwriteFunc) => {
     }),
   );
 };
+
+export const findAndReplaceEntry = (list, itemKey, replaceTask) =>
+  list.map((entry) =>
+    entry.key === itemKey ? Object.assign({}, entry, replaceTask(entry)) : entry,
+  );
