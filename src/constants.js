@@ -6,4 +6,10 @@ export default {
     today: { semantic: 'systemBlueColor' },
     flagged: { semantic: 'systemOrangeColor' },
   },
+  STORE: {
+    today: [],
+    scheduled: [],
+    flagged: [],
+    all: [],
+  },
 };

@@ -1,40 +1,44 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MMKV } from 'react-native-mmkv';
 
-export const storeData = async (key, value, fallback = undefined) => {
+const storage = new MMKV({
+  id: 'rnmacos-reminders',
+});
+
+export const storeData = (key, value, fallback = undefined) => {
   try {
     const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem(key, jsonValue);
+    storage.set(key, jsonValue);
   } catch (e) {
     if (fallback) {
-      await storeData(key, fallback);
+      storeData(key, fallback);
     } else {
       return fallback;
     }
   }
 };
 
-export const getStoredData = async (key, fallback = undefined) => {
+export const getStoredData = (key, fallback = undefined) => {
   try {
-    const jsonValue = await AsyncStorage.getItem(key);
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
+    const jsonValue = storage.getString(key);
+    return jsonValue != null ? JSON.parse(jsonValue) : fallback;
   } catch (e) {
     return fallback;
   }
 };
 
-export const getAllStoredKeys = async (fallback = []) => {
+export const getAllStoredKeys = (fallback = []) => {
   try {
-    return await AsyncStorage.getAllKeys();
+    return storage.getAllKeys();
   } catch (e) {
     return fallback;
   }
 };
 
-export const removeEntry = async (key) => {
+export const removeEntry = (key) => {
   try {
-    await AsyncStorage.removeItem(key);
+    storage.delete(key);
   } catch (e) {
-    console.log(e);
+    console.warn(e);
   }
 };
 

@@ -31,36 +31,31 @@ const getHeaderStyle = (key, customStyles = undefined) => {
 const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedKey, setSelectedKey] = useState(CONSTANTS.KEYS[0]);
-  const [data, setData] = useState({
-    today: [],
-    scheduled: [],
-    flagged: [],
-    all: [],
-  });
+  const [data, setData] = useState(CONSTANTS.STORE);
   const [listData, setListData] = useState([]);
   const [popoverData, setPopoverData] = useState(null);
   const [lastSelectedTarget, setLastSelectedTarget] = useState(null);
   const [completedVisible, setCompletedVisible] = useState(true);
 
-  const readListDataFromStorage = async () => {
-    const item = await getStoredData('remindersLists', []);
+  const readListDataFromStorage = () => {
+    const item = getStoredData('remindersLists', []);
     setListData(item);
   };
 
-  const writeListDataToStorage = async (value) => {
-    await storeData(
+  const writeListDataToStorage = (value) => {
+    storeData(
       'remindersLists',
       value.map((item) => Object.assign({}, item, { selected: false, editMode: false })),
     );
   };
 
-  const readDataFromStorage = async () => {
-    const item = await getStoredData('remindersData', []);
+  const readDataFromStorage = () => {
+    const item = getStoredData('remindersData', CONSTANTS.STORE);
     setData(item);
   };
 
-  const writeDataToStorage = async (value) => {
-    await storeData('remindersData', value);
+  const writeDataToStorage = (value) => {
+    storeData('remindersData', value);
   };
 
   const overwriteListItemsDataAndStore = (overwriteFunc) => {

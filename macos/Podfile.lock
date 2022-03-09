@@ -10,6 +10,9 @@ PODS:
     - React-jsi (= 0.64.25)
     - ReactCommon/turbomodule/core (= 0.64.25)
   - glog (0.3.5)
+  - MMKV (1.2.12):
+    - MMKVCore (~> 1.2.12)
+  - MMKVCore (1.2.12)
   - RCT-Folly (2020.01.13.00):
     - boost-for-react-native
     - DoubleConversion
@@ -203,6 +206,9 @@ PODS:
     - React-jsi (= 0.64.25)
     - React-perflogger (= 0.64.25)
   - React-jsinspector (0.64.25)
+  - react-native-mmkv (2.1.0):
+    - MMKV
+    - React-Core
   - React-perflogger (0.64.25)
   - React-RCTActionSheet (0.64.25):
     - React-Core/RCTActionSheetHeaders (= 0.64.25)
@@ -269,8 +275,6 @@ PODS:
     - React-perflogger (= 0.64.25)
   - rn-macos-popover (0.1.0):
     - React
-  - RNCAsyncStorage (1.15.17):
-    - React-Core
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -292,6 +296,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native-macos/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native-macos/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native-macos/ReactCommon/jsinspector`)
+  - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - React-perflogger (from `../node_modules/react-native-macos/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native-macos/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native-macos/Libraries/NativeAnimation`)
@@ -305,8 +310,12 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native-macos/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native-macos/ReactCommon`)
   - "rn-macos-popover (from `../node_modules/@rn-macos/popover`)"
-  - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - Yoga (from `../node_modules/react-native-macos/ReactCommon/yoga`)
+
+SPEC REPOS:
+  trunk:
+    - MMKV
+    - MMKVCore
 
 EXTERNAL SOURCES:
   boost-for-react-native:
@@ -341,6 +350,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-macos/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native-macos/ReactCommon/jsinspector"
+  react-native-mmkv:
+    :path: "../node_modules/react-native-mmkv"
   React-perflogger:
     :path: "../node_modules/react-native-macos/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -367,8 +378,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-macos/ReactCommon"
   rn-macos-popover:
     :path: "../node_modules/@rn-macos/popover"
-  RNCAsyncStorage:
-    :path: "../node_modules/@react-native-async-storage/async-storage"
   Yoga:
     :path: "../node_modules/react-native-macos/ReactCommon/yoga"
 
@@ -378,6 +387,8 @@ SPEC CHECKSUMS:
   FBLazyVector: 83defa09b7188cb1255686bab08adda2b5cafecd
   FBReactNativeSpec: 0a2ca6e014ed0e1621a319b354fdfd548c04ce20
   glog: 42c4bf47024808486e90b25ea9e5ac3959047641
+  MMKV: f281020c9d9be5eb7a03ae746dc4deb570e46c23
+  MMKVCore: df0565f6b58463604731a68ba6cd89bc0b2d1d55
   RCT-Folly: b3998425a8ee9f695f57a204dc494534246f0fe9
   RCTRequired: e6152197373372893a4e6d627468bbfdf9301311
   RCTTypeSafety: 9654015c2f88d21127cbee2786696aa9439ccee8
@@ -389,6 +400,7 @@ SPEC CHECKSUMS:
   React-jsi: 2aba5e3a0ffe8f55fca66d7f19d48c80c951875c
   React-jsiexecutor: 7704681915f72bd428056d03e1a8b1c3e23fde6a
   React-jsinspector: 6e1ba51326c5d58cf32ada3d2d28175fb2755af6
+  react-native-mmkv: e92ed3dfb337b01afd411fa7a9b65be05fec36be
   React-perflogger: d1da9f2ebf56e11f5d3f11bc6effba218c0bca95
   React-RCTActionSheet: 5907b4b7ac90304beb2fc6b93fc988ed592b9d92
   React-RCTAnimation: a2b957ad2adbb6c0bdfbfd311c1c47af7ece161a
@@ -402,7 +414,6 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 7864e45847b2447083e4bbf67dea2700f792f840
   ReactCommon: 15390f19fc5d447ab0721b03c6f9c1e2afbc4fe2
   rn-macos-popover: 8bd8c15895a741f3ee53c681c13d3a74d7384921
-  RNCAsyncStorage: 6bd5a7ba3dde1c3facba418aa273f449bdc5437a
   Yoga: c45b437df892ecf6ad56016e7a491c50e40b5845
 
 PODFILE CHECKSUM: 16573ac7c79ee035f6930ed3ade465d3a4add0cc
