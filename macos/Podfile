@@ -36,7 +36,7 @@ abstract_target 'Shared' do
   pod 'RCT-Folly', :podspec => '../node_modules/react-native-macos/third-party-podspecs/RCT-Folly.podspec'
 
   target 'Reminders-macOS' do
-    platform :macos, '10.14'
+    platform :macos, '10.15'
     use_native_modules!
   end
 end
