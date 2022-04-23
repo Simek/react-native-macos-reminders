@@ -10,6 +10,14 @@ import Tags from './components/Tags';
 import styles from './styles';
 import CONSTANTS from './utils/constants';
 import {
+  getHeaderStyle,
+  getListCount,
+  getListColor,
+  getTitle,
+  getTotalCount,
+  remindersSort,
+} from './utils/helpers';
+import {
   getStoredData,
   storeData,
   overwriteListData,
@@ -17,16 +25,11 @@ import {
   findAndReplaceEntry,
 } from './utils/storage';
 
-const getListColor = (key) =>
-  !CONSTANTS.KEYS.includes(key) ? { semantic: 'systemBlueColor' } : CONSTANTS.COLORS[key];
-
-const getHeaderStyle = (key, customStyles = undefined) => {
-  return [
-    styles.contentHeader,
-    customStyles ? customStyles : styles.contentHeaderCustom,
-    { color: getListColor(key) },
-  ];
-};
+const SearchResultsTitle = ({ searchQuery }) => (
+  <Text style={[styles.contentHeader, styles.searchHeader]} numberOfLines={1} ellipsizeMode="tail">
+    Results for “{searchQuery}”
+  </Text>
+);
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -70,16 +73,6 @@ const App = () => {
     overwriteListData(setListData, () => content);
   };
 
-  const getTitle = (key) => listData.find((item) => item.key === key)?.title;
-
-  const getTotalCount = (filterFunc = (e) => e) =>
-    Object.keys(data)
-      .filter((key) => key.startsWith('list-'))
-      .map((key) => data[key].filter(filterFunc).length)
-      .reduce((acc, value) => acc + value, 0);
-
-  const remindersSort = (a, b) => a.done - b.done || a.createdAt > b.createdAt;
-
   const addNewReminder = () => {
     const ts = Date.now();
     setData((prevData) =>
@@ -95,26 +88,29 @@ const App = () => {
   const processListData = (list) =>
     list.filter((entry) => (completedVisible ? true : !entry.done)).sort(remindersSort);
 
-  const multiListMapper = (key) =>
-    getTitle(key)
-      ? {
-          key,
-          title: getTitle(key),
-          data: processListData(
-            isSearchMode
-              ? data[key].filter((entry) => searchMatch(entry.text) || searchMatch(entry.textNote))
-              : data[key],
-          ),
-        }
-      : null;
+  const multiListMapper = (key) => {
+    const title = getTitle(listData, key);
+
+    if (!title) return null;
+
+    return {
+      key,
+      title,
+      data: processListData(
+        isSearchMode
+          ? data[key].filter((entry) => searchMatch(entry.text) || searchMatch(entry.textNote))
+          : data[key],
+      ),
+    };
+  };
 
   useEffect(() => {
     readListDataFromStorage();
     readDataFromStorage();
   }, []);
 
-  const totalCount = getTotalCount();
-  const allCount = getTotalCount((entry) => !entry.done);
+  const totalCount = getTotalCount(data);
+  const allCount = getTotalCount(data, (entry) => !entry.done);
   const allCompletedCount = totalCount - allCount;
 
   const isSearchMode = searchQuery && searchQuery.length > 0;
@@ -160,9 +156,7 @@ const App = () => {
           renderItem={({ item }) => (
             <RemindersListItem
               item={item}
-              count={
-                data && data[item.key] ? data[item.key].filter((entry) => !entry.done).length : 0
-              }
+              count={getListCount(data, item)}
               onPress={() => {
                 if (selectedKey === item.key) {
                   overwriteListData(setListData, (listItem) => ({
@@ -236,12 +230,7 @@ const App = () => {
       </View>
       <View style={styles.content}>
         {isSearchMode ? (
-          <Text
-            style={[styles.contentHeader, styles.searchHeader]}
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            Results for “{searchQuery}”
-          </Text>
+          <SearchResultsTitle searchQuery={searchQuery} />
         ) : (
           <>
             <Button

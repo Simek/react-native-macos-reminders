@@ -13,7 +13,7 @@ module.exports = {
     extraNodeModules: {
       'react-native': rnmPath,
     },
-    sourceExts: ['jsx','js'],
+    sourceExts: ['jsx', 'js'],
     platforms: ['macos', 'ios'],
     blacklistRE: exclusionList([/node_modules\/react-native\/.*/]),
   },

@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const SearchInput = ({ searchQuery, setSearchQuery }) => (
-  <>
+  <View>
     <TextInput
       onChangeText={setSearchQuery}
       value={searchQuery}
@@ -13,12 +13,21 @@ const SearchInput = ({ searchQuery, setSearchQuery }) => (
       blurOnSubmit
     />
     <Text style={[styles.searchInputIcon, styles.searchInputSearchIcon]}>􀊫</Text>
-    {searchQuery !== '' ? <ClearButton onPress={() => setSearchQuery('')} /> : null}
-  </>
+    {searchQuery.length ? (
+      <ClearButton
+        onPress={(e) => {
+          e.stopPropagation();
+          setSearchQuery('');
+        }}
+      />
+    ) : null}
+  </View>
 );
 
 const ClearButton = ({ onPress }) => (
-  <TouchableOpacity onPress={onPress} style={[styles.searchInputIcon, styles.searchInputClearIcon]}>
+  <TouchableOpacity
+    onPressIn={onPress}
+    style={[styles.searchInputIcon, styles.searchInputClearIcon]}>
     <Text style={styles.searchInputClearIconText}>􀁑</Text>
   </TouchableOpacity>
 );
@@ -39,14 +48,16 @@ const styles = StyleSheet.create({
   searchInputIcon: {
     position: 'absolute',
     fontSize: 14,
-    top: 6,
+    top: 2,
     color: { semantic: 'labelColor' },
+    padding: 4,
+    pointerEvents: 'none',
   },
   searchInputSearchIcon: {
-    left: 18,
+    left: 14,
   },
   searchInputClearIcon: {
-    right: 20,
+    right: 14,
   },
   searchInputClearIconText: {
     color: { semantic: 'labelColor' },
