@@ -8,7 +8,7 @@ export const storeData = (key, value, fallback = undefined) => {
   try {
     const jsonValue = JSON.stringify(value);
     storage.set(key, jsonValue);
-  } catch (e) {
+  } catch {
     if (fallback) {
       storeData(key, fallback);
     } else {
@@ -21,7 +21,7 @@ export const getStoredData = (key, fallback = undefined) => {
   try {
     const jsonValue = storage.getString(key);
     return jsonValue != null ? JSON.parse(jsonValue) : fallback;
-  } catch (e) {
+  } catch {
     return fallback;
   }
 };
@@ -29,7 +29,7 @@ export const getStoredData = (key, fallback = undefined) => {
 export const getAllStoredKeys = (fallback = []) => {
   try {
     return storage.getAllKeys();
-  } catch (e) {
+  } catch {
     return fallback;
   }
 };

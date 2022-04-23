@@ -2,7 +2,7 @@ import { PopoverManager } from '@rn-macos/popover';
 import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-import CONSTANTS from '../constants';
+import CONSTANTS from '../utils/constants';
 import Button from './Button';
 
 const FLAGGED_OFFSET = 24;

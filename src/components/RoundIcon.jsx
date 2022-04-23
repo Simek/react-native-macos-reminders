@@ -1,8 +1,7 @@
 import React from 'react';
-import type { Node } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-const RoundIcon: () => Node = ({
+const RoundIcon = ({
   icon,
   color = { semantic: 'systemBlueColor' },
   iconColor = '#fff',

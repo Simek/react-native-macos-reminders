@@ -14,15 +14,15 @@
     "@rn-macos/popover": "^0.1.0",
     "react": "17.0.2",
     "react-native": "0.66.4",
-    "react-native-mmkv": "2.2.0",
-    "react-native-macos": "0.66.44"
+    "react-native-mmkv": "^2.3.3",
+    "react-native-macos": "0.66.46"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
     "@babel/runtime": "^7.17.9",
     "babel-jest": "^26.6.3",
-    "eslint": "^8.13.0",
-    "eslint-config-universe": "^10.0.0",
+    "eslint": "^8.14.0",
+    "eslint-config-universe": "^11.0.0",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.66.2",
     "prettier": "^2.6.2",

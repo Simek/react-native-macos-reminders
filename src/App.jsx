@@ -2,20 +2,20 @@ import { Popover } from '@rn-macos/popover';
 import React, { useEffect, useState } from 'react';
 import { SectionList, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 
+import Button from './components/Button';
+import ReminderItem from './components/ReminderItem';
+import RemindersListItem from './components/RemindersListItem';
+import SearchInput from './components/SearchInput';
+import Tags from './components/Tags';
+import styles from './styles';
+import CONSTANTS from './utils/constants';
 import {
   getStoredData,
   storeData,
   overwriteListData,
   overwriteSelectedListData,
   findAndReplaceEntry,
-} from './Storage';
-import Button from './components/Button';
-import ReminderItem from './components/ReminderItem';
-import RemindersListItem from './components/RemindersListItem';
-import SearchInput from './components/SearchInput';
-import Tags from './components/Tags';
-import CONSTANTS from './constants';
-import styles from './styles';
+} from './utils/storage';
 
 const getListColor = (key) =>
   !CONSTANTS.KEYS.includes(key) ? { semantic: 'systemBlueColor' } : CONSTANTS.COLORS[key];

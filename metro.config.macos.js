@@ -3,7 +3,7 @@
  * integration tests during local development or on CI services.
  */
 
-const blacklist = require('metro-config/src/defaults/blacklist');
+const exclusionList = require('metro-config/src/defaults/exclusionList');
 const path = require('path');
 
 const rnmPath = path.resolve(__dirname, 'node_modules/react-native-macos');
@@ -13,7 +13,8 @@ module.exports = {
     extraNodeModules: {
       'react-native': rnmPath,
     },
+    sourceExts: ['jsx','js'],
     platforms: ['macos', 'ios'],
-    blacklistRE: blacklist([/node_modules\/react-native\/.*/]),
+    blacklistRE: exclusionList([/node_modules\/react-native\/.*/]),
   },
 };

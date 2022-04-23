@@ -1,18 +1,9 @@
 import React, { useState } from 'react';
-import type { Node } from 'react';
 import { ActionSheetIOS, Alert, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 
 import RoundIcon from './RoundIcon';
 
-const RemindersListItem: () => Node = ({
-  item,
-  count,
-  onPress,
-  onLongPress,
-  onEdit,
-  onEditEnd,
-  onRename,
-}) => {
+const RemindersListItem = ({ item, count, onPress, onLongPress, onEdit, onEditEnd, onRename }) => {
   const [focused, setFocused] = useState(false);
   return (
     <TouchableOpacity

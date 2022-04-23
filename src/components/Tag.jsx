@@ -1,11 +1,10 @@
 import React from 'react';
-import type { Node } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import CONSTANTS from '../constants';
+import CONSTANTS from '../utils/constants';
 import RoundIcon from './RoundIcon';
 
-const Tag: () => Node = ({ title, icon, onPress, count = 0, isActive = false }) => (
+const Tag = ({ title, icon, onPress, count = 0, isActive = false }) => (
   <TouchableOpacity
     onPress={onPress}
     style={[styles.tag, isActive ? { backgroundColor: CONSTANTS.COLORS[title] } : {}]}>

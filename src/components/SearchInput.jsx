@@ -1,9 +1,8 @@
 import React from 'react';
-import type { Node } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 
-const SearchInput: () => Node = ({ searchQuery, setSearchQuery }) => (
-  <View>
+const SearchInput = ({ searchQuery, setSearchQuery }) => (
+  <>
     <TextInput
       onChangeText={setSearchQuery}
       value={searchQuery}
@@ -14,14 +13,14 @@ const SearchInput: () => Node = ({ searchQuery, setSearchQuery }) => (
       blurOnSubmit
     />
     <Text style={[styles.searchInputIcon, styles.searchInputSearchIcon]}>􀊫</Text>
-    {searchQuery !== '' ? (
-      <TouchableOpacity
-        onPress={() => setSearchQuery('')}
-        style={[styles.searchInputIcon, styles.searchInputClearIcon]}>
-        <Text style={styles.searchInputClearIconText}>􀁑</Text>
-      </TouchableOpacity>
-    ) : null}
-  </View>
+    {searchQuery !== '' ? <ClearButton onPress={() => setSearchQuery('')} /> : null}
+  </>
+);
+
+const ClearButton = ({ onPress }) => (
+  <TouchableOpacity onPress={onPress} style={[styles.searchInputIcon, styles.searchInputClearIcon]}>
+    <Text style={styles.searchInputClearIconText}>􀁑</Text>
+  </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({

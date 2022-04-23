@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import type { Node } from 'react';
 import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 
-const Button: () => Node = ({
+const Button = ({
   onPress,
   text = '',
   icon = '',
