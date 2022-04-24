@@ -1,7 +1,8 @@
 import { Popover } from '@rn-macos/popover';
 import React, { useEffect, useState } from 'react';
-import { Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { Text, TouchableWithoutFeedback, View } from 'react-native';
 
+import AccentButton from './components/AccentButton';
 import Button from './components/Button';
 import ReminderItem from './components/ReminderItem';
 import ReminderList from './components/ReminderList';
@@ -10,6 +11,7 @@ import RemindersListFooter from './components/RemindersListFooter';
 import SearchInput from './components/SearchInput';
 import SearchResultsHeader from './components/SearchResultsHeader';
 import Tags from './components/Tags';
+import ClearMenu from './menus/ClearMenu';
 import styles from './styles';
 import CONSTANTS from './utils/constants';
 import {
@@ -83,6 +85,19 @@ const App = () => {
         ],
       }),
     );
+  };
+
+  const removeAllRemindersByList = (listKey, keys = []) => {
+    setData((prevState) => {
+      if (keys.length) {
+        prevState[listKey] = prevState[listKey].filter((entry) => !keys.includes(entry.key));
+      } else {
+        delete prevState[listKey];
+      }
+      const finalData = Object.assign({}, prevState);
+      writeDataToStorage(finalData);
+      return finalData;
+    });
   };
 
   const processListData = (list) => processRemindersList(list, completedVisible);
@@ -169,18 +184,21 @@ const App = () => {
               }));
             }
           }}
-          itemOnLongPress={(item) => {
+          itemOnDelete={(item) => {
             clearListTempData();
-            setSelectedKey('all');
+            if (listData.length) {
+              const firstUserListKey = listData[0].key;
+              setSelectedKey(firstUserListKey);
+              overwriteListData(setListData, (listItem) => ({
+                selected: listItem.key === firstUserListKey,
+              }));
+            } else {
+              setSelectedKey('all');
+            }
             overwriteListItemsDataAndStore((list) =>
               list.filter((listItem) => listItem.key !== item.key),
             );
-            setData((prevState) => {
-              delete prevState[item.key];
-              const finalData = Object.assign({}, prevState);
-              writeDataToStorage(finalData);
-              return finalData;
-            });
+            removeAllRemindersByList(item.key);
           }}
           itemOnRename={(item) => {
             overwriteListData(setListData, (listItem) =>
@@ -202,7 +220,9 @@ const App = () => {
           onPress={() => {
             const entry = getNewListEntry();
             overwriteListItemsDataAndStore((list) => [
-              ...list.map((listItem) => Object.assign({}, listItem, { selected: false })),
+              ...list.map((listItem) =>
+                Object.assign({}, listItem, { selected: false, editMode: false }),
+              ),
               entry,
             ]);
             setSelectedKey(entry.key);
@@ -273,23 +293,39 @@ const App = () => {
               />
             );
           }}
-          ListHeaderComponent={
-            selectedKey !== 'today' ? (
+          ListHeaderComponent={() => {
+            if (selectedKey === 'today') return null;
+
+            const completedCount = calculateCompleted();
+            const color =
+              selectedKey !== 'all' && !isSearchMode ? getListColor(selectedKey) : undefined;
+
+            return (
               <View style={styles.completedHeader}>
-                <Text style={styles.completedText}>{calculateCompleted()} Completed</Text>
-                <TouchableOpacity onPress={() => setCompletedVisible((prevState) => !prevState)}>
-                  <Text
-                    style={[
-                      styles.completedVisibleText,
-                      selectedKey !== 'all' &&
-                        !isSearchMode && { color: getListColor(selectedKey) },
-                    ]}>
-                    {completedVisible ? 'Hide' : 'Show'}
-                  </Text>
-                </TouchableOpacity>
+                <View style={styles.completedTextWrapper}>
+                  <Text style={styles.completedText}>{completedCount} Completed • </Text>
+                  <AccentButton
+                    onPress={() =>
+                      ClearMenu(completedCount, () => {
+                        const keys = data[selectedKey]
+                          .filter((entry) => entry.done)
+                          .map((entry) => entry.key);
+                        removeAllRemindersByList(selectedKey, keys);
+                      })
+                    }
+                    color={color}
+                    disabled={completedCount === 0}>
+                    Clear
+                  </AccentButton>
+                </View>
+                <AccentButton
+                  onPress={() => setCompletedVisible((prevState) => !prevState)}
+                  color={color}>
+                  {completedVisible ? 'Hide' : 'Show'}
+                </AccentButton>
               </View>
-            ) : null
-          }
+            );
+          }}
           ListFooterComponent={
             !isSearchMode && !CONSTANTS.KEYS.includes(selectedKey) ? (
               <TouchableWithoutFeedback onPress={addNewReminder}>

@@ -3,9 +3,9 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 const RemindersListFooter = ({ onPress }) => {
   return (
-    <TouchableOpacity style={styles.listFooter} onPress={onPress}>
+    <TouchableOpacity style={styles.listFooter} onPress={onPress} activeOpacity={1}>
       <Text style={styles.listFooterText}>
-        <Text style={styles.listFooterTextIcon}>􀁌 </Text> Add List
+        <Text style={styles.listFooterTextIcon}>􀁌</Text> Add List
       </Text>
     </TouchableOpacity>
   );
@@ -13,17 +13,19 @@ const RemindersListFooter = ({ onPress }) => {
 
 const styles = StyleSheet.create({
   listFooter: {
-    padding: 8,
-    flexDirection: 'row',
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    opacity: 0.5,
   },
   listFooterText: {
-    color: { semantic: 'systemGrayColor' },
+    color: { semantic: 'textColor' },
     fontSize: 13,
   },
   listFooterTextIcon: {
-    color: { semantic: 'systemGrayColor' },
+    flex: 1,
+    color: { semantic: 'textColor' },
     fontSize: 14,
-    lineHeight: 14,
+    marginRight: 2,
   },
 });
 

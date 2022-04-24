@@ -3,7 +3,7 @@ import { ActionSheetIOS, Alert, StyleSheet, Text, TextInput, TouchableOpacity } 
 
 import RoundIcon from './RoundIcon';
 
-const RemindersListItem = ({ item, count, onPress, onLongPress, onEdit, onEditEnd, onRename }) => {
+const RemindersListItem = ({ item, count, onPress, onDelete, onEdit, onEditEnd, onRename }) => {
   const [focused, setFocused] = useState(false);
   return (
     <TouchableOpacity
@@ -34,7 +34,7 @@ const RemindersListItem = ({ item, count, onPress, onLongPress, onEdit, onEditEn
               } else if (buttonIndex === 1) {
                 onRename(e);
               } else if (buttonIndex === 2) {
-                onLongPress(e);
+                onDelete(e);
               }
             },
           );
@@ -42,7 +42,6 @@ const RemindersListItem = ({ item, count, onPress, onLongPress, onEdit, onEditEn
           onPress(e);
         }
       }}
-      onLongPress={onLongPress}
       onPressIn={(e) => {
         if (e.nativeEvent.button === 2) {
           setFocused(true);

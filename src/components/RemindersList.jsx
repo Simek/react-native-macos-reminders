@@ -7,7 +7,7 @@ const RemindersList = ({
   data = [],
   getItemCount,
   itemOnPress,
-  itemOnLongPress,
+  itemOnDelete,
   itemOnEdit,
   itemOnRename,
   itemOnEditEnd,
@@ -25,7 +25,7 @@ const RemindersList = ({
         item={item}
         count={getItemCount(item)}
         onPress={() => itemOnPress(item)}
-        onLongPress={() => itemOnLongPress(item)}
+        onDelete={() => itemOnDelete(item)}
         onRename={() => itemOnRename(item)}
         onEdit={(title) => itemOnEdit(item, title)}
         onEditEnd={() => itemOnEditEnd(item)}

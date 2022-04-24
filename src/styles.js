@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   contentHeader: {
-    fontSize: 32,
+    fontSize: 34,
     fontWeight: '700',
     fontFamily: 'SF Pro Rounded',
     lineHeight: 38,
@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   completedHeader: {
-    flex: 1,
     flexDirection: 'row',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#8c8c8c50',
@@ -73,6 +72,9 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     marginTop: 16,
     marginBottom: 8,
+  },
+  completedTextWrapper: {
+    flexDirection: 'row',
   },
   completedText: {
     color: { semantic: 'systemGrayColor' },
