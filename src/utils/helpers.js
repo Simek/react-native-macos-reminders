@@ -4,6 +4,16 @@ import CONSTANTS from './constants';
 export const getListColor = (key) =>
   !CONSTANTS.KEYS.includes(key) ? { semantic: 'systemBlueColor' } : CONSTANTS.COLORS[key];
 
+export const getNewListEntry = () => {
+  const key = `list-${Date.now()}`;
+  return {
+    title: 'New list',
+    key,
+    selected: true,
+    editMode: true,
+  };
+};
+
 export const getListCount = (data, item) =>
   data && data[item.key] ? data[item.key].filter((entry) => !entry.done).length : 0;
 
@@ -24,3 +34,9 @@ export const getHeaderStyle = (key, customStyles = undefined) => {
 };
 
 export const remindersSort = (a, b) => a.done - b.done || a.createdAt > b.createdAt;
+
+const searchHit = (searchQuery, text) =>
+  text && text.toLowerCase().includes(searchQuery.toLowerCase());
+
+export const filterSearchHits = (searchQuery, { text, textNote }) =>
+  searchHit(searchQuery, text) || searchHit(searchQuery, textNote);

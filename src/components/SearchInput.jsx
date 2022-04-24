@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
     top: 2,
     color: { semantic: 'labelColor' },
     padding: 4,
-    pointerEvents: 'none',
   },
   searchInputSearchIcon: {
     left: 14,

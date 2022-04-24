@@ -4,15 +4,17 @@ import { SectionList, Text, TouchableOpacity, TouchableWithoutFeedback, View } f
 
 import Button from './components/Button';
 import ReminderItem from './components/ReminderItem';
-import RemindersListItem from './components/RemindersListItem';
+import RemindersList from './components/RemindersList';
+import RemindersListFooter from './components/RemindersListFooter';
 import SearchInput from './components/SearchInput';
 import Tags from './components/Tags';
 import styles from './styles';
 import CONSTANTS from './utils/constants';
 import {
+  filterSearchHits,
   getHeaderStyle,
-  getListCount,
   getListColor,
+  getNewListEntry,
   getTitle,
   getTotalCount,
   remindersSort,
@@ -41,7 +43,7 @@ const App = () => {
   const [completedVisible, setCompletedVisible] = useState(true);
 
   const readListDataFromStorage = () => {
-    const item = getStoredData('remindersLists', []);
+    const item = getStoredData('remindersLists', listData);
     setListData(item);
   };
 
@@ -53,7 +55,7 @@ const App = () => {
   };
 
   const readDataFromStorage = () => {
-    const item = getStoredData('remindersData', CONSTANTS.STORE);
+    const item = getStoredData('remindersData', data);
     setData(item);
   };
 
@@ -98,7 +100,7 @@ const App = () => {
       title,
       data: processListData(
         isSearchMode
-          ? data[key].filter((entry) => searchMatch(entry.text) || searchMatch(entry.textNote))
+          ? data[key].filter((entry) => filterSearchHits(searchQuery, entry))
           : data[key],
       ),
     };
@@ -114,7 +116,6 @@ const App = () => {
   const allCompletedCount = totalCount - allCount;
 
   const isSearchMode = searchQuery && searchQuery.length > 0;
-  const searchMatch = (text) => text && text.toLowerCase().includes(searchQuery.toLowerCase());
 
   const remindersSections =
     selectedKey === 'all' || isSearchMode
@@ -136,97 +137,74 @@ const App = () => {
 
   return (
     <View style={styles.container}>
+      <Popover style={{ position: 'absolute' }}>{popoverData}</Popover>
       <View style={styles.sourceList}>
-        <Popover style={{ position: 'absolute' }}>{popoverData}</Popover>
         <SearchInput searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         <Tags
           selectedKey={selectedKey}
           setSelectedKey={setSelectedKey}
-          onPress={() => clearListTempData()}
+          onPress={clearListTempData}
           allCount={allCount}
         />
-        <SectionList
-          sections={[
-            {
-              title: 'My Lists',
-              data: listData || [],
-            },
-          ]}
-          keyExtractor={(item, index) => item + index}
-          renderItem={({ item }) => (
-            <RemindersListItem
-              item={item}
-              count={getListCount(data, item)}
-              onPress={() => {
-                if (selectedKey === item.key) {
-                  overwriteListData(setListData, (listItem) => ({
-                    editMode: listItem.key === item.key,
-                  }));
-                } else {
-                  setSelectedKey(item.key);
-                  overwriteListData(setListData, (listItem) => ({
-                    selected: listItem.key === item.key,
-                    editMode: false,
-                  }));
-                }
-              }}
-              onLongPress={() => {
-                clearListTempData();
-                setSelectedKey('all');
-                overwriteListItemsDataAndStore((list) =>
-                  list.filter((listItem) => listItem.key !== item.key),
-                );
-                setData((prevState) => {
-                  delete prevState[item.key];
-                  writeDataToStorage(Object.assign({}, prevState));
-                  return Object.assign({}, prevState);
-                });
-              }}
-              onEdit={(title) => {
-                overwriteListData(setListData, (listItem) =>
-                  listItem.key === item.key ? { title } : {},
-                );
-              }}
-              onRename={() => {
-                overwriteListData(setListData, (listItem) =>
-                  listItem.key === item.key ? { editMode: true, selected: true } : {},
-                );
-              }}
-              onEditEnd={() => {
-                overwriteListItemsDataAndStore((list) =>
-                  list.map((listItem) => Object.assign({}, listItem, { editMode: false })),
-                );
-              }}
-            />
-          )}
-          renderSectionHeader={({ section: { title } }) =>
-            title ? <Text style={styles.listHeader}>{title}</Text> : null
-          }
-        />
-        <TouchableOpacity
-          style={styles.listFooter}
-          onPress={() => {
-            const key = `list-${Date.now()}`;
-            overwriteListItemsDataAndStore((list) => [
-              ...list.map((listItem) => Object.assign({}, listItem, { selected: false })),
-              {
-                title: 'New list',
-                key,
-                selected: true,
-                editMode: true,
-              },
-            ]);
-            setSelectedKey(key);
+        <RemindersList
+          data={listData}
+          itemOnPress={(item) => {
+            if (selectedKey === item.key) {
+              overwriteListData(setListData, (listItem) => ({
+                editMode: listItem.key === item.key,
+              }));
+            } else {
+              setSelectedKey(item.key);
+              overwriteListData(setListData, (listItem) => ({
+                selected: listItem.key === item.key,
+                editMode: false,
+              }));
+            }
+          }}
+          itemOnLongPress={(item) => {
+            clearListTempData();
+            setSelectedKey('all');
+            overwriteListItemsDataAndStore((list) =>
+              list.filter((listItem) => listItem.key !== item.key),
+            );
             setData((prevState) => {
-              const finalData = Object.assign({}, prevState, { [key]: [] });
+              delete prevState[item.key];
+              const finalData = Object.assign({}, prevState);
               writeDataToStorage(finalData);
               return finalData;
             });
-          }}>
-          <Text style={styles.listFooterText}>
-            <Text style={styles.listFooterTextIcon}>􀁌 </Text> Add List
-          </Text>
-        </TouchableOpacity>
+          }}
+          itemOnRename={(item) => {
+            overwriteListData(setListData, (listItem) =>
+              listItem.key === item.key ? { editMode: true, selected: true } : {},
+            );
+          }}
+          itemOnEdit={(item, title) => {
+            overwriteListData(setListData, (listItem) =>
+              listItem.key === item.key ? { title } : {},
+            );
+          }}
+          itemOnEditEnd={() => {
+            overwriteListItemsDataAndStore((list) =>
+              list.map((listItem) => Object.assign({}, listItem, { editMode: false })),
+            );
+          }}
+        />
+        <RemindersListFooter
+          onPress={() => {
+            const entry = getNewListEntry();
+            overwriteListItemsDataAndStore((list) => [
+              ...list.map((listItem) => Object.assign({}, listItem, { selected: false })),
+              entry,
+            ]);
+            setSelectedKey(entry.key);
+            setData((prevState) => {
+              const finalData = Object.assign({}, prevState, { [entry.key]: [] });
+              writeDataToStorage(finalData);
+              return finalData;
+            });
+          }}
+        />
       </View>
       <View style={styles.content}>
         {isSearchMode ? (

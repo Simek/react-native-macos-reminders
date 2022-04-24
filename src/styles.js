@@ -12,14 +12,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingTop: 52,
   },
-  listHeader: {
-    fontSize: 11,
-    fontWeight: '600',
-    marginBottom: 4,
-    paddingHorizontal: 20,
-    color: { semantic: 'secondaryLabelColor' },
-    opacity: 0.65,
-  },
   listItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -44,19 +36,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     flexGrow: 99,
-  },
-  listFooter: {
-    padding: 8,
-    flexDirection: 'row',
-  },
-  listFooterText: {
-    color: { semantic: 'systemGrayColor' },
-    fontSize: 13,
-  },
-  listFooterTextIcon: {
-    color: { semantic: 'systemGrayColor' },
-    fontSize: 14,
-    lineHeight: 14,
   },
   content: {
     backgroundColor: { semantic: 'controlBackgroundColor' },
