@@ -1,11 +1,11 @@
 import React from 'react';
 import { SectionList, StyleSheet, Text } from 'react-native';
 
-import { getListCount } from '../utils/helpers';
 import RemindersListItem from './RemindersListItem';
 
 const RemindersList = ({
   data = [],
+  getItemCount,
   itemOnPress,
   itemOnLongPress,
   itemOnEdit,
@@ -23,7 +23,7 @@ const RemindersList = ({
     renderItem={({ item }) => (
       <RemindersListItem
         item={item}
-        count={getListCount(data, item)}
+        count={getItemCount(item)}
         onPress={() => itemOnPress(item)}
         onLongPress={() => itemOnLongPress(item)}
         onRename={() => itemOnRename(item)}

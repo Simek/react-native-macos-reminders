@@ -48,13 +48,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  contentStickyHeaderWrapper: {
-    backgroundColor: { semantic: 'controlBackgroundColor' },
-  },
   contentHeader: {
     fontSize: 32,
     fontWeight: '700',
     fontFamily: 'SF Pro Rounded',
+    lineHeight: 38,
     color: { semantic: 'secondaryLabelColor' },
   },
   contentHeaderCustom: {
@@ -98,12 +96,6 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     fontSize: 20,
     fontFamily: 'SF Pro Rounded',
-    color: { semantic: 'systemBlueColor' },
-  },
-  allListHeader: {
-    fontSize: 18,
-    marginTop: 4,
-    marginBottom: 12,
     color: { semantic: 'systemBlueColor' },
   },
   addReminderRow: {

@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 
 import Tag from './Tag';
 
-const Tags = ({ selectedKey, setSelectedKey, onPress, allCount }) => (
+const Tags = ({ selectedKey, setSelectedKey, onPress, allCount, flaggedCount }) => (
   <View style={styles.tags}>
     <Tag
       title="today"
@@ -41,6 +41,7 @@ const Tags = ({ selectedKey, setSelectedKey, onPress, allCount }) => (
         onPress();
         setSelectedKey('flagged');
       }}
+      count={flaggedCount}
     />
   </View>
 );

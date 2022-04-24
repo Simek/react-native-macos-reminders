@@ -14,6 +14,13 @@ export const getNewListEntry = () => {
   };
 };
 
+export const getSpecialListContent = (data, multiListMapper, filter = () => true) =>
+  Object.keys(data)
+    .filter((key) => key.startsWith('list-'))
+    .map((key) => multiListMapper(key))
+    .filter(filter)
+    .filter(Boolean);
+
 export const getListCount = (data, item) =>
   data && data[item.key] ? data[item.key].filter((entry) => !entry.done).length : 0;
 
@@ -33,7 +40,10 @@ export const getHeaderStyle = (key, customStyles = undefined) => {
   ];
 };
 
-export const remindersSort = (a, b) => a.done - b.done || a.createdAt > b.createdAt;
+const remindersSort = (a, b) => a.done - b.done || a.createdAt > b.createdAt;
+
+export const processRemindersList = (list, completedVisible) =>
+  list.filter((entry) => (completedVisible ? true : !entry.done)).sort(remindersSort);
 
 const searchHit = (searchQuery, text) =>
   text && text.toLowerCase().includes(searchQuery.toLowerCase());

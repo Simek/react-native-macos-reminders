@@ -1,12 +1,14 @@
 import { Popover } from '@rn-macos/popover';
 import React, { useEffect, useState } from 'react';
-import { SectionList, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 
 import Button from './components/Button';
 import ReminderItem from './components/ReminderItem';
+import ReminderList from './components/ReminderList';
 import RemindersList from './components/RemindersList';
 import RemindersListFooter from './components/RemindersListFooter';
 import SearchInput from './components/SearchInput';
+import SearchResultsHeader from './components/SearchResultsHeader';
 import Tags from './components/Tags';
 import styles from './styles';
 import CONSTANTS from './utils/constants';
@@ -14,10 +16,12 @@ import {
   filterSearchHits,
   getHeaderStyle,
   getListColor,
+  getListCount,
   getNewListEntry,
+  getSpecialListContent,
   getTitle,
   getTotalCount,
-  remindersSort,
+  processRemindersList,
 } from './utils/helpers';
 import {
   getStoredData,
@@ -26,12 +30,6 @@ import {
   overwriteSelectedListData,
   findAndReplaceEntry,
 } from './utils/storage';
-
-const SearchResultsTitle = ({ searchQuery }) => (
-  <Text style={[styles.contentHeader, styles.searchHeader]} numberOfLines={1} ellipsizeMode="tail">
-    Results for “{searchQuery}”
-  </Text>
-);
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -87,10 +85,9 @@ const App = () => {
     );
   };
 
-  const processListData = (list) =>
-    list.filter((entry) => (completedVisible ? true : !entry.done)).sort(remindersSort);
+  const processListData = (list) => processRemindersList(list, completedVisible);
 
-  const multiListMapper = (key) => {
+  const multiListMapper = (key, itemFilter = () => true) => {
     const title = getTitle(listData, key);
 
     if (!title) return null;
@@ -98,12 +95,30 @@ const App = () => {
     return {
       key,
       title,
-      data: processListData(
-        isSearchMode
-          ? data[key].filter((entry) => filterSearchHits(searchQuery, entry))
-          : data[key],
-      ),
+      data: processListData(data[key].filter(itemFilter)),
     };
+  };
+
+  const getRemindersSections = () => {
+    if (isSearchMode) {
+      return getSpecialListContent(
+        data,
+        (key) => multiListMapper(key, (entry) => filterSearchHits(searchQuery, entry)),
+        (section) => section.data.length > 0,
+      );
+    } else if (selectedKey === 'all') {
+      return getSpecialListContent(data, (key) => multiListMapper(key));
+    } else if (selectedKey === 'flagged') {
+      return getSpecialListContent(
+        data,
+        (key) => multiListMapper(key, (entry) => entry.flagged),
+        (section) => section.data.filter((entry) => entry.flagged).length || 0,
+      );
+    } else {
+      return [
+        data[selectedKey]?.length > 0 ? { data: processListData(data[selectedKey]) } : null,
+      ].filter(Boolean);
+    }
   };
 
   useEffect(() => {
@@ -114,19 +129,10 @@ const App = () => {
   const totalCount = getTotalCount(data);
   const allCount = getTotalCount(data, (entry) => !entry.done);
   const allCompletedCount = totalCount - allCount;
+  const flaggedCount = getTotalCount(data, (entry) => entry.flagged);
 
   const isSearchMode = searchQuery && searchQuery.length > 0;
-
-  const remindersSections =
-    selectedKey === 'all' || isSearchMode
-      ? Object.keys(data)
-          .filter((key) => key.startsWith('list-'))
-          .map(multiListMapper)
-          .filter((section) => (isSearchMode ? section.data.length > 0 : true))
-          .filter(Boolean)
-      : [
-          data[selectedKey]?.length > 0 ? { data: processListData(data[selectedKey]) } : null,
-        ].filter(Boolean);
+  const remindersSections = getRemindersSections();
 
   const calculateCompleted = () =>
     isSearchMode
@@ -145,9 +151,11 @@ const App = () => {
           setSelectedKey={setSelectedKey}
           onPress={clearListTempData}
           allCount={allCount}
+          flaggedCount={flaggedCount}
         />
         <RemindersList
           data={listData}
+          getItemCount={(item) => getListCount(data, item)}
           itemOnPress={(item) => {
             if (selectedKey === item.key) {
               overwriteListData(setListData, (listItem) => ({
@@ -208,15 +216,10 @@ const App = () => {
       </View>
       <View style={styles.content}>
         {isSearchMode ? (
-          <SearchResultsTitle searchQuery={searchQuery} />
+          <SearchResultsHeader searchQuery={searchQuery} />
         ) : (
           <>
-            <Button
-              icon="􀅼"
-              disabled={isSearchMode}
-              onPress={addNewReminder}
-              style={styles.addItemButton}
-            />
+            <Button icon="􀅼" onPress={addNewReminder} style={styles.addItemButton} />
             <View style={styles.contentHeaderWrapper}>
               <Text
                 style={getHeaderStyle(selectedKey, selectedKey.startsWith('list-'))}
@@ -228,18 +231,15 @@ const App = () => {
               </Text>
               {!CONSTANTS.KEYS.includes(selectedKey) ? (
                 <Text style={getHeaderStyle(selectedKey, styles.contentHeaderCounter)}>
-                  {data[selectedKey].filter((entry) => !entry.done).length}
+                  {getListCount(data, { key: selectedKey })}
                 </Text>
               ) : null}
             </View>
           </>
         )}
-        <SectionList
-          contentContainerStyle={remindersSections?.length ? {} : { flexGrow: 2 }}
+        <ReminderList
+          selectedKey={selectedKey}
           sections={remindersSections}
-          stickySectionHeadersEnabled
-          contentOffset={{ y: 52 }}
-          keyExtractor={(item) => item.key}
           renderItem={({ item, section }) => {
             const dataKey = section.key || selectedKey;
             return (
@@ -273,13 +273,6 @@ const App = () => {
               />
             );
           }}
-          renderSectionHeader={({ section: { title } }) =>
-            title ? (
-              <View style={styles.contentStickyHeaderWrapper}>
-                <Text style={[styles.contentHeader, styles.allListHeader]}>{title}</Text>
-              </View>
-            ) : null
-          }
           ListHeaderComponent={
             selectedKey !== 'today' ? (
               <View style={styles.completedHeader}>
