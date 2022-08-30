@@ -172,17 +172,16 @@ const App = () => {
           data={listData}
           getItemCount={(item) => getListCount(data, item)}
           itemOnPress={(item) => {
-            if (selectedKey === item.key) {
-              overwriteListData(setListData, (listItem) => ({
-                editMode: listItem.key === item.key,
-              }));
-            } else {
-              setSelectedKey(item.key);
-              overwriteListData(setListData, (listItem) => ({
-                selected: listItem.key === item.key,
-                editMode: false,
-              }));
-            }
+            setSelectedKey(item.key);
+            overwriteListData(setListData, (listItem) => ({
+              selected: listItem.key === item.key,
+              editMode: false,
+            }));
+          }}
+          itemOnTextInputPress={(item) => {
+            overwriteListData(setListData, (listItem) => ({
+              editMode: listItem.key === item.key,
+            }));
           }}
           itemOnDelete={(item) => {
             clearListTempData();

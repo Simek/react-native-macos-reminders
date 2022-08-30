@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
-import { ActionSheetIOS, Alert, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { ActionSheetIOS, Alert, Pressable, StyleSheet, Text, TextInput } from 'react-native';
 
 import RoundIcon from './RoundIcon';
 
-const RemindersListItem = ({ item, count, onPress, onDelete, onEdit, onEditEnd, onRename }) => {
+const RemindersListItem = ({
+  item,
+  count,
+  onPress,
+  onTextInputPress,
+  onDelete,
+  onEdit,
+  onEditEnd,
+  onRename,
+}) => {
   const [focused, setFocused] = useState(false);
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={(e) => {
         if (e.nativeEvent.button === 2) {
           ActionSheetIOS.showActionSheetWithOptions(
@@ -58,8 +67,7 @@ const RemindersListItem = ({ item, count, onPress, onDelete, onEdit, onEditEnd, 
               },
             }
           : {},
-      ]}
-      activeOpacity={1}>
+      ]}>
       <RoundIcon icon="􀋲" iconSize={13} color={item.color} style={styles.listItemIcon} />
       {item.editMode ? (
         <TextInput
@@ -74,17 +82,21 @@ const RemindersListItem = ({ item, count, onPress, onDelete, onEdit, onEditEnd, 
           numberOfLines={1}
         />
       ) : (
-        <Text
-          numberOfLines={1}
-          ellipsizeMode="tail"
-          style={[
-            styles.listItemText,
-            {
-              color: item.selected ? '#fff' : { semantic: 'labelColor' },
-            },
-          ]}>
-          {item.title}
-        </Text>
+        <Pressable
+          onPress={(e) => (item.selected ? onTextInputPress(e) : onPress(e))}
+          style={styles.listItemTextWrapper}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={[
+              styles.listItemText,
+              {
+                color: item.selected ? '#fff' : { semantic: 'labelColor' },
+              },
+            ]}>
+            {item.title}
+          </Text>
+        </Pressable>
       )}
       <Text
         style={[
@@ -95,7 +107,7 @@ const RemindersListItem = ({ item, count, onPress, onDelete, onEdit, onEditEnd, 
         ]}>
         {count || 0}
       </Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -120,14 +132,16 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     paddingLeft: 1,
-    marginRight: 8,
+    marginRight: 10,
   },
-  listItemText: {
+  listItemTextWrapper: {
     flex: 1,
     flexGrow: 1,
+    marginRight: 12,
+  },
+  listItemText: {
     fontSize: 13,
     lineHeight: 24,
-    marginRight: 12,
   },
   listItemInput: {
     flex: 1,

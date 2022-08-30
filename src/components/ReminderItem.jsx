@@ -97,6 +97,7 @@ const RemindersListItem = ({
               onEdit(newValue);
             }
           }}
+          enableFocusRing={false}
         />
         {hasNote || isExpanded ? (
           <TextInput
@@ -121,6 +122,7 @@ const RemindersListItem = ({
                 onEdit(newValue, 'textNote');
               }
             }}
+            enableFocusRing={false}
           />
         ) : null}
         {isExpanded ? (
