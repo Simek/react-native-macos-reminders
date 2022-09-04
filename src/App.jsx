@@ -10,7 +10,7 @@ import RemindersList from './components/RemindersList';
 import RemindersListFooter from './components/RemindersListFooter';
 import SearchInput from './components/SearchInput';
 import SearchResultsHeader from './components/SearchResultsHeader';
-import Tags from './components/Tags';
+import Sections from './components/Sections';
 import ClearMenu from './menus/ClearMenu';
 import styles from './styles';
 import CONSTANTS from './utils/constants';
@@ -161,7 +161,7 @@ const App = () => {
       <Popover style={{ position: 'absolute' }}>{popoverData}</Popover>
       <View style={styles.sourceList}>
         <SearchInput searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-        <Tags
+        <Sections
           selectedKey={selectedKey}
           setSelectedKey={setSelectedKey}
           onPress={clearListTempData}
@@ -296,8 +296,7 @@ const App = () => {
             if (selectedKey === 'today') return null;
 
             const completedCount = calculateCompleted();
-            const color =
-              selectedKey !== 'all' && !isSearchMode ? getListColor(selectedKey) : undefined;
+            const color = getListColor(selectedKey);
 
             return (
               <View style={styles.completedHeader}>

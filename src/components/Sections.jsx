@@ -1,29 +1,31 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import Tag from './Tag';
+import Section from './Section';
 
-const Tags = ({ selectedKey, setSelectedKey, onPress, allCount, flaggedCount }) => (
+const Sections = ({ selectedKey, setSelectedKey, onPress, allCount, flaggedCount }) => (
   <View style={styles.tags}>
-    <Tag
+    <Section
       title="today"
       icon="􀧵"
+      iconSize={14.5}
       isActive={selectedKey === 'today'}
       onPress={() => {
         onPress();
         setSelectedKey('today');
       }}
     />
-    <Tag
+    <Section
       title="scheduled"
       icon="􀉉"
+      iconSize={14.5}
       isActive={selectedKey === 'scheduled'}
       onPress={() => {
         onPress();
         setSelectedKey('scheduled');
       }}
     />
-    <Tag
+    <Section
       title="all"
       icon="􀈤"
       isActive={selectedKey === 'all'}
@@ -33,9 +35,10 @@ const Tags = ({ selectedKey, setSelectedKey, onPress, allCount, flaggedCount }) 
       }}
       count={allCount}
     />
-    <Tag
+    <Section
       title="flagged"
       icon="􀋊"
+      iconSize={12}
       isActive={selectedKey === 'flagged'}
       onPress={() => {
         onPress();
@@ -53,9 +56,9 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     marginBottom: 12,
-    marginTop: 16,
+    marginTop: 20,
     paddingHorizontal: 12,
   },
 });
 
-export default Tags;
+export default Sections;

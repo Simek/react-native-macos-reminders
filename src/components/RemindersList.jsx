@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     marginBottom: 4,
-    paddingHorizontal: 20,
+    paddingHorizontal: 22,
     color: { semantic: 'secondaryLabelColor' },
     opacity: 0.65,
   },

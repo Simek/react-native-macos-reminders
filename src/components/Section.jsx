@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import CONSTANTS from '../utils/constants';
 import RoundIcon from './RoundIcon';
 
-const Tag = ({ title, icon, onPress, count = 0, isActive = false }) => (
+const Section = ({ title, icon, onPress, count = 0, isActive = false, iconSize = 14 }) => (
   <TouchableOpacity
     onPress={onPress}
     style={[styles.tag, isActive ? { backgroundColor: CONSTANTS.COLORS[title] } : {}]}>
@@ -13,7 +13,7 @@ const Tag = ({ title, icon, onPress, count = 0, isActive = false }) => (
       isActive={isActive}
       color={CONSTANTS.COLORS[title]}
       iconColor={isActive ? CONSTANTS.COLORS[title] : '#fff'}
-      iconSize={14}
+      iconSize={iconSize}
       style={styles.tagIcon}
     />
     <Text style={[styles.tagCount, isActive && { color: '#fff' }]}>{count}</Text>
@@ -68,4 +68,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Tag;
+export default Section;
