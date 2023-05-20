@@ -35,15 +35,15 @@ const ClearButton = ({ onPress }) => (
 const styles = StyleSheet.create({
   searchInput: {
     height: 28,
-    lineHeight: 21,
     fontSize: 13,
     backgroundColor: { semantic: 'disabledControlTextColor' },
     marginHorizontal: 12,
+    paddingTop: 5,
     paddingLeft: 24,
     borderRadius: 6,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#8c8c8c80',
-    color: { semantic: 'labelColor' },
+    color: { semantic: 'textColor' },
   },
   searchInputIcon: {
     position: 'absolute',

@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import CONSTANTS from '../utils/constants';
 import RoundIcon from './RoundIcon';
+import CONSTANTS from '../utils/constants';
 
 const Section = ({ title, icon, onPress, count = 0, isActive = false, iconSize = 14 }) => (
   <TouchableOpacity

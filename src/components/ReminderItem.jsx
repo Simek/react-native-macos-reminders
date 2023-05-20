@@ -2,9 +2,9 @@ import { PopoverManager } from '@rn-macos/popover';
 import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-import CONSTANTS from '../utils/constants';
 import Button from './Button';
 import ReminderItemPopover from './ReminderItemPopover';
+import CONSTANTS from '../utils/constants';
 
 const FLAGGED_OFFSET = 24;
 

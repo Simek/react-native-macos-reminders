@@ -1,5 +1,5 @@
-import styles from '../styles';
 import CONSTANTS from './constants';
+import styles from '../styles';
 
 export const getListColor = (key) =>
   !CONSTANTS.KEYS.includes(key) ? { semantic: 'systemBlueColor' } : CONSTANTS.COLORS[key];

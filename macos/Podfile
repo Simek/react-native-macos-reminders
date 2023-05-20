@@ -1,10 +1,31 @@
 require_relative '../node_modules/react-native-macos/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
+prepare_react_native_project!
+
+flipper_config = FlipperConfiguration.disabled
+
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
+
 abstract_target 'Shared' do
   target 'Reminders-macOS' do
     platform :macos, '10.15'
-    use_native_modules!
+
+    config = use_native_modules!
+    flags = get_default_flags()
+
     use_react_native!(:path => '../node_modules/react-native-macos')
+  end
+
+  post_install do |installer|
+    react_native_post_install(
+      installer,
+      :mac_catalyst_enabled => false
+    )
+    __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end

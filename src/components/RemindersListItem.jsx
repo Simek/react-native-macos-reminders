@@ -68,7 +68,13 @@ const RemindersListItem = ({
             }
           : {},
       ]}>
-      <RoundIcon icon="􀋲" iconSize={13} color={item.color} style={styles.listItemIcon} />
+      <RoundIcon
+        icon="􀋲"
+        iconSize={12}
+        color={item.color}
+        style={styles.listItemIconBox}
+        iconStyle={styles.listItemIcon}
+      />
       {item.editMode ? (
         <TextInput
           autoFocus
@@ -123,6 +129,7 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: 'transparent',
     marginHorizontal: 10,
+    minHeight: 36,
   },
   listItemSelected: {
     backgroundColor: {
@@ -130,9 +137,10 @@ const styles = StyleSheet.create({
     },
   },
   listItemIcon: {
-    width: 24,
-    height: 24,
-    paddingLeft: 1,
+    width: 14,
+    height: 14,
+  },
+  listItemIconBox: {
     marginRight: 10,
   },
   listItemTextWrapper: {

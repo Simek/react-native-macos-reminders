@@ -39,8 +39,9 @@ const styles = StyleSheet.create({
   icon: {
     justifyContent: 'center',
     alignItems: 'center',
+    textAlign: 'center',
     borderRadius: 100,
-    paddingLeft: 2,
+    paddingLeft: 1.5,
   },
 });
 
