@@ -1,0 +1,17 @@
+{
+  "cli": {
+    "version": ">= 3.7.2",
+    "promptToConfigurePushNotifications": false
+  },
+  "build": {
+    "production": {
+      "ios": {
+        "resourceClass": "m-medium",
+        "config": "build-macos.yml"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

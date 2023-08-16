@@ -8,14 +8,14 @@
     "lint": "eslint .",
     "pods": "npx pod-install",
     "update-lock": "npx yarn-deduplicate",
-    "postinstall": "yarn update-lock && yarn pods"
+    "eas-build": "npx eas-cli build --profile production --platform ios"
   },
   "dependencies": {
     "@rn-macos/popover": "^0.1.0",
     "react": "18.2.0",
     "react-native": "0.71.8",
-    "react-native-mmkv": "^2.8.0",
-    "react-native-macos": "0.71.8"
+    "react-native-macos": "0.71.8",
+    "react-native-mmkv": "^2.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.8",
@@ -23,6 +23,7 @@
     "babel-jest": "^29.5.0",
     "eslint": "^8.41.0",
     "eslint-config-universe": "^11.2.0",
+    "expo-modules-autolinking": "^1.5.0",
     "jest": "^29.5.0",
     "metro-react-native-babel-preset": "^0.76.4",
     "prettier": "^2.8.8",

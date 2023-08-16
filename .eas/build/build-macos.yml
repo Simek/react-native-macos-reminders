@@ -1,0 +1,25 @@
+build:
+  name: macOS App Build
+  steps:
+    - eas/checkout
+
+    - run:
+        name: Install dependencies
+        command: yarn
+
+    - run:
+        name: Install pods
+        command: yarn pods
+
+    - eas/resolve_apple_team_id_from_credentials:
+        id: resolve_apple_team_id_from_credentials
+
+    - eas/configure_ios_credentials
+
+    - eas/generate_gymfile_from_template:
+        inputs:
+          credentials: ${ eas.job.secrets.buildCredentials }
+
+    - eas/run_fastlane
+
+    - eas/find_and_upload_build_artifacts
