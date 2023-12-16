@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0496A360A6F874C295C73D4B /* libPods-Shared-Reminders-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C8DBC48FD7C3AEF576C57B21 /* libPods-Shared-Reminders-macOS.a */; };
+		42B3B093F8FF49095BE7AA54 /* libPods-Shared-Reminders-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AE3F4313F5E9FD6D239B361 /* libPods-Shared-Reminders-macOS.a */; };
 		5142014D2437B4B30078DB4F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5142014C2437B4B30078DB4F /* AppDelegate.m */; };
 		514201502437B4B30078DB4F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5142014F2437B4B30078DB4F /* ViewController.m */; };
 		514201522437B4B40078DB4F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 514201512437B4B40078DB4F /* Assets.xcassets */; };
@@ -28,13 +28,10 @@
 		514201562437B4B40078DB4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		514201572437B4B40078DB4F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		514201592437B4B40078DB4F /* Reminders.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Reminders.entitlements; sourceTree = "<group>"; };
-		9D32DFD059D5DB6DDEF38881 /* Pods-Shared-Reminders-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-Reminders-iOS.debug.xcconfig"; path = "Target Support Files/Pods-Shared-Reminders-iOS/Pods-Shared-Reminders-iOS.debug.xcconfig"; sourceTree = "<group>"; };
-		A82DFB63B157C65E5D698CA2 /* Pods-Shared-Reminders-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-Reminders-iOS.release.xcconfig"; path = "Target Support Files/Pods-Shared-Reminders-iOS/Pods-Shared-Reminders-iOS.release.xcconfig"; sourceTree = "<group>"; };
-		C8DBC48FD7C3AEF576C57B21 /* libPods-Shared-Reminders-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Shared-Reminders-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5AE3F4313F5E9FD6D239B361 /* libPods-Shared-Reminders-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Shared-Reminders-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE0E74F571E1F48FF00A8324 /* Pods-Shared-Reminders-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-Reminders-macOS.release.xcconfig"; path = "Target Support Files/Pods-Shared-Reminders-macOS/Pods-Shared-Reminders-macOS.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		FB6EED1BDEABADF047CC5223 /* libPods-Shared-Reminders-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Shared-Reminders-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,7 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0496A360A6F874C295C73D4B /* libPods-Shared-Reminders-macOS.a in Frameworks */,
+				42B3B093F8FF49095BE7AA54 /* libPods-Shared-Reminders-macOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,8 +49,6 @@
 		1986A43FA6A91CFACDF0A798 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				9D32DFD059D5DB6DDEF38881 /* Pods-Shared-Reminders-iOS.debug.xcconfig */,
-				A82DFB63B157C65E5D698CA2 /* Pods-Shared-Reminders-iOS.release.xcconfig */,
 				02422F9FB6FF5F34B4E63E6F /* Pods-Shared-Reminders-macOS.debug.xcconfig */,
 				CE0E74F571E1F48FF00A8324 /* Pods-Shared-Reminders-macOS.release.xcconfig */,
 			);
@@ -65,8 +60,7 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				FB6EED1BDEABADF047CC5223 /* libPods-Shared-Reminders-iOS.a */,
-				C8DBC48FD7C3AEF576C57B21 /* libPods-Shared-Reminders-macOS.a */,
+				5AE3F4313F5E9FD6D239B361 /* libPods-Shared-Reminders-macOS.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -317,12 +311,13 @@
 				DEAD_CODE_STRIPPING = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INFOPLIST_FILE = "Reminders-macos/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Reminders;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -344,12 +339,13 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INFOPLIST_FILE = "Reminders-macos/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Reminders;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -403,6 +399,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"DEBUG=1",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -420,9 +417,15 @@
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_CPLUSPLUSFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = macosx;
 			};
@@ -469,6 +472,7 @@
 					"DEBUG=0",
 					"RCT_DEV=0",
 					"RCT_DEV_MENU=0",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -485,8 +489,14 @@
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_CPLUSPLUSFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = macosx;
 				VALIDATE_PRODUCT = YES;
