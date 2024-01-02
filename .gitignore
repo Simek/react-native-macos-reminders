@@ -1,5 +1,6 @@
 .DS_Store
 macos/build
+macos/.xcode.env.local
 
 # Xcode
 *.pbxuser

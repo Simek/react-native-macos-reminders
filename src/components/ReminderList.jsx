@@ -37,8 +37,8 @@ const componentStyles = StyleSheet.create({
   },
   allListHeader: {
     fontSize: 18,
-    marginTop: 4,
-    marginBottom: 12,
+    marginTop: -4,
+    marginBottom: 4,
     color: { semantic: 'systemBlueColor' },
   },
 });

@@ -77,7 +77,6 @@ const RemindersListItem = ({
         <TextInput
           multiline
           numberOfLines={1}
-          scrollEnabled={false}
           autoFocus={item.text === ''}
           value={text}
           style={[
@@ -105,7 +104,6 @@ const RemindersListItem = ({
             ref={noteInputRef}
             placeholder="Notes"
             value={textNote}
-            scrollEnabled={false}
             style={[
               styles.listInput,
               styles.listItemNoteInput,
@@ -216,21 +214,20 @@ const styles = StyleSheet.create({
   },
   listInput: {
     flex: 1,
+    fontSize: 13,
     color: { semantic: 'labelColor' },
     backgroundColor: {
       semantic: 'controlBackgroundColor',
     },
   },
   listItemInput: {
-    fontSize: 13,
-    minHeight: 16,
-    maxHeight: 16,
+    minHeight: 18,
     marginTop: -4,
+    marginBottom: -6,
     zIndex: 10,
   },
   listItemNoteInput: {
-    fontSize: 12,
-    marginTop: 2,
+    marginVertical: 2,
     color: { semantic: 'systemGrayColor' },
     backgroundColor: {
       semantic: 'controlBackgroundColor',

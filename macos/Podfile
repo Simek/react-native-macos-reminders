@@ -13,12 +13,16 @@ end
 
 abstract_target 'Shared' do
   target 'Reminders-macOS' do
-    platform :macos, '10.15'
+    platform :macos, '12.0'
 
     config = use_native_modules!
     flags = get_default_flags()
 
-    use_react_native!(:path => '../node_modules/react-native-macos')
+    use_react_native!(
+      :path => '../node_modules/react-native-macos',
+      :hermes_enabled => false,
+      :fabric_enabled => true,
+    )
   end
 
   post_install do |installer|
@@ -26,6 +30,5 @@ abstract_target 'Shared' do
       installer,
       :mac_catalyst_enabled => false
     )
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end

@@ -153,8 +153,8 @@ const App = () => {
     isSearchMode
       ? remindersSections[0]?.data?.filter((entry) => entry.done).length || 0
       : selectedKey === 'all'
-      ? allCompletedCount
-      : data[selectedKey].filter((entry) => entry.done).length;
+        ? allCompletedCount
+        : data[selectedKey].filter((entry) => entry.done).length;
 
   return (
     <View style={styles.container}>
@@ -337,7 +337,7 @@ const App = () => {
                 <Text style={styles.noContentText}>
                   {completedVisible || remindersSections?.length === 0
                     ? 'No Reminders'
-                    : 'All Items Completed'}
+                    : 'All Reminders Completed'}
                 </Text>
               </View>
             ) : null
