@@ -123,6 +123,12 @@ const App = () => {
       );
     } else if (selectedKey === 'all') {
       return getSpecialListContent(data, (key) => multiListMapper(key));
+    } else if (selectedKey === 'completed') {
+      return getSpecialListContent(
+        data,
+        (key) => multiListMapper(key, (entry) => entry.done),
+        (section) => section.data.filter((entry) => entry.done).length || 0,
+      );
     } else if (selectedKey === 'flagged') {
       return getSpecialListContent(
         data,
@@ -152,7 +158,7 @@ const App = () => {
   const calculateCompleted = () =>
     isSearchMode
       ? remindersSections[0]?.data?.filter((entry) => entry.done).length || 0
-      : selectedKey === 'all'
+      : selectedKey === 'all' || selectedKey === 'completed'
         ? allCompletedCount
         : data[selectedKey].filter((entry) => entry.done).length;
 
@@ -162,6 +168,7 @@ const App = () => {
       <View style={styles.sourceList}>
         <SearchInput searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         <Sections
+          isSearchMode={isSearchMode}
           selectedKey={selectedKey}
           setSelectedKey={setSelectedKey}
           onPress={clearListTempData}
@@ -248,9 +255,11 @@ const App = () => {
                   ? listData.find((item) => item.key === selectedKey)?.title
                   : selectedKey}
               </Text>
-              {!CONSTANTS.KEYS.includes(selectedKey) ? (
+              {!CONSTANTS.KEYS.includes(selectedKey) || selectedKey === 'completed' ? (
                 <Text style={getHeaderStyle(selectedKey, styles.contentHeaderCounter)}>
-                  {getListCount(data, { key: selectedKey })}
+                  {selectedKey === 'completed'
+                    ? calculateCompleted()
+                    : getListCount(data, { key: selectedKey })}
                 </Text>
               ) : null}
             </View>
@@ -293,7 +302,7 @@ const App = () => {
             );
           }}
           ListHeaderComponent={() => {
-            if (selectedKey === 'today') return null;
+            if (!isSearchMode && selectedKey === 'today') return null;
 
             const completedCount = calculateCompleted();
             const color = getListColor(selectedKey);
@@ -301,20 +310,25 @@ const App = () => {
             return (
               <View style={styles.completedHeader}>
                 <View style={styles.completedTextWrapper}>
-                  <Text style={styles.completedText}>{completedCount} Completed • </Text>
-                  <AccentButton
-                    onPress={() =>
-                      ClearMenu(completedCount, () => {
-                        const keys = data[selectedKey]
-                          .filter((entry) => entry.done)
-                          .map((entry) => entry.key);
-                        removeAllRemindersByList(selectedKey, keys);
-                      })
-                    }
-                    color={color}
-                    disabled={completedCount === 0}>
-                    Clear
-                  </AccentButton>
+                  <Text style={styles.completedText}>{completedCount} Completed</Text>
+                  {selectedKey !== 'scheduled' && selectedKey !== 'flagged' && (
+                    <>
+                      <Text style={styles.completedText}> • </Text>
+                      <AccentButton
+                        onPress={() =>
+                          ClearMenu(completedCount, () => {
+                            const keys = data[selectedKey]
+                              .filter((entry) => entry.done)
+                              .map((entry) => entry.key);
+                            removeAllRemindersByList(selectedKey, keys);
+                          })
+                        }
+                        color={color}
+                        disabled={completedCount === 0}>
+                        Clear
+                      </AccentButton>
+                    </>
+                  )}
                 </View>
                 <AccentButton
                   onPress={() => setCompletedVisible((prevState) => !prevState)}

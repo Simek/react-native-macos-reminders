@@ -19,7 +19,7 @@ const ReminderList = ({
     keyExtractor={(item) => item.key}
     renderItem={renderItem}
     renderSectionHeader={({ section: { title } }) =>
-      selectedKey !== 'flagged' && title ? (
+      selectedKey !== 'flagged' && selectedKey !== 'completed' && title ? (
         <View style={componentStyles.contentStickyHeaderWrapper}>
           <Text style={[styles.contentHeader, componentStyles.allListHeader]}>{title}</Text>
         </View>

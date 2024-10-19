@@ -3,13 +3,20 @@ import { StyleSheet, View } from 'react-native';
 
 import Section from './Section';
 
-const Sections = ({ selectedKey, setSelectedKey, onPress, allCount, flaggedCount }) => (
+const Sections = ({
+  selectedKey,
+  setSelectedKey,
+  onPress,
+  allCount,
+  flaggedCount,
+  isSearchMode,
+}) => (
   <View style={styles.tags}>
     <Section
       title="today"
       icon="􀧵"
       iconSize={14.5}
-      isActive={selectedKey === 'today'}
+      isActive={!isSearchMode && selectedKey === 'today'}
       onPress={() => {
         onPress();
         setSelectedKey('today');
@@ -19,7 +26,7 @@ const Sections = ({ selectedKey, setSelectedKey, onPress, allCount, flaggedCount
       title="scheduled"
       icon="􀉉"
       iconSize={14.5}
-      isActive={selectedKey === 'scheduled'}
+      isActive={!isSearchMode && selectedKey === 'scheduled'}
       onPress={() => {
         onPress();
         setSelectedKey('scheduled');
@@ -28,7 +35,7 @@ const Sections = ({ selectedKey, setSelectedKey, onPress, allCount, flaggedCount
     <Section
       title="all"
       icon="􀈤"
-      isActive={selectedKey === 'all'}
+      isActive={!isSearchMode && selectedKey === 'all'}
       onPress={() => {
         onPress();
         setSelectedKey('all');
@@ -39,12 +46,22 @@ const Sections = ({ selectedKey, setSelectedKey, onPress, allCount, flaggedCount
       title="flagged"
       icon="􀋊"
       iconSize={12}
-      isActive={selectedKey === 'flagged'}
+      isActive={!isSearchMode && selectedKey === 'flagged'}
       onPress={() => {
         onPress();
         setSelectedKey('flagged');
       }}
       count={flaggedCount}
+    />
+    <Section
+      title="completed"
+      icon="􀆅"
+      iconSize={13}
+      isActive={!isSearchMode && selectedKey === 'completed'}
+      onPress={() => {
+        onPress();
+        setSelectedKey('completed');
+      }}
     />
   </View>
 );

@@ -16,7 +16,9 @@ const Section = ({ title, icon, onPress, count = 0, isActive = false, iconSize =
       iconSize={iconSize}
       style={styles.tagIcon}
     />
-    <Text style={[styles.tagCount, isActive && { color: '#fff' }]}>{count}</Text>
+    {title !== 'completed' && (
+      <Text style={[styles.tagCount, isActive && { color: '#fff' }]}>{count}</Text>
+    )}
     <Text style={[styles.tagText, isActive && { color: '#fff' }]}>{title}</Text>
     {title === 'today' && (
       <Text style={[styles.tagTodayDay, isActive && { color: CONSTANTS.COLORS[title] }]}>
