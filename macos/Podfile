@@ -1,5 +1,4 @@
 require_relative '../node_modules/react-native-macos/scripts/react_native_pods'
-require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 prepare_react_native_project!
 
@@ -20,6 +19,7 @@ abstract_target 'Shared' do
       :path => '../node_modules/react-native-macos',
       :hermes_enabled => false,
       :fabric_enabled => true,
+      :app_path => "#{Pod::Config.instance.installation_root}/.."
     )
   end
 

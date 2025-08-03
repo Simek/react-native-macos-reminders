@@ -1,16 +1,35 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  PlatformColor,
+  OpaqueColorValue,
+  StyleProp,
+  ViewStyle,
+} from 'react-native-macos';
+
+type Props = {
+  icon: string;
+  color?: OpaqueColorValue;
+  iconColor?: OpaqueColorValue | string;
+  iconSize?: number;
+  size?: number;
+  isActive?: boolean;
+  style?: StyleProp<ViewStyle>;
+  iconStyle?: StyleProp<ViewStyle>;
+};
 
 const RoundIcon = ({
   icon,
-  color = { semantic: 'systemBlueColor' },
+  color = PlatformColor('systemBlueColor'),
   iconColor = '#fff',
   iconSize = 11,
   size = 23,
   isActive = false,
   style = undefined,
   iconStyle = undefined,
-}) => (
+}: Props) => (
   <View
     style={[
       styles.icon,

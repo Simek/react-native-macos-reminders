@@ -1,7 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, PlatformColor } from 'react-native-macos';
 
-const RemindersListFooter = ({ onPress }) => {
+import { TouchableOnPressType } from '../types.ts';
+
+type Props = {
+  onPress: TouchableOnPressType;
+};
+
+const RemindersListFooter = ({ onPress }: Props) => {
   return (
     <TouchableOpacity style={styles.listFooter} onPress={onPress} activeOpacity={1}>
       <Text style={styles.listFooterText}>
@@ -18,12 +24,12 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   listFooterText: {
-    color: { semantic: 'textColor' },
+    color: PlatformColor('text'),
     fontSize: 13,
   },
   listFooterTextIcon: {
     flex: 1,
-    color: { semantic: 'textColor' },
+    color: PlatformColor('text'),
     fontSize: 14,
     marginRight: 2,
   },

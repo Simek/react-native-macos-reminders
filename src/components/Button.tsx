@@ -1,7 +1,28 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import {
+  PlatformColor,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableHighlight,
+  View,
+  ViewStyle,
+} from 'react-native-macos';
 
-const Button = ({
+import { TouchableOnPressType } from '../types.ts';
+
+type Props = {
+  text?: string;
+  icon?: string;
+  disabled?: boolean;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  iconStyle?: StyleProp<TextStyle>;
+  onPress?: TouchableOnPressType;
+};
+
+export default function Button({
   onPress,
   text = '',
   icon = '',
@@ -9,17 +30,18 @@ const Button = ({
   style = null,
   textStyle = null,
   iconStyle = null,
-}) => {
+}: Props) {
   const [focused, setFocused] = useState(false);
   return (
     <TouchableHighlight
       activeOpacity={1}
       underlayColor={disabled ? 'transparent' : 'rgba(140,140,140,.1)'}
-      onPressIn={(e) => {
+      onPressIn={(event) => {
         setFocused(true);
-        onPress(e);
+        onPress?.(event);
       }}
       onPressOut={() => setFocused(false)}
+      // @ts-expect-error FIXME
       pointerEvents={disabled ? 'none' : 'auto'}
       style={[
         styles.button,
@@ -30,11 +52,7 @@ const Button = ({
       <View style={styles.buttonContent}>
         {icon ? (
           <Text
-            style={[
-              styles.buttonIcon,
-              iconStyle,
-              focused && { color: { semantic: 'labelColor' } },
-            ]}>
+            style={[styles.buttonIcon, iconStyle, focused && { color: PlatformColor('label') }]}>
             {icon}
           </Text>
         ) : null}
@@ -46,7 +64,7 @@ const Button = ({
       </View>
     </TouchableHighlight>
   );
-};
+}
 
 const styles = StyleSheet.create({
   button: {
@@ -59,12 +77,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   buttonIcon: {
-    color: { semantic: 'secondaryLabelColor' },
+    color: PlatformColor('secondaryLabel'),
     fontSize: 17,
     padding: 2,
   },
   buttonText: {
-    color: { semantic: 'systemGrayColor' },
+    color: PlatformColor('systemGray'),
     fontSize: 13,
   },
   buttonIconOnly: {
@@ -78,5 +96,3 @@ const styles = StyleSheet.create({
     paddingLeft: 4,
   },
 });
-
-export default Button;

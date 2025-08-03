@@ -1,9 +1,31 @@
 import React, { useState } from 'react';
-import { ActionSheetIOS, Alert, Pressable, StyleSheet, Text, TextInput } from 'react-native';
+import {
+  ActionSheetIOS,
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  AlertButton,
+  PlatformColor,
+  PressableProps,
+} from 'react-native-macos';
 
 import RoundIcon from './RoundIcon';
+import { ReminderListItemType } from '../types.ts';
 
-const RemindersListItem = ({
+type Props = {
+  item: ReminderListItemType;
+  count: number;
+  onPress: NonNullable<PressableProps['onPress']>;
+  onTextInputPress: NonNullable<PressableProps['onPress']>;
+  onDelete: NonNullable<PressableProps['onPress']>;
+  onRename: NonNullable<PressableProps['onPress']>;
+  onEdit: NonNullable<AlertButton['onPress']>;
+  onEditEnd: NonNullable<AlertButton['onPress']>;
+};
+
+export default function RemindersListItem({
   item,
   count,
   onPress,
@@ -12,12 +34,13 @@ const RemindersListItem = ({
   onEdit,
   onEditEnd,
   onRename,
-}) => {
+}: Props) {
   const [focused, setFocused] = useState(false);
   return (
     <Pressable
-      onPress={(e) => {
-        if (e.nativeEvent.button === 2) {
+      onPress={(event) => {
+        // @ts-expect-error FIXME
+        if (event.nativeEvent.button === 2) {
           ActionSheetIOS.showActionSheetWithOptions(
             {
               options: ['Show Info', 'Rename', 'Delete'],
@@ -25,7 +48,7 @@ const RemindersListItem = ({
             (buttonIndex) => {
               if (buttonIndex === 0) {
                 Alert.prompt(
-                  `"${item.title}" Info`,
+                  `Name`,
                   undefined,
                   [
                     {
@@ -41,18 +64,19 @@ const RemindersListItem = ({
                   item.title,
                 );
               } else if (buttonIndex === 1) {
-                onRename(e);
+                onRename(event);
               } else if (buttonIndex === 2) {
-                onDelete(e);
+                onDelete(event);
               }
             },
           );
         } else {
-          onPress(e);
+          onPress(event);
         }
       }}
-      onPressIn={(e) => {
-        if (e.nativeEvent.button === 2) {
+      onPressIn={(event) => {
+        // @ts-expect-error FIXME
+        if (event.nativeEvent.button === 2) {
           setFocused(true);
         }
       }}
@@ -60,13 +84,9 @@ const RemindersListItem = ({
       style={[
         styles.listItem,
         item.selected ? styles.listItemSelected : {},
-        focused
-          ? {
-              borderColor: {
-                semantic: item.selected ? 'labelColor' : 'selectedContentBackgroundColor',
-              },
-            }
-          : {},
+        focused && {
+          borderColor: PlatformColor(item.selected ? 'label' : 'selectedContentBackground'),
+        },
       ]}>
       <RoundIcon
         icon="􀋲"
@@ -80,16 +100,16 @@ const RemindersListItem = ({
           autoFocus
           value={item.title}
           style={styles.listItemInput}
-          blurOnSubmit
-          onSubmitEditing={(e) => {
-            onEditEnd(e.nativeEvent.text);
+          submitBehavior="blurAndSubmit"
+          onSubmitEditing={(event) => {
+            onEditEnd(event.nativeEvent.text);
           }}
           onChangeText={onEdit}
           numberOfLines={1}
         />
       ) : (
         <Pressable
-          onPress={(e) => (item.selected ? onTextInputPress(e) : onPress(e))}
+          onPress={(event) => (item.selected ? onTextInputPress(event) : onPress(event))}
           style={styles.listItemTextWrapper}>
           <Text
             numberOfLines={1}
@@ -97,7 +117,7 @@ const RemindersListItem = ({
             style={[
               styles.listItemText,
               {
-                color: item.selected ? '#fff' : { semantic: 'labelColor' },
+                color: item.selected ? '#fff' : PlatformColor('label'),
               },
             ]}>
             {item.title}
@@ -108,14 +128,14 @@ const RemindersListItem = ({
         style={[
           styles.listItemCounter,
           {
-            color: item.selected ? '#fff' : { semantic: 'secondaryLabelColor' },
+            color: item.selected ? '#fff' : PlatformColor('secondaryLabel'),
           },
         ]}>
         {count || 0}
       </Text>
     </Pressable>
   );
-};
+}
 
 const styles = StyleSheet.create({
   listItem: {
@@ -132,9 +152,7 @@ const styles = StyleSheet.create({
     minHeight: 36,
   },
   listItemSelected: {
-    backgroundColor: {
-      semantic: 'selectedContentBackgroundColor',
-    },
+    backgroundColor: PlatformColor('selectedContentBackground'),
   },
   listItemIcon: {
     width: 14,
@@ -159,10 +177,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 13,
     height: 16,
-    color: { semantic: 'labelColor' },
-    backgroundColor: {
-      semantic: 'controlBackgroundColor',
-    },
+    color: PlatformColor('label'),
+    backgroundColor: PlatformColor('controlBackground'),
   },
   listItemCounter: {
     fontFamily: 'SF Pro Rounded',
@@ -171,5 +187,3 @@ const styles = StyleSheet.create({
     opacity: 0.65,
   },
 });
-
-export default RemindersListItem;

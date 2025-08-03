@@ -1,6 +1,7 @@
+// @ts-expect-error FIXME
 import { Popover } from '@rn-macos/popover';
-import React, { useEffect, useState } from 'react';
-import { Text, TouchableWithoutFeedback, View } from 'react-native';
+import React, { ReactNode, useEffect, useState } from 'react';
+import { NativeMethods, Text, TouchableWithoutFeedback, View } from 'react-native-macos';
 
 import AccentButton from './components/AccentButton';
 import Button from './components/Button';
@@ -8,12 +9,18 @@ import ReminderItem from './components/ReminderItem';
 import ReminderList from './components/ReminderList';
 import RemindersList from './components/RemindersList';
 import RemindersListFooter from './components/RemindersListFooter';
-import SearchInput from './components/SearchInput';
+import { SearchInput } from './components/SearchInput';
 import SearchResultsHeader from './components/SearchResultsHeader';
 import Sections from './components/Sections';
-import ClearMenu from './menus/ClearMenu';
+import clearMenu from './menus/ClearMenu';
 import styles from './styles';
-import CONSTANTS from './utils/constants';
+import {
+  ReminderItemSection,
+  ReminderItemType,
+  ReminderListItemType,
+  RemindersType,
+} from './types.ts';
+import { INIT_STORE, PREDEFINED_KEYS } from './utils/constants';
 import {
   filterSearchHits,
   getHeaderStyle,
@@ -33,37 +40,44 @@ import {
   findAndReplaceEntry,
 } from './utils/storage';
 
-const App = () => {
+function App() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedKey, setSelectedKey] = useState(CONSTANTS.KEYS[0]);
-  const [data, setData] = useState(CONSTANTS.STORE);
-  const [listData, setListData] = useState([]);
-  const [popoverData, setPopoverData] = useState(null);
-  const [lastSelectedTarget, setLastSelectedTarget] = useState(null);
-  const [completedVisible, setCompletedVisible] = useState(true);
+  const [selectedKey, setSelectedKey] = useState(PREDEFINED_KEYS[0]);
+  const [data, setData] = useState<RemindersType>(INIT_STORE);
+  const [listData, setListData] = useState<ReminderListItemType[]>([]);
+  const [popoverData, setPopoverData] = useState<ReactNode>(null);
+  const [lastSelectedTarget, setLastSelectedTarget] = useState<NativeMethods | null>(null);
+  const [completedVisible, setCompletedVisible] = useState<boolean>(true);
 
-  const readListDataFromStorage = () => {
-    const item = getStoredData('remindersLists', listData);
+  useEffect(() => {
+    readListDataFromStorage();
+    readDataFromStorage();
+  }, []);
+
+  function readListDataFromStorage() {
+    const item = getStoredData<ReminderListItemType[]>('remindersLists', listData);
     setListData(item);
-  };
+  }
 
-  const writeListDataToStorage = (value) => {
-    storeData(
+  function writeListDataToStorage(value: ReminderListItemType[]) {
+    storeData<ReminderListItemType[]>(
       'remindersLists',
       value.map((item) => Object.assign({}, item, { selected: false, editMode: false })),
     );
-  };
+  }
 
-  const readDataFromStorage = () => {
+  function readDataFromStorage() {
     const item = getStoredData('remindersData', data);
     setData(item);
-  };
+  }
 
-  const writeDataToStorage = (value) => {
+  function writeDataToStorage(value: Record<string, ReminderItemType[]>) {
     storeData('remindersData', value);
-  };
+  }
 
-  const overwriteListItemsDataAndStore = (overwriteFunc) => {
+  const overwriteListItemsDataAndStore = (
+    overwriteFunc: (lists: ReminderListItemType[]) => ReminderListItemType[],
+  ) => {
     setListData((prevState) => {
       const finalData = overwriteFunc(prevState);
       writeListDataToStorage(finalData);
@@ -71,11 +85,13 @@ const App = () => {
     });
   };
 
-  const clearListTempData = (content = { selected: false, editMode: false }) => {
+  function clearListTempData(
+    content: Partial<ReminderListItemType> = { selected: false, editMode: false },
+  ) {
     overwriteListData(setListData, () => content);
-  };
+  }
 
-  const addNewReminder = () => {
+  function addNewReminder() {
     const ts = Date.now();
     setData((prevData) =>
       Object.assign({}, prevData, {
@@ -85,12 +101,14 @@ const App = () => {
         ],
       }),
     );
-  };
+  }
 
-  const removeAllRemindersByList = (listKey, keys = []) => {
+  function removeAllRemindersByList(listKey: string, keys: string[] = []) {
     setData((prevState) => {
       if (keys.length) {
-        prevState[listKey] = prevState[listKey].filter((entry) => !keys.includes(entry.key));
+        prevState[listKey] = prevState[listKey].filter(
+          (entry: ReminderItemType) => !keys.includes(entry.key),
+        );
       } else {
         delete prevState[listKey];
       }
@@ -98,28 +116,38 @@ const App = () => {
       writeDataToStorage(finalData);
       return finalData;
     });
-  };
+  }
 
-  const processListData = (list) => processRemindersList(list, completedVisible);
+  function processListData(list: ReminderItemType[]) {
+    return processRemindersList(list, completedVisible);
+  }
 
-  const multiListMapper = (key, itemFilter = () => true) => {
+  function multiListMapper(
+    key: string,
+    itemFilter?: (item: ReminderItemType) => boolean,
+  ): ReminderItemSection {
     const title = getTitle(listData, key);
 
-    if (!title) return null;
+    if (!title) {
+      return {
+        key,
+        data: processListData(data[key]),
+      };
+    }
 
     return {
       key,
       title,
-      data: processListData(data[key].filter(itemFilter)),
+      data: itemFilter ? processListData(data[key].filter(itemFilter)) : processListData(data[key]),
     };
-  };
+  }
 
-  const getRemindersSections = () => {
+  function getRemindersSections(): ReminderItemSection[] {
     if (isSearchMode) {
       return getSpecialListContent(
         data,
         (key) => multiListMapper(key, (entry) => filterSearchHits(searchQuery, entry)),
-        (section) => section.data.length > 0,
+        (section) => (section.data ? section.data.length > 0 : false),
       );
     } else if (selectedKey === 'all') {
       return getSpecialListContent(data, (key) => multiListMapper(key));
@@ -127,40 +155,40 @@ const App = () => {
       return getSpecialListContent(
         data,
         (key) => multiListMapper(key, (entry) => entry.done),
-        (section) => section.data.filter((entry) => entry.done).length || 0,
+        (section) => (section.data ? section.data.filter((entry) => entry.done).length > 0 : false),
       );
     } else if (selectedKey === 'flagged') {
       return getSpecialListContent(
         data,
         (key) => multiListMapper(key, (entry) => entry.flagged),
-        (section) => section.data.filter((entry) => entry.flagged).length || 0,
+        (section) =>
+          section.data ? section.data.filter((entry) => entry.flagged).length > 0 : false,
       );
     } else {
-      return [
-        data[selectedKey]?.length > 0 ? { data: processListData(data[selectedKey]) } : null,
-      ].filter(Boolean);
+      if (data[selectedKey]?.length > 0) {
+        return [{ ...data[selectedKey], data: processListData(data[selectedKey]) }].filter(Boolean);
+      }
+      return [];
     }
-  };
-
-  useEffect(() => {
-    readListDataFromStorage();
-    readDataFromStorage();
-  }, []);
+  }
 
   const totalCount = getTotalCount(data);
   const allCount = getTotalCount(data, (entry) => !entry.done);
   const allCompletedCount = totalCount - allCount;
   const flaggedCount = getTotalCount(data, (entry) => entry.flagged);
 
-  const isSearchMode = searchQuery && searchQuery.length > 0;
+  const isSearchMode = Boolean(searchQuery.length > 0);
   const remindersSections = getRemindersSections();
 
-  const calculateCompleted = () =>
-    isSearchMode
-      ? remindersSections[0]?.data?.filter((entry) => entry.done).length || 0
-      : selectedKey === 'all' || selectedKey === 'completed'
-        ? allCompletedCount
-        : data[selectedKey].filter((entry) => entry.done).length;
+  function calculateCompleted() {
+    if (isSearchMode) {
+      return remindersSections[0]?.data?.filter((entry) => entry.done).length || 0;
+    }
+    if (selectedKey === 'all' || selectedKey === 'completed') {
+      return allCompletedCount;
+    }
+    return data[selectedKey].filter((entry: ReminderItemType) => entry.done).length;
+  }
 
   return (
     <View style={styles.container}>
@@ -247,15 +275,12 @@ const App = () => {
           <>
             <Button icon="􀅼" onPress={addNewReminder} style={styles.addItemButton} />
             <View style={styles.contentHeaderWrapper}>
-              <Text
-                style={getHeaderStyle(selectedKey, selectedKey.startsWith('list-'))}
-                numberOfLines={1}
-                ellipsizeMode="tail">
+              <Text style={getHeaderStyle(selectedKey)} numberOfLines={1} ellipsizeMode="tail">
                 {selectedKey.startsWith('list-')
                   ? listData.find((item) => item.key === selectedKey)?.title
                   : selectedKey}
               </Text>
-              {!CONSTANTS.KEYS.includes(selectedKey) || selectedKey === 'completed' ? (
+              {!PREDEFINED_KEYS.includes(selectedKey) || selectedKey === 'completed' ? (
                 <Text style={getHeaderStyle(selectedKey, styles.contentHeaderCounter)}>
                   {selectedKey === 'completed'
                     ? calculateCompleted()
@@ -276,25 +301,28 @@ const App = () => {
                 lastSelectedTarget={lastSelectedTarget}
                 setLastSelectedTarget={setLastSelectedTarget}
                 item={item}
-                color={getListColor(selectedKey === 'all' ? null : selectedKey)}
+                color={selectedKey === 'all' ? undefined : getListColor(selectedKey)}
                 onEdit={(text, fieldName = 'text') => {
                   overwriteSelectedListData(setData, dataKey, (list) =>
                     findAndReplaceEntry(list, item.key, () => ({ [fieldName]: text })),
                   );
+                  writeDataToStorage(data);
                 }}
-                onEditEnd={(e) => {
-                  if (!e.nativeEvent.text) {
+                onEditEnd={(event) => {
+                  if (!event.nativeEvent.text) {
                     overwriteSelectedListData(setData, dataKey, (list) =>
                       list.filter((entry) => entry.key !== item.key),
                     );
                     writeDataToStorage(data);
                   }
                 }}
-                onStatusChange={(fieldName) => {
+                onStatusChange={(fieldName: keyof ReminderItemType) => {
                   overwriteSelectedListData(setData, dataKey, (list) =>
-                    findAndReplaceEntry(list, item.key, (entry) => ({
-                      [fieldName]: !entry[fieldName],
-                    })),
+                    findAndReplaceEntry(list, item.key, (entry) => {
+                      return {
+                        [fieldName]: !(entry as any)[fieldName],
+                      };
+                    }),
                   );
                   writeDataToStorage(data);
                 }}
@@ -316,10 +344,10 @@ const App = () => {
                       <Text style={styles.completedText}> • </Text>
                       <AccentButton
                         onPress={() =>
-                          ClearMenu(completedCount, () => {
+                          clearMenu(completedCount, () => {
                             const keys = data[selectedKey]
-                              .filter((entry) => entry.done)
-                              .map((entry) => entry.key);
+                              .filter((entry: ReminderItemType) => entry.done)
+                              .map((entry: ReminderItemType) => entry.key);
                             removeAllRemindersByList(selectedKey, keys);
                           })
                         }
@@ -339,7 +367,7 @@ const App = () => {
             );
           }}
           ListFooterComponent={
-            !isSearchMode && !CONSTANTS.KEYS.includes(selectedKey) ? (
+            !isSearchMode && !PREDEFINED_KEYS.includes(selectedKey) ? (
               <TouchableWithoutFeedback onPress={addNewReminder}>
                 <View style={styles.addReminderRow} />
               </TouchableWithoutFeedback>
@@ -360,6 +388,6 @@ const App = () => {
       </View>
     </View>
   );
-};
+}
 
 export default App;

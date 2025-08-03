@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, PlatformColor } from 'react-native-macos';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,9 +19,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   listItemSelected: {
-    backgroundColor: {
-      semantic: 'selectedContentBackgroundColor',
-    },
+    backgroundColor: PlatformColor('selectedContentBackground'),
   },
   listItemIcon: {
     width: 20,
@@ -38,7 +36,7 @@ const styles = StyleSheet.create({
     flexGrow: 99,
   },
   content: {
-    backgroundColor: { semantic: 'controlBackgroundColor' },
+    backgroundColor: PlatformColor('controlBackground'),
     flex: 1,
     flexGrow: 2,
     paddingLeft: 20,
@@ -53,7 +51,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontFamily: 'SF Pro Rounded',
     lineHeight: 38,
-    color: { semantic: 'secondaryLabelColor' },
+    color: PlatformColor('secondaryLabel'),
   },
   contentHeaderCustom: {
     textTransform: 'capitalize',
@@ -77,11 +75,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   completedText: {
-    color: { semantic: 'systemGrayColor' },
+    color: PlatformColor('systemGray'),
     fontSize: 13,
   },
   completedVisibleText: {
-    color: { semantic: 'tertiaryLabelColor' },
+    color: PlatformColor('tertiaryLabel'),
     fontSize: 13,
   },
   noContentWrapper: {
@@ -92,13 +90,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: 'center',
     fontFamily: 'SF Pro Rounded',
-    color: { semantic: 'secondaryLabelColor' },
+    color: PlatformColor('secondaryLabel'),
   },
   remindersHeader: {
     paddingVertical: 6,
     fontSize: 20,
     fontFamily: 'SF Pro Rounded',
-    color: { semantic: 'systemBlueColor' },
+    color: PlatformColor('systemBlue'),
   },
   addReminderRow: {
     width: '100%',

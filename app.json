@@ -5,6 +5,13 @@
   "ios": {
     "bundleIdentifier": "dev.simek.reminders"
   },
+  "build": {
+    "production": {
+      "ios": {
+        "image": "latest"
+      }
+    }
+  },
   "extra": {
     "eas": {
       "projectId": "6609faf8-1e89-4de7-9fe5-292c11d68425"

@@ -1,6 +1,6 @@
-import { ActionSheetIOS, Alert } from 'react-native';
+import { ActionSheetIOS, Alert } from 'react-native-macos';
 
-const ClearMenu = (completedCount, onDelete) =>
+function clearMenu(completedCount: number, onDelete: () => void) {
   ActionSheetIOS.showActionSheetWithOptions(
     {
       options: ['All Completed'],
@@ -23,5 +23,6 @@ const ClearMenu = (completedCount, onDelete) =>
       }
     },
   );
+}
 
-export default ClearMenu;
+export default clearMenu;
