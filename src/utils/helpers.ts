@@ -72,7 +72,7 @@ export function getHeaderStyle(key: string, customStyles?: TextStyle): TextStyle
   ];
 }
 
-function remindersSort(a: ReminderItemType, b: ReminderItemType) {
+export function remindersSort(a: ReminderItemType, b: ReminderItemType) {
   const diff = Number(a.done) - Number(b.done);
   if (diff !== 0) {
     return diff;
@@ -94,9 +94,6 @@ function searchHit(searchQuery: string, text?: string | null) {
   return text.toLowerCase().includes(searchQuery.toLowerCase());
 }
 
-export function filterSearchHits(
-  searchQuery: string,
-  item: { text?: string; textNote?: string },
-): boolean {
+export function filterSearchHits(searchQuery: string, item: ReminderItemType): boolean {
   return searchHit(searchQuery, item.text) || searchHit(searchQuery, item.textNote);
 }

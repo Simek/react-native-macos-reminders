@@ -1,7 +1,13 @@
 // @ts-expect-error FIXME
 import { Popover } from '@rn-macos/popover';
 import React, { ReactNode, useEffect, useState } from 'react';
-import { NativeMethods, Text, TouchableWithoutFeedback, View } from 'react-native-macos';
+import {
+  NativeMethods,
+  PlatformColor,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native-macos';
 
 import AccentButton from './components/AccentButton';
 import Button from './components/Button';
@@ -48,6 +54,7 @@ function App() {
   const [popoverData, setPopoverData] = useState<ReactNode>(null);
   const [lastSelectedTarget, setLastSelectedTarget] = useState<NativeMethods | null>(null);
   const [completedVisible, setCompletedVisible] = useState<boolean>(true);
+  const [isSearchMode, setSearchMode] = useState<boolean>(false);
 
   useEffect(() => {
     readListDataFromStorage();
@@ -143,7 +150,7 @@ function App() {
   }
 
   function getRemindersSections(): ReminderItemSection[] {
-    if (isSearchMode) {
+    if (isSearchMode || !selectedKey) {
       return getSpecialListContent(
         data,
         (key) => multiListMapper(key, (entry) => filterSearchHits(searchQuery, entry)),
@@ -175,16 +182,21 @@ function App() {
   const totalCount = getTotalCount(data);
   const allCount = getTotalCount(data, (entry) => !entry.done);
   const allCompletedCount = totalCount - allCount;
-  const flaggedCount = getTotalCount(data, (entry) => entry.flagged);
+  const flaggedCount = getTotalCount(data, (entry) => entry.flagged && !entry.done);
 
-  const isSearchMode = Boolean(searchQuery.length > 0);
+  const completedCount = calculateCompleted();
   const remindersSections = getRemindersSections();
 
   function calculateCompleted() {
-    if (isSearchMode) {
-      return remindersSections[0]?.data?.filter((entry) => entry.done).length || 0;
+    if (isSearchMode || selectedKey === 'search') {
+      return (
+        [...Object.values(data)]
+          .flat()
+          .filter((entry) => entry.done)
+          .filter((entry) => filterSearchHits(searchQuery, entry)).length || 0
+      );
     }
-    if (selectedKey === 'all' || selectedKey === 'completed') {
+    if (selectedKey === 'all' || selectedKey === 'completed' || selectedKey === 'flagged') {
       return allCompletedCount;
     }
     return data[selectedKey].filter((entry: ReminderItemType) => entry.done).length;
@@ -194,7 +206,11 @@ function App() {
     <View style={styles.container}>
       <Popover style={{ position: 'absolute' }}>{popoverData}</Popover>
       <View style={styles.sourceList}>
-        <SearchInput searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+        <SearchInput
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          setSearchMode={setSearchMode}
+        />
         <Sections
           isSearchMode={isSearchMode}
           selectedKey={selectedKey}
@@ -202,6 +218,7 @@ function App() {
           onPress={clearListTempData}
           allCount={allCount}
           flaggedCount={flaggedCount}
+          setCompletedVisible={setCompletedVisible}
         />
         <RemindersList
           data={listData}
@@ -273,7 +290,9 @@ function App() {
           <SearchResultsHeader searchQuery={searchQuery} />
         ) : (
           <>
-            <Button icon="􀅼" onPress={addNewReminder} style={styles.addItemButton} />
+            {selectedKey !== 'completed' && (
+              <Button icon="􀅼" onPress={addNewReminder} style={styles.addItemButton} />
+            )}
             <View style={styles.contentHeaderWrapper}>
               <Text style={getHeaderStyle(selectedKey)} numberOfLines={1} ellipsizeMode="tail">
                 {selectedKey.startsWith('list-')
@@ -301,7 +320,9 @@ function App() {
                 lastSelectedTarget={lastSelectedTarget}
                 setLastSelectedTarget={setLastSelectedTarget}
                 item={item}
-                color={selectedKey === 'all' ? undefined : getListColor(selectedKey)}
+                sectionTitle={section.title}
+                selectedKey={selectedKey}
+                isSearchMode={isSearchMode}
                 onEdit={(text, fieldName = 'text') => {
                   overwriteSelectedListData(setData, dataKey, (list) =>
                     findAndReplaceEntry(list, item.key, () => ({ [fieldName]: text })),
@@ -320,7 +341,7 @@ function App() {
                   overwriteSelectedListData(setData, dataKey, (list) =>
                     findAndReplaceEntry(list, item.key, (entry) => {
                       return {
-                        [fieldName]: !(entry as any)[fieldName],
+                        [fieldName]: !entry[fieldName],
                       };
                     }),
                   );
@@ -332,8 +353,10 @@ function App() {
           ListHeaderComponent={() => {
             if (!isSearchMode && selectedKey === 'today') return null;
 
-            const completedCount = calculateCompleted();
-            const color = getListColor(selectedKey);
+            if (!PREDEFINED_KEYS.includes(selectedKey))
+              return <View style={styles.customListStubHeader} />;
+
+            const color = isSearchMode ? PlatformColor('systemGray') : getListColor(selectedKey);
 
             return (
               <View style={styles.completedHeader}>
@@ -358,11 +381,13 @@ function App() {
                     </>
                   )}
                 </View>
-                <AccentButton
-                  onPress={() => setCompletedVisible((prevState) => !prevState)}
-                  color={color}>
-                  {completedVisible ? 'Hide' : 'Show'}
-                </AccentButton>
+                {selectedKey !== 'completed' && (
+                  <AccentButton
+                    onPress={() => setCompletedVisible((prevState) => !prevState)}
+                    color={color}>
+                    {completedVisible ? 'Hide' : 'Show'}
+                  </AccentButton>
+                )}
               </View>
             );
           }}

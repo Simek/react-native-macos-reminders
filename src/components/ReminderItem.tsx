@@ -8,7 +8,6 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  OpaqueColorValue,
   PlatformColor,
   TextInputProps,
   NativeMethods,
@@ -19,12 +18,15 @@ import Button from './Button';
 import ReminderItemPopover from './ReminderItemPopover';
 import { MeasureOnSuccessParams, ReminderItemType } from '../types.ts';
 import { COLORS } from '../utils/constants';
+import { getListColor } from '../utils/helpers.ts';
 
 const FLAGGED_OFFSET = 24;
 
 type Props = {
   item: ReminderItemType;
-  color?: OpaqueColorValue;
+  selectedKey: string;
+  sectionTitle?: string;
+  isSearchMode: boolean;
   setPopoverData: Dispatch<SetStateAction<ReactNode>>;
   onStatusChange: (fieldName: keyof ReminderItemType) => void;
   onEdit: (value: string, fieldName?: string) => void;
@@ -35,7 +37,9 @@ type Props = {
 
 function RemindersListItem({
   item,
-  color = PlatformColor('systemBlue'),
+  selectedKey,
+  isSearchMode,
+  sectionTitle,
   onEdit,
   onEditEnd,
   onStatusChange,
@@ -55,6 +59,17 @@ function RemindersListItem({
   const hasNote = textNote ? textNote.length > 0 : false;
   const isExpanded = id && id === lastSelectedTarget;
   const isFlagVisible = item.flagged && !isExpanded;
+  const shouldShowListName = selectedKey === 'completed' || selectedKey === 'flagged';
+  const color = getCurrentColor();
+
+  function getCurrentColor() {
+    if (selectedKey === 'all') {
+      return PlatformColor('systemBlue');
+    } else if (isSearchMode) {
+      return PlatformColor('systemGrey');
+    }
+    return getListColor(selectedKey);
+  }
 
   function updatePopoverData() {
     setPopoverData(<ReminderItemPopover item={item} onStatusChange={onStatusChange} />);
@@ -135,6 +150,7 @@ function RemindersListItem({
                 styles.listInput,
                 styles.listItemNoteInput,
                 item.done ? styles.listItemInputDone : {},
+                shouldShowListName ? styles.listItemInputWithListName : {},
               ]}
               submitBehavior="blurAndSubmit"
               onFocus={(event) => {
@@ -150,6 +166,18 @@ function RemindersListItem({
               enableFocusRing={false}
             />
           ) : null}
+          {!isExpanded && shouldShowListName && sectionTitle && (
+            <View style={styles.listItemListName}>
+              <Text
+                style={[
+                  styles.listInput,
+                  styles.listItemNoteInput,
+                  item.done ? styles.listItemInputDone : {},
+                ]}>
+                {sectionTitle}
+              </Text>
+            </View>
+          )}
           {isExpanded ? (
             <View style={styles.listItemButtonsWrapper}>
               <Button
@@ -234,8 +262,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   listItemCheckInner: {
-    width: 10,
-    height: 10,
+    width: 12,
+    height: 12,
     borderRadius: 5,
   },
   listItemContent: {
@@ -259,6 +287,12 @@ const styles = StyleSheet.create({
     color: PlatformColor('systemGray'),
     backgroundColor: PlatformColor('controlBackground'),
     zIndex: 9,
+  },
+  listItemListName: {
+    marginLeft: 1,
+  },
+  listItemInputWithListName: {
+    marginBottom: -5,
   },
   listItemInputDone: {
     color: PlatformColor('secondaryLabel'),
@@ -292,7 +326,7 @@ const styles = StyleSheet.create({
     top: 2,
   },
   popoverIcon: {
-    fontSize: 14,
+    fontSize: 16,
   },
 });
 

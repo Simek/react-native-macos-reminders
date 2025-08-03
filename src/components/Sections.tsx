@@ -10,6 +10,7 @@ type Props = {
   allCount: number;
   flaggedCount: number;
   isSearchMode: boolean;
+  setCompletedVisible: Dispatch<SetStateAction<boolean>>;
 };
 
 function Sections({
@@ -19,6 +20,7 @@ function Sections({
   allCount,
   flaggedCount,
   isSearchMode,
+  setCompletedVisible,
 }: Props) {
   return (
     <View style={styles.tags}>
@@ -71,6 +73,7 @@ function Sections({
         onPress={() => {
           onPress();
           setSelectedKey('completed');
+          setCompletedVisible(true);
         }}
       />
     </View>

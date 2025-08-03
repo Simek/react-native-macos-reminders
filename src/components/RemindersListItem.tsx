@@ -128,7 +128,7 @@ export default function RemindersListItem({
         style={[
           styles.listItemCounter,
           {
-            color: item.selected ? '#fff' : PlatformColor('secondaryLabel'),
+            color: item.selected ? '#ffffffaa' : PlatformColor('secondaryLabel'),
           },
         ]}>
         {count || 0}

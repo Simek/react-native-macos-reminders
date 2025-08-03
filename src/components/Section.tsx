@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, PlatformColor } from 'react-native-macos';
+import React, { useState } from 'react';
+import { StyleSheet, Text, PlatformColor, Pressable } from 'react-native-macos';
 
 import RoundIcon from './RoundIcon';
 import { TouchableOnPressType } from '../types.ts';
@@ -15,28 +15,37 @@ type Props = {
 };
 
 function Section({ title, icon, onPress, count = 0, isActive = false, iconSize = 14 }: Props) {
+  const [isPressed, setIsPressed] = useState(false);
+  const isHighlighted = isActive || isPressed;
+
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={onPress}
-      style={[styles.tag, isActive ? { backgroundColor: COLORS[title] } : {}]}>
+      onPressIn={() => {
+        setIsPressed(true);
+      }}
+      onPressOut={() => {
+        setIsPressed(false);
+      }}
+      style={[styles.tag, isHighlighted ? { backgroundColor: COLORS[title] } : {}]}>
       <RoundIcon
         icon={icon}
-        isActive={isActive}
+        isActive={isHighlighted}
         color={COLORS[title]}
-        iconColor={isActive ? COLORS[title] : '#fff'}
+        iconColor={isHighlighted ? COLORS[title] : '#fff'}
         iconSize={iconSize}
         style={styles.tagIcon}
       />
       {title !== 'completed' && (
-        <Text style={[styles.tagCount, isActive && { color: '#fff' }]}>{count}</Text>
+        <Text style={[styles.tagCount, isHighlighted && { color: '#fff' }]}>{count}</Text>
       )}
-      <Text style={[styles.tagText, isActive && { color: '#fff' }]}>{title}</Text>
+      <Text style={[styles.tagText, isHighlighted && { color: '#fff' }]}>{title}</Text>
       {title === 'today' && (
-        <Text style={[styles.tagTodayDay, isActive && { color: COLORS[title] }]}>
+        <Text style={[styles.tagTodayDay, isHighlighted && { color: COLORS[title] }]}>
           {new Date().getDate()}
         </Text>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

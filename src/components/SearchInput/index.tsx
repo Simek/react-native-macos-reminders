@@ -6,13 +6,17 @@ import { ClearButton } from './ClearButton';
 type Props = {
   searchQuery: string;
   setSearchQuery: Dispatch<SetStateAction<string>>;
+  setSearchMode: Dispatch<SetStateAction<boolean>>;
 };
 
-export function SearchInput({ searchQuery, setSearchQuery }: Props) {
+export function SearchInput({ searchQuery, setSearchQuery, setSearchMode }: Props) {
   return (
     <View>
       <TextInput
-        onChangeText={setSearchQuery}
+        onChangeText={(text) => {
+          setSearchQuery(text);
+          setSearchMode(text.length > 0);
+        }}
         value={searchQuery}
         style={styles.searchInput}
         placeholder="Search"
@@ -26,6 +30,7 @@ export function SearchInput({ searchQuery, setSearchQuery }: Props) {
           onPress={(event) => {
             event.stopPropagation();
             setSearchQuery('');
+            setSearchMode(false);
           }}
         />
       ) : null}

@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexGrow: 2,
     paddingLeft: 20,
-    paddingTop: 52,
+    paddingTop: 58,
   },
   contentHeaderWrapper: {
     flexDirection: 'row',
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 8,
     paddingRight: 16,
-    marginTop: 16,
+    marginTop: 12,
     marginBottom: 8,
   },
   completedTextWrapper: {
@@ -107,6 +107,9 @@ const styles = StyleSheet.create({
     top: 12,
     right: 12,
     zIndex: 9999,
+  },
+  customListStubHeader: {
+    marginBottom: 12,
   },
 });
 
