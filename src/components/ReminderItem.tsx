@@ -1,3 +1,4 @@
+import { format } from '@formkit/tempo';
 // @ts-expect-error FIXME
 import { PopoverManager } from '@rn-macos/popover';
 import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from 'react';
@@ -57,8 +58,11 @@ function RemindersListItem({
   const hasNote = textNote ? textNote.length > 0 : false;
   const isExpanded = id && id === lastSelectedTarget;
   const isFlagVisible = item.flagged && !isExpanded;
+
   const shouldShowListName =
     (selectedKey === 'completed' || selectedKey === 'flagged') && !isSearchMode;
+  const shouldShowCompletedTime = selectedKey === 'completed' && !isSearchMode;
+
   const color = getCurrentReminderColor();
 
   function getCurrentReminderColor() {
@@ -145,7 +149,7 @@ function RemindersListItem({
               value={textNote}
               style={[
                 styles.listInput,
-                styles.listItemNoteInput,
+                styles.listItemSecondary,
                 item.done ? styles.listItemInputDone : {},
                 shouldShowListName ? styles.listItemInputWithListName : {},
               ]}
@@ -168,10 +172,22 @@ function RemindersListItem({
               <Text
                 style={[
                   styles.listInput,
-                  styles.listItemNoteInput,
+                  styles.listItemSecondary,
                   item.done ? styles.listItemInputDone : {},
                 ]}>
                 {sectionTitle}
+              </Text>
+            </View>
+          )}
+          {shouldShowCompletedTime && item.completedAt && (
+            <View style={styles.listItemListName}>
+              <Text
+                style={[
+                  styles.listInput,
+                  styles.listItemSecondary,
+                  item.done ? styles.listItemInputDone : {},
+                ]}>
+                Completed: {format(new Date(item.completedAt), 'D/MM/YYYY HH:mm')}
               </Text>
             </View>
           )}
@@ -279,8 +295,8 @@ const styles = StyleSheet.create({
     marginBottom: -6,
     zIndex: 10,
   },
-  listItemNoteInput: {
-    marginVertical: 2,
+  listItemSecondary: {
+    marginTop: 2,
     color: PlatformColor('systemGray'),
     backgroundColor: PlatformColor('controlBackground'),
     zIndex: 9,

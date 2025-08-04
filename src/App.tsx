@@ -1,7 +1,7 @@
 // @ts-expect-error FIXME
 import { Popover } from '@rn-macos/popover';
-import { ReactNode, useState } from 'react';
-import { Text, TouchableWithoutFeedback, View } from 'react-native-macos';
+import { ReactNode, useEffect, useState } from 'react';
+import { Dimensions, Text, TouchableWithoutFeedback, View } from 'react-native-macos';
 
 import Button from '~/components/Button';
 import ReminderItem from '~/components/ReminderItem';
@@ -42,6 +42,19 @@ function App() {
   } = useDataContext();
 
   const [popoverData, setPopoverData] = useState<ReactNode>(null);
+  const [windowSize, setWindowSize] = useState(Dimensions.get('window'));
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      if (window.width > 0) {
+        setWindowSize(window);
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   const overwriteListItemsData = (
     overwriteFunc: (lists: ReminderListItemType[]) => ReminderListItemType[],
@@ -61,7 +74,7 @@ function App() {
       Object.assign({}, data, {
         [selectedKey]: [
           ...data[selectedKey],
-          { text: '', key: `entry-${ts}`, createdAt: ts, done: false },
+          { text: '', key: `entry-${ts}`, createdAt: ts, completedAt: null, done: false },
         ],
       }),
     );
@@ -127,7 +140,7 @@ function App() {
   return (
     <View style={sharedStyles.container}>
       <Popover style={{ position: 'absolute' }}>{popoverData}</Popover>
-      <View style={sharedStyles.sourceList}>
+      <View style={[sharedStyles.sourceList, windowSize.width <= 566 && { display: 'none' }]}>
         <SearchInput />
         <Sections onPress={clearListTempData} />
         <RemindersList
@@ -235,6 +248,12 @@ function App() {
                 onStatusChange={(fieldName: keyof ReminderItemType) => {
                   overwriteSelectedListData(dataKey, (list) =>
                     findAndReplaceEntry(list, item.key, (entry) => {
+                      if (fieldName === 'done') {
+                        return {
+                          [fieldName]: !entry[fieldName],
+                          completedAt: !entry[fieldName] ? Date.now() : null,
+                        };
+                      }
                       return {
                         [fieldName]: !entry[fieldName],
                       };

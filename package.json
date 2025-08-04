@@ -10,6 +10,7 @@
     "eas-build": "npx eas-cli build --profile production --platform ios"
   },
   "dependencies": {
+    "@formkit/tempo": "^0.1.2",
     "@rn-macos/popover": "^0.1.0",
     "react": "19.0.0",
     "react-native": "0.78.3",

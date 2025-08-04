@@ -14,7 +14,6 @@ import { useDataContext } from '~/context/DataContext.tsx';
 import clearMenu from '~/menus/ClearMenu.ts';
 import sharedStyles from '~/sharedStyles.ts';
 import { ReminderItemType } from '~/types.ts';
-import { PREDEFINED_KEYS } from '~/utils/constants';
 import { filterSearchHits, getListColor, getRemindersCounts } from '~/utils/helpers.ts';
 
 type Props = SectionListProps<ReminderItemType>;
@@ -49,8 +48,6 @@ function ReminderList({ sections, renderItem, ListFooterComponent, ListEmptyComp
     <SectionList
       contentContainerStyle={sections?.length ? {} : { flexGrow: 2 }}
       sections={sections}
-      stickySectionHeadersEnabled
-      contentOffset={{ y: 52, x: 0 }}
       keyExtractor={(item) => item.key}
       renderItem={renderItem}
       renderSectionHeader={({ section: { title } }) =>
@@ -62,10 +59,6 @@ function ReminderList({ sections, renderItem, ListFooterComponent, ListEmptyComp
       }
       ListHeaderComponent={() => {
         if (!isSearchMode && selectedKey === 'today') return null;
-
-        if (!PREDEFINED_KEYS.includes(selectedKey)) {
-          return <View style={styles.customListStubHeader} />;
-        }
 
         const color = isSearchMode ? PlatformColor('systemGray') : getListColor(selectedKey);
 
@@ -134,9 +127,6 @@ const styles = StyleSheet.create({
     marginTop: -4,
     marginBottom: 4,
     color: PlatformColor('systemBlue'),
-  },
-  customListStubHeader: {
-    marginBottom: 12,
   },
 });
 

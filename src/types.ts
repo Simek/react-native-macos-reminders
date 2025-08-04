@@ -11,6 +11,7 @@ export type ReminderItemType = {
   flagged: boolean;
   key: string;
   createdAt: number;
+  completedAt: number | null;
 };
 
 export type ReminderListItemType = {

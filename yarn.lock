@@ -1189,6 +1189,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@formkit/tempo@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@formkit/tempo@npm:0.1.2"
+  checksum: 10c0/6ef390f045573f9b61b32af82f7fe62199d3bedfb2eb0a3f0ec5420f56474735dbcb4627e346a8ead449deeac7ce10ac93dbd86c08382d87a4b221533297f899
+  languageName: node
+  linkType: hard
+
 "@hapi/hoek@npm:^9.0.0, @hapi/hoek@npm:^9.3.0":
   version: 9.3.0
   resolution: "@hapi/hoek@npm:9.3.0"
@@ -8581,6 +8588,7 @@ __metadata:
     "@babel/plugin-transform-private-methods": "npm:^7.27.1"
     "@babel/plugin-transform-typescript": "npm:^7.28.0"
     "@babel/runtime": "npm:^7.28.2"
+    "@formkit/tempo": "npm:^0.1.2"
     "@react-native-community/cli": "npm:18.0.0"
     "@react-native/metro-config": "npm:0.78.3"
     "@react-native/typescript-config": "npm:0.78.3"
