@@ -1,6 +1,6 @@
 import { StyleSheet, PlatformColor } from 'react-native-macos';
 
-const styles = StyleSheet.create({
+const sharedStyles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
@@ -61,23 +61,6 @@ const styles = StyleSheet.create({
     marginRight: 16,
     fontWeight: '400',
   },
-  completedHeader: {
-    flexDirection: 'row',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#8c8c8c50',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    paddingRight: 16,
-    marginTop: 12,
-    marginBottom: 8,
-  },
-  completedTextWrapper: {
-    flexDirection: 'row',
-  },
-  completedText: {
-    color: PlatformColor('systemGray'),
-    fontSize: 13,
-  },
   completedVisibleText: {
     color: PlatformColor('tertiaryLabel'),
     fontSize: 13,
@@ -108,9 +91,6 @@ const styles = StyleSheet.create({
     right: 12,
     zIndex: 9999,
   },
-  customListStubHeader: {
-    marginBottom: 12,
-  },
 });
 
-export default styles;
+export default sharedStyles;

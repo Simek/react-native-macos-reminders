@@ -1,6 +1,6 @@
 // @ts-expect-error FIXME
 import { PopoverManager } from '@rn-macos/popover';
-import React, { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from 'react';
 import {
   Dimensions,
   StyleSheet,
@@ -16,41 +16,39 @@ import {
 
 import Button from './Button';
 import ReminderItemPopover from './ReminderItemPopover';
-import { MeasureOnSuccessParams, ReminderItemType } from '../types.ts';
-import { COLORS } from '../utils/constants';
-import { getListColor } from '../utils/helpers.ts';
+
+import { useAppContext } from '~/context/AppContext.tsx';
+import { MeasureOnSuccessParams, ReminderItemType } from '~/types.ts';
+import { COLORS } from '~/utils/constants';
+import { getListColor } from '~/utils/helpers.ts';
 
 const FLAGGED_OFFSET = 24;
 
 type Props = {
   item: ReminderItemType;
-  selectedKey: string;
   sectionTitle?: string;
-  isSearchMode: boolean;
   setPopoverData: Dispatch<SetStateAction<ReactNode>>;
   onStatusChange: (fieldName: keyof ReminderItemType) => void;
   onEdit: (value: string, fieldName?: string) => void;
   onEditEnd: TextInputProps['onBlur'];
-  lastSelectedTarget: NativeMethods | null;
-  setLastSelectedTarget: Dispatch<SetStateAction<NativeMethods | null>>;
 };
 
 function RemindersListItem({
   item,
-  selectedKey,
-  isSearchMode,
   sectionTitle,
   onEdit,
   onEditEnd,
   onStatusChange,
   setPopoverData,
-  lastSelectedTarget,
-  setLastSelectedTarget,
 }: Props) {
+  const { isSearchMode, selectedKey, lastSelectedTarget, setLastSelectedTarget } = useAppContext();
+
   const [text, setText] = useState<string | undefined>(item.text);
   const [textNote, setTextNote] = useState<string | undefined>(item.textNote);
   const [layout, setLayout] = useState<MeasureOnSuccessParams | null>(null);
   const [id, setId] = useState<NativeMethods | null>(null);
+
+  useEffect(() => updatePopoverData(), [item.flagged]);
 
   const rowRef = useRef<View>(null);
   const noteInputRef = useRef(null);
@@ -59,14 +57,15 @@ function RemindersListItem({
   const hasNote = textNote ? textNote.length > 0 : false;
   const isExpanded = id && id === lastSelectedTarget;
   const isFlagVisible = item.flagged && !isExpanded;
-  const shouldShowListName = selectedKey === 'completed' || selectedKey === 'flagged';
-  const color = getCurrentColor();
+  const shouldShowListName =
+    (selectedKey === 'completed' || selectedKey === 'flagged') && !isSearchMode;
+  const color = getCurrentReminderColor();
 
-  function getCurrentColor() {
+  function getCurrentReminderColor() {
     if (selectedKey === 'all') {
       return PlatformColor('systemBlue');
     } else if (isSearchMode) {
-      return PlatformColor('systemGrey');
+      return PlatformColor('systemGray');
     }
     return getListColor(selectedKey);
   }
@@ -74,8 +73,6 @@ function RemindersListItem({
   function updatePopoverData() {
     setPopoverData(<ReminderItemPopover item={item} onStatusChange={onStatusChange} />);
   }
-
-  useEffect(() => updatePopoverData(), [item.flagged]);
 
   return (
     <Pressable

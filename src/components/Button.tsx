@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   PlatformColor,
   StyleProp,
@@ -10,7 +10,7 @@ import {
   ViewStyle,
 } from 'react-native-macos';
 
-import { TouchableOnPressType } from '../types.ts';
+import { TouchableOnPressType } from '~/types.ts';
 
 type Props = {
   text?: string;

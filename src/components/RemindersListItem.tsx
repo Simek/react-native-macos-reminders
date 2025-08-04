@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   ActionSheetIOS,
   Alert,
@@ -12,7 +12,8 @@ import {
 } from 'react-native-macos';
 
 import RoundIcon from './RoundIcon';
-import { ReminderListItemType } from '../types.ts';
+
+import { ReminderListItemType } from '~/types.ts';
 
 type Props = {
   item: ReminderListItemType;

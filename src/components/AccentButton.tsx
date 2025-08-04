@@ -1,7 +1,7 @@
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { Text, TouchableOpacity, OpaqueColorValue, PlatformColor } from 'react-native-macos';
 
-import { TouchableOnPressType } from '../types.ts';
+import { TouchableOnPressType } from '~/types.ts';
 
 type Props = PropsWithChildren<{
   onPress?: TouchableOnPressType;

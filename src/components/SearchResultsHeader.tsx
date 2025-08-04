@@ -1,7 +1,6 @@
-import React from 'react';
 import { Text } from 'react-native-macos';
 
-import styles from '../styles';
+import sharedStyles from '~/sharedStyles.ts';
 
 type Props = {
   searchQuery: string;
@@ -9,7 +8,7 @@ type Props = {
 
 function SearchResultsTitle({ searchQuery }: Props) {
   return (
-    <Text style={styles.contentHeader} numberOfLines={1} ellipsizeMode="tail">
+    <Text style={sharedStyles.contentHeader} numberOfLines={1} ellipsizeMode="tail">
       Results for “{searchQuery}”
     </Text>
   );

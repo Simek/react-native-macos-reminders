@@ -1,27 +1,20 @@
-import React, { Dispatch, SetStateAction } from 'react';
 import { StyleSheet, View } from 'react-native-macos';
 
-import Section from './Section';
+import Section from '~/components/Section';
+import { useAppContext } from '~/context/AppContext.tsx';
+import { useDataContext } from '~/context/DataContext.tsx';
+import { getRemindersCounts } from '~/utils/helpers.ts';
 
 type Props = {
-  selectedKey: string;
-  setSelectedKey: Dispatch<SetStateAction<string>>;
   onPress: () => void;
-  allCount: number;
-  flaggedCount: number;
-  isSearchMode: boolean;
-  setCompletedVisible: Dispatch<SetStateAction<boolean>>;
 };
 
-function Sections({
-  selectedKey,
-  setSelectedKey,
-  onPress,
-  allCount,
-  flaggedCount,
-  isSearchMode,
-  setCompletedVisible,
-}: Props) {
+function Sections({ onPress }: Props) {
+  const { isSearchMode, selectedKey, setSelectedKey, setCompletedVisible } = useAppContext();
+  const { data } = useDataContext();
+
+  const { allCount, flaggedCount } = getRemindersCounts(data);
+
   return (
     <View style={styles.tags}>
       <Section

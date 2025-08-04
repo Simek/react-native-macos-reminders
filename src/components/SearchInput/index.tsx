@@ -1,15 +1,12 @@
-import React, { Dispatch, SetStateAction } from 'react';
 import { StyleSheet, Text, TextInput, View, PlatformColor } from 'react-native-macos';
 
 import { ClearButton } from './ClearButton';
 
-type Props = {
-  searchQuery: string;
-  setSearchQuery: Dispatch<SetStateAction<string>>;
-  setSearchMode: Dispatch<SetStateAction<boolean>>;
-};
+import { useAppContext } from '~/context/AppContext.tsx';
 
-export function SearchInput({ searchQuery, setSearchQuery, setSearchMode }: Props) {
+export function SearchInput() {
+  const { searchQuery, setSearchQuery, setSearchMode } = useAppContext();
+
   return (
     <View>
       <TextInput

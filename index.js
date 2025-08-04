@@ -1,11 +1,8 @@
-import { Animated, AppRegistry, NativeModules } from 'react-native-macos';
+import { AppRegistry, NativeModules } from 'react-native-macos';
 
 import { name as appName } from './app.json';
-import App from './src/App';
+import AppWrapper from './src/AppWrapper';
 
 NativeModules.DevSettings.setIsSecondaryClickToShowDevMenuEnabled(false);
 
-AppRegistry.registerComponent(appName, () => App);
-
-const stubAV = new Animated.Value(0);
-stubAV.addListener(() => {});
+AppRegistry.registerComponent(appName, () => AppWrapper);

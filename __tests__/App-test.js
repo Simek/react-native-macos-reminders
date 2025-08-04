@@ -1,4 +1,3 @@
-import React from 'react';
 import 'react-native-macos';
 import renderer from 'react-test-renderer';
 

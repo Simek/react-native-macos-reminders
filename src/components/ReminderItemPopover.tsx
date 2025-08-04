@@ -1,9 +1,9 @@
-import React from 'react';
 import { StyleSheet, Text, View, PlatformColor } from 'react-native-macos';
 
 import Button from './Button';
-import { ReminderItemType } from '../types.ts';
-import { COLORS } from '../utils/constants';
+
+import { ReminderItemType } from '~/types.ts';
+import { COLORS } from '~/utils/constants';
 
 type Props = {
   item: ReminderItemType;
@@ -19,7 +19,7 @@ function ReminderItemPopover({ item, onStatusChange }: Props) {
           onPress={() => onStatusChange('flagged')}
           text={item.flagged ? '􀋊' : '􀋉'}
           style={styles.popoverFlagButton}
-          textStyle={[{ fontSize: 12 }, item.flagged ? { color: COLORS.flagged } : {}]}
+          textStyle={[styles.popoverFlagButtonText, item.flagged ? { color: COLORS.flagged } : {}]}
         />
       </View>
       <Text style={styles.popoverSecondary}>{item.textNote || 'Notes'}</Text>
@@ -70,6 +70,9 @@ const styles = StyleSheet.create({
     height: 19,
     paddingVertical: 2,
     paddingHorizontal: 6,
+  },
+  popoverFlagButtonText: {
+    fontSize: 12,
   },
   popoverLabel: {
     fontSize: 12,

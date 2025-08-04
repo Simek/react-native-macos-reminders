@@ -1,8 +1,8 @@
-import React from 'react';
 import { SectionList, StyleSheet, Text, PlatformColor } from 'react-native-macos';
 
 import RemindersListItem from './RemindersListItem';
-import { ReminderListItemType } from '../types.ts';
+
+import { ReminderListItemType } from '~/types.ts';
 
 type Props = {
   data: ReminderListItemType[];

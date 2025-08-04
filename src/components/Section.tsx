@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, Text, PlatformColor, Pressable } from 'react-native-macos';
 
 import RoundIcon from './RoundIcon';
-import { TouchableOnPressType } from '../types.ts';
-import { COLORS } from '../utils/constants';
+
+import { TouchableOnPressType } from '~/types.ts';
+import { COLORS } from '~/utils/constants';
 
 type Props = {
   title: string;

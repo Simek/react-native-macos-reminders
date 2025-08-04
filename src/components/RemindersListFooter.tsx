@@ -1,7 +1,6 @@
-import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, PlatformColor } from 'react-native-macos';
 
-import { TouchableOnPressType } from '../types.ts';
+import { TouchableOnPressType } from '~/types.ts';
 
 type Props = {
   onPress: TouchableOnPressType;

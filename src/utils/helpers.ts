@@ -1,13 +1,14 @@
 import { OpaqueColorValue, PlatformColor, TextStyle } from 'react-native-macos';
 
 import { COLORS, PREDEFINED_KEYS } from './constants';
-import styles from '../styles';
+
+import sharedStyles from '~/sharedStyles.ts';
 import {
   ReminderItemSection,
   ReminderItemType,
   ReminderListItemType,
   RemindersType,
-} from '../types';
+} from '~/types';
 
 export function getListColor(key: string): OpaqueColorValue {
   if (!PREDEFINED_KEYS.includes(key)) {
@@ -37,10 +38,7 @@ export function getSpecialListContent(
     .filter((item) => Boolean(item) && (filter && item ? filter(item) : true));
 }
 
-export function getListCount(
-  data: Record<string, ReminderItemType[]>,
-  item: Pick<ReminderItemType, 'key'>,
-): number {
+export function getListCount(data: RemindersType, item: Pick<ReminderItemType, 'key'>): number {
   if (!data || !data[item.key]) {
     return 0;
   }
@@ -48,7 +46,7 @@ export function getListCount(
 }
 
 export function getTotalCount(
-  data?: Record<string, ReminderItemType[]>,
+  data?: RemindersType,
   filterFunc: (entry: any) => boolean = () => true,
 ) {
   if (!data) {
@@ -60,14 +58,24 @@ export function getTotalCount(
     .reduce((acc, value) => acc + value, 0);
 }
 
+export function getRemindersCounts(data: RemindersType) {
+  const totalCount = getTotalCount(data);
+  const allCount = getTotalCount(data, (entry) => !entry.done);
+  const allCompletedCount = totalCount - allCount;
+  const flaggedCount = getTotalCount(data, (entry) => entry.flagged && !entry.done);
+  const flaggedCompletedCount = getTotalCount(data, (entry) => entry.flagged && entry.done);
+
+  return { totalCount, allCount, allCompletedCount, flaggedCount, flaggedCompletedCount };
+}
+
 export function getTitle(list: ReminderListItemType[], key: string) {
   return list.find((item) => item.key === key)?.title;
 }
 
 export function getHeaderStyle(key: string, customStyles?: TextStyle): TextStyle[] {
   return [
-    styles.contentHeader,
-    customStyles ? customStyles : styles.contentHeaderCustom,
+    sharedStyles.contentHeader,
+    customStyles ? customStyles : sharedStyles.contentHeaderCustom,
     { color: getListColor(key) },
   ];
 }
