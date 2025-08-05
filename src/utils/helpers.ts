@@ -24,6 +24,7 @@ export function getNewListEntry(): ReminderListItemType {
     key,
     selected: true,
     editMode: true,
+    showCompleted: true,
   };
 }
 
@@ -42,7 +43,7 @@ export function getListCount(data: RemindersType, item: Pick<ReminderItemType, '
   if (!data || !data[item.key]) {
     return 0;
   }
-  return data[item.key].filter((entry) => !entry.done).length;
+  return data[item.key].reminders.filter((entry) => !entry.done).length;
 }
 
 export function getTotalCount(
@@ -54,7 +55,7 @@ export function getTotalCount(
   }
   return Object.keys(data)
     .filter((entry) => entry.startsWith('list-'))
-    .map((entry) => data[entry].filter(filterFunc).length)
+    .map((entry) => data[entry].reminders.filter(filterFunc).length)
     .reduce((acc, value) => acc + value, 0);
 }
 

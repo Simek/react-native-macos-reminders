@@ -19,14 +19,13 @@ import { filterSearchHits, getListColor, getRemindersCounts } from '~/utils/help
 type Props = SectionListProps<ReminderItemType>;
 
 function ReminderList({ sections, renderItem, ListFooterComponent, ListEmptyComponent }: Props) {
-  const { selectedKey, isSearchMode, completedVisible, setCompletedVisible, searchQuery } =
-    useAppContext();
-  const { data, removeAllRemindersByList } = useDataContext();
+  const { selectedKey, isSearchMode, searchQuery } = useAppContext();
+  const { data, setData, removeAllRemindersByList } = useDataContext();
 
   function calculateCompletedForList() {
     if (isSearchMode || selectedKey === 'search') {
       return (
-        [...Object.values(data)]
+        [...Object.values(data).flatMap((list) => list.reminders)]
           .flat()
           .filter((entry) => entry.done)
           .filter((entry) => filterSearchHits(searchQuery, entry)).length || 0
@@ -38,11 +37,14 @@ function ReminderList({ sections, renderItem, ListFooterComponent, ListEmptyComp
     if (selectedKey === 'all' || selectedKey === 'completed') {
       return allCompletedCount;
     }
-    return data[selectedKey].filter((entry: ReminderItemType) => entry.done).length;
+    return data[selectedKey].reminders.filter((entry: ReminderItemType) => entry.done).length;
   }
 
   const { allCompletedCount, flaggedCompletedCount } = getRemindersCounts(data);
   const completedCount = calculateCompletedForList();
+
+  const shouldShowClearAction =
+    selectedKey !== 'scheduled' && selectedKey !== 'flagged' && isSearchMode && sections.length > 0;
 
   return (
     <SectionList
@@ -66,13 +68,13 @@ function ReminderList({ sections, renderItem, ListFooterComponent, ListEmptyComp
           <View style={styles.completedHeader}>
             <View style={styles.completedTextWrapper}>
               <Text style={styles.completedText}>{completedCount} Completed</Text>
-              {selectedKey !== 'scheduled' && selectedKey !== 'flagged' && (
+              {shouldShowClearAction && (
                 <>
                   <Text style={styles.completedText}> • </Text>
                   <AccentButton
                     onPress={() =>
                       clearMenu(completedCount, () => {
-                        const keys = data[selectedKey]
+                        const keys = data[selectedKey].reminders
                           .filter((entry: ReminderItemType) => entry.done)
                           .map((entry: ReminderItemType) => entry.key);
                         removeAllRemindersByList(selectedKey, keys);
@@ -87,9 +89,17 @@ function ReminderList({ sections, renderItem, ListFooterComponent, ListEmptyComp
             </View>
             {selectedKey !== 'completed' && (
               <AccentButton
-                onPress={() => setCompletedVisible((prevState) => !prevState)}
+                onPress={() =>
+                  setData({
+                    ...data,
+                    [selectedKey]: {
+                      ...data[selectedKey],
+                      showCompleted: !data[selectedKey].showCompleted,
+                    },
+                  })
+                }
                 color={color}>
-                {completedVisible ? 'Hide' : 'Show'}
+                {data[selectedKey].showCompleted ? 'Hide' : 'Show'}
               </AccentButton>
             )}
           </View>

@@ -3,6 +3,7 @@ import { StyleSheet, Text, PlatformColor, Pressable } from 'react-native-macos';
 
 import RoundIcon from './RoundIcon';
 
+import { useAppContext } from '~/context/AppContext.tsx';
 import { TouchableOnPressType } from '~/types.ts';
 import { COLORS } from '~/utils/constants';
 
@@ -15,13 +16,26 @@ type Props = {
   iconSize?: number;
 };
 
-function Section({ title, icon, onPress, count = 0, isActive = false, iconSize = 14 }: Props) {
+export default function Section({
+  title,
+  icon,
+  onPress,
+  count = 0,
+  isActive = false,
+  iconSize = 14,
+}: Props) {
+  const { setSearchMode, setPreviousSelectedKey } = useAppContext();
+
   const [isPressed, setIsPressed] = useState(false);
   const isHighlighted = isActive || isPressed;
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={(event) => {
+        onPress?.(event);
+        setPreviousSelectedKey(title);
+        setSearchMode(false);
+      }}
       onPressIn={() => {
         setIsPressed(true);
       }}
@@ -91,5 +105,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-export default Section;

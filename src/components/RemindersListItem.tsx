@@ -13,6 +13,7 @@ import {
 
 import RoundIcon from './RoundIcon';
 
+import { useAppContext } from '~/context/AppContext.tsx';
 import { ReminderListItemType } from '~/types.ts';
 
 type Props = {
@@ -36,10 +37,15 @@ export default function RemindersListItem({
   onEditEnd,
   onRename,
 }: Props) {
+  const { setSearchMode, setPreviousSelectedKey } = useAppContext();
+
   const [focused, setFocused] = useState(false);
+
   return (
     <Pressable
       onPress={(event) => {
+        setPreviousSelectedKey(item.title);
+        setSearchMode(false);
         // @ts-expect-error FIXME
         if (event.nativeEvent.button === 2) {
           ActionSheetIOS.showActionSheetWithOptions(

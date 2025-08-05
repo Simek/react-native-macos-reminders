@@ -14,7 +14,12 @@ import Sections from '~/components/Sections';
 import { useAppContext } from '~/context/AppContext.tsx';
 import { useDataContext } from '~/context/DataContext.tsx';
 import sharedStyles from '~/sharedStyles.ts';
-import { ReminderItemSection, ReminderItemType, ReminderListItemType } from '~/types.ts';
+import {
+  ReminderItemSection,
+  ReminderItemType,
+  ReminderListItemType,
+  RemindersType,
+} from '~/types.ts';
 import { PREDEFINED_KEYS } from '~/utils/constants';
 import {
   filterSearchHits,
@@ -29,8 +34,7 @@ import {
 import { findAndReplaceEntry } from '~/utils/storage';
 
 function App() {
-  const { searchQuery, selectedKey, setSelectedKey, isSearchMode, completedVisible } =
-    useAppContext();
+  const { searchQuery, selectedKey, setSelectedKey, isSearchMode } = useAppContext();
   const {
     data,
     setData,
@@ -72,16 +76,25 @@ function App() {
     const ts = Date.now();
     setData(
       Object.assign({}, data, {
-        [selectedKey]: [
+        [selectedKey]: {
           ...data[selectedKey],
-          { text: '', key: `entry-${ts}`, createdAt: ts, completedAt: null, done: false },
-        ],
+          reminders: [
+            ...data[selectedKey].reminders,
+            { text: '', key: `entry-${ts}`, createdAt: ts, completedAt: null, done: false },
+          ],
+        },
       }),
     );
   }
 
-  function processListData(list: ReminderItemType[]) {
-    return processRemindersList(list, completedVisible);
+  function processListData(
+    list: RemindersType[string],
+    filterFn?: (list: ReminderItemType) => boolean,
+  ) {
+    return processRemindersList(
+      filterFn ? list.reminders.filter(filterFn) : list.reminders,
+      list.showCompleted ?? true,
+    );
   }
 
   function multiListMapper(
@@ -100,19 +113,27 @@ function App() {
     return {
       key,
       title,
-      data: itemFilter ? processListData(data[key].filter(itemFilter)) : processListData(data[key]),
+      data: itemFilter ? processListData(data[key], itemFilter) : processListData(data[key]),
     };
   }
 
   function getRemindersSections(): ReminderItemSection[] {
-    if (isSearchMode || !selectedKey) {
+    if (isSearchMode) {
       return getSpecialListContent(
         data,
-        (key) => multiListMapper(key, (entry) => filterSearchHits(searchQuery, entry)),
+        (key) =>
+          multiListMapper(
+            key,
+            (entry) =>
+              filterSearchHits(searchQuery, entry) &&
+              (data[selectedKey].showCompleted ? true : !entry.done),
+          ),
         (section) => (section.data ? section.data.length > 0 : false),
       );
     } else if (selectedKey === 'all') {
-      return getSpecialListContent(data, (key) => multiListMapper(key));
+      return getSpecialListContent(data, (key) =>
+        multiListMapper(key, (entry) => (data[selectedKey].showCompleted ? true : !entry.done)),
+      );
     } else if (selectedKey === 'completed') {
       return getSpecialListContent(
         data,
@@ -122,12 +143,16 @@ function App() {
     } else if (selectedKey === 'flagged') {
       return getSpecialListContent(
         data,
-        (key) => multiListMapper(key, (entry) => entry.flagged),
+        (key) =>
+          multiListMapper(
+            key,
+            (entry) => entry.flagged && (data[selectedKey].showCompleted ? true : !entry.done),
+          ),
         (section) =>
           section.data ? section.data.filter((entry) => entry.flagged).length > 0 : false,
       );
     } else {
-      if (data[selectedKey]?.length > 0) {
+      if (data[selectedKey]?.reminders?.length > 0) {
         return [{ ...data[selectedKey], data: processListData(data[selectedKey]) }].filter(Boolean);
       }
       return [];
@@ -196,7 +221,9 @@ function App() {
               entry,
             ]);
             setSelectedKey(entry.key);
-            setData(Object.assign({}, data, { [entry.key]: [] }));
+            setData(
+              Object.assign({}, data, { [entry.key]: { showCompleted: true, reminders: [] } }),
+            );
           }}
         />
       </View>
@@ -274,7 +301,7 @@ function App() {
             !isSearchMode ? (
               <View style={sharedStyles.noContentWrapper}>
                 <Text style={sharedStyles.noContentText}>
-                  {completedVisible || remindersSections?.length === 0
+                  {data[selectedKey]?.showCompleted || remindersSections?.length === 0
                     ? 'No Reminders'
                     : 'All Reminders Completed'}
                 </Text>

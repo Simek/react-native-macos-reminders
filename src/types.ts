@@ -2,7 +2,12 @@ import { OpaqueColorValue } from 'react-native-macos';
 import { TouchableWithoutFeedbackProps } from 'react-native-macos/Libraries/Components/Touchable/TouchableWithoutFeedback';
 import { SectionListData } from 'react-native-macos/Libraries/Lists/SectionList';
 
-export type RemindersType = Record<string, ReminderItemType[]>;
+export type LegacyRemindersType = Record<string, ReminderItemType[]>;
+
+export type RemindersType = Record<
+  string,
+  { showCompleted?: boolean; reminders: ReminderItemType[] }
+>;
 
 export type ReminderItemType = {
   text?: string;
@@ -19,6 +24,7 @@ export type ReminderListItemType = {
   key: string;
   selected: boolean;
   editMode: boolean;
+  showCompleted: boolean;
   color?: OpaqueColorValue;
   data?: ReminderItemType[];
 };

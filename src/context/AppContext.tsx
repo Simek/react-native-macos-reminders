@@ -4,6 +4,7 @@ import {
   PropsWithChildren,
   SetStateAction,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -16,10 +17,10 @@ type AppContextType = {
   setSearchQuery: Dispatch<SetStateAction<string>>;
   selectedKey: string;
   setSelectedKey: Dispatch<SetStateAction<string>>;
+  previousSelectedKey: string;
+  setPreviousSelectedKey: Dispatch<SetStateAction<string>>;
   isSearchMode: boolean;
   setSearchMode: Dispatch<SetStateAction<boolean>>;
-  completedVisible: boolean;
-  setCompletedVisible: Dispatch<SetStateAction<boolean>>;
   lastSelectedTarget: NativeMethods | null;
   setLastSelectedTarget: Dispatch<SetStateAction<NativeMethods | null>>;
 };
@@ -29,10 +30,10 @@ export const AppContext = createContext({
   setSearchQuery: (_: string) => notInitialized,
   selectedKey: PREDEFINED_KEYS[0],
   setSelectedKey: (_: string) => notInitialized,
+  previousSelectedKey: PREDEFINED_KEYS[0],
+  setPreviousSelectedKey: (_: string) => notInitialized,
   isSearchMode: false,
   setSearchMode: (_: boolean) => notInitialized,
-  completedVisible: true,
-  setCompletedVisible: (_: boolean) => notInitialized,
   lastSelectedTarget: null,
   setLastSelectedTarget: (_: NativeMethods | null) => notInitialized,
 } as AppContextType);
@@ -40,9 +41,18 @@ export const AppContext = createContext({
 export function AppProvider({ children }: PropsWithChildren) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedKey, setSelectedKey] = useState(PREDEFINED_KEYS[0]);
+  const [previousSelectedKey, setPreviousSelectedKey] = useState(PREDEFINED_KEYS[0]);
   const [isSearchMode, setSearchMode] = useState<boolean>(false);
-  const [completedVisible, setCompletedVisible] = useState<boolean>(true);
   const [lastSelectedTarget, setLastSelectedTarget] = useState<NativeMethods | null>(null);
+
+  useEffect(() => {
+    if (isSearchMode) {
+      setPreviousSelectedKey(selectedKey);
+      setSelectedKey('all');
+    } else {
+      setSelectedKey(previousSelectedKey);
+    }
+  }, [isSearchMode]);
 
   const contextValue = useMemo(
     () => ({
@@ -50,14 +60,14 @@ export function AppProvider({ children }: PropsWithChildren) {
       setSearchQuery,
       selectedKey,
       setSelectedKey,
+      previousSelectedKey,
+      setPreviousSelectedKey,
       isSearchMode,
       setSearchMode,
-      completedVisible,
-      setCompletedVisible,
       lastSelectedTarget,
       setLastSelectedTarget,
     }),
-    [searchQuery, selectedKey, isSearchMode, lastSelectedTarget, completedVisible],
+    [searchQuery, selectedKey, previousSelectedKey, isSearchMode, lastSelectedTarget],
   );
 
   return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;

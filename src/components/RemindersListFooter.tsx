@@ -6,7 +6,7 @@ type Props = {
   onPress: TouchableOnPressType;
 };
 
-const RemindersListFooter = ({ onPress }: Props) => {
+export default function RemindersListFooter({ onPress }: Props) {
   return (
     <TouchableOpacity style={styles.listFooter} onPress={onPress} activeOpacity={1}>
       <Text style={styles.listFooterText}>
@@ -14,7 +14,7 @@ const RemindersListFooter = ({ onPress }: Props) => {
       </Text>
     </TouchableOpacity>
   );
-};
+}
 
 const styles = StyleSheet.create({
   listFooter: {
@@ -33,5 +33,3 @@ const styles = StyleSheet.create({
     marginRight: 2,
   },
 });
-
-export default RemindersListFooter;

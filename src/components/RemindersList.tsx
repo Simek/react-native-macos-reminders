@@ -2,6 +2,7 @@ import { SectionList, StyleSheet, Text, PlatformColor } from 'react-native-macos
 
 import RemindersListItem from './RemindersListItem';
 
+import { useAppContext } from '~/context/AppContext.tsx';
 import { ReminderListItemType } from '~/types.ts';
 
 type Props = {
@@ -25,6 +26,7 @@ function RemindersList({
   itemOnRename,
   itemOnEditEnd,
 }: Props) {
+  const { setSearchMode, setPreviousSelectedKey } = useAppContext();
   return (
     <SectionList
       sections={[
@@ -38,7 +40,11 @@ function RemindersList({
         <RemindersListItem
           item={item}
           count={getItemCount(item)}
-          onPress={() => itemOnPress(item)}
+          onPress={() => {
+            itemOnPress(item);
+            setPreviousSelectedKey(item.key);
+            setSearchMode(false);
+          }}
           onTextInputPress={() => itemOnTextInputPress(item)}
           onDelete={() => itemOnDelete(item)}
           onRename={() => itemOnRename(item)}

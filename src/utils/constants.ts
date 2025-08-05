@@ -11,9 +11,9 @@ export const COLORS: Record<string, OpaqueColorValue> = {
 export const PREDEFINED_KEYS = ['all', 'scheduled', 'today', 'flagged', 'completed'];
 
 export const INIT_STORE = {
-  today: [],
-  scheduled: [],
-  flagged: [],
-  all: [],
-  completed: [],
+  today: { reminders: [] },
+  scheduled: { showCompleted: true, reminders: [] },
+  flagged: { showCompleted: true, reminders: [] },
+  all: { showCompleted: true, reminders: [] },
+  completed: { reminders: [] },
 };

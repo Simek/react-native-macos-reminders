@@ -31,7 +31,10 @@ export function dataReducer(state: RemindersType, action: DataActions): Reminder
       const { listKey, fn } = action.payload;
       return {
         ...state,
-        [listKey]: fn(state[listKey]),
+        [listKey]: {
+          ...state[listKey],
+          reminders: fn(state[listKey].reminders),
+        },
       };
     }
     case DataActionType.REMOVE_ALL_REMINDERS_BY_LIST: {
@@ -40,7 +43,10 @@ export function dataReducer(state: RemindersType, action: DataActions): Reminder
       if (keys.length > 0) {
         return {
           ...state,
-          [listKey]: state[listKey].filter((entry) => !keys.includes(entry.key)),
+          [listKey]: {
+            ...state[listKey],
+            reminders: state[listKey].reminders.filter((entry) => !keys.includes(entry.key)),
+          },
         };
       } else {
         const { [listKey]: _, ...rest } = state;

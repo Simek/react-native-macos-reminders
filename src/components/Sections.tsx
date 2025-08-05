@@ -10,7 +10,7 @@ type Props = {
 };
 
 function Sections({ onPress }: Props) {
-  const { isSearchMode, selectedKey, setSelectedKey, setCompletedVisible } = useAppContext();
+  const { isSearchMode, selectedKey, setSelectedKey } = useAppContext();
   const { data } = useDataContext();
 
   const { allCount, flaggedCount } = getRemindersCounts(data);
@@ -66,7 +66,6 @@ function Sections({ onPress }: Props) {
         onPress={() => {
           onPress();
           setSelectedKey('completed');
-          setCompletedVisible(true);
         }}
       />
     </View>
