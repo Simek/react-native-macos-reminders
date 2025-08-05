@@ -106,3 +106,15 @@ function searchHit(searchQuery: string, text?: string | null) {
 export function filterSearchHits(searchQuery: string, item: ReminderItemType): boolean {
   return searchHit(searchQuery, item.text) || searchHit(searchQuery, item.textNote);
 }
+
+export function getNewReminderData() {
+  const ts = Date.now();
+  return {
+    text: '',
+    key: `entry-${ts}`,
+    createdAt: ts,
+    completedAt: null,
+    flagged: false,
+    done: false,
+  };
+}

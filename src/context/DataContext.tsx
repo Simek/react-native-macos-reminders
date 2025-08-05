@@ -20,6 +20,7 @@ export type DataContextType = {
     listKey: string,
     fn: (items: ReminderItemType[]) => ReminderItemType[],
   ) => void;
+  addReminder: (listKey: string) => void;
   removeAllRemindersByList: (listKey: string, keys?: string[]) => void;
   listData: ReminderListItemType[];
   setListData: (listData: ReminderListItemType[]) => void;
@@ -30,6 +31,7 @@ export const DataContext = createContext<DataContextType>({
   data: INIT_STORE,
   setData: notInitialized,
   overwriteSelectedListData: notInitialized,
+  addReminder: notInitialized,
   removeAllRemindersByList: notInitialized,
   listData: [],
   setListData: notInitialized,
@@ -55,6 +57,10 @@ export function DataProvider({ children }: PropsWithChildren) {
 
   function setData(payload: RemindersType) {
     dispatchData({ type: DataActionType.SET_DATA, payload });
+  }
+
+  function addReminder(listKey: string) {
+    dispatchData({ type: DataActionType.ADD_REMINDER, payload: { listKey } });
   }
 
   function overwriteSelectedListData(
@@ -87,6 +93,7 @@ export function DataProvider({ children }: PropsWithChildren) {
       data,
       setData,
       overwriteSelectedListData,
+      addReminder,
       removeAllRemindersByList,
       listData,
       setListData,

@@ -1,13 +1,21 @@
 import { ReminderItemType, RemindersType } from '~/types.ts';
+import { getNewReminderData } from '~/utils/helpers.ts';
 
 export enum DataActionType {
   SET_DATA = 'SET_DATA',
+  ADD_REMINDER = 'ADD_REMINDER',
   OVERWRITE_SELECTED_LIST_DATA = 'OVERWRITE_SELECTED_LIST_DATA',
   REMOVE_ALL_REMINDERS_BY_LIST = 'REMOVE_ALL_REMINDERS_BY_LIST',
 }
 
 export type DataActions =
   | { type: DataActionType.SET_DATA; payload: RemindersType }
+  | {
+      type: DataActionType.ADD_REMINDER;
+      payload: {
+        listKey: string;
+      };
+    }
   | {
       type: DataActionType.OVERWRITE_SELECTED_LIST_DATA;
       payload: {
@@ -27,6 +35,16 @@ export function dataReducer(state: RemindersType, action: DataActions): Reminder
   switch (action.type) {
     case DataActionType.SET_DATA:
       return action.payload;
+    case DataActionType.ADD_REMINDER: {
+      const { listKey } = action.payload;
+      return {
+        ...state,
+        [listKey]: {
+          ...state[listKey],
+          reminders: [...state[listKey].reminders, getNewReminderData()],
+        },
+      };
+    }
     case DataActionType.OVERWRITE_SELECTED_LIST_DATA: {
       const { listKey, fn } = action.payload;
       return {

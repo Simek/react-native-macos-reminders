@@ -9,6 +9,7 @@ import {
   AlertButton,
   PlatformColor,
   PressableProps,
+  NativeModules,
 } from 'react-native-macos';
 
 import RoundIcon from './RoundIcon';
@@ -44,16 +45,21 @@ export default function RemindersListItem({
   return (
     <Pressable
       onPress={(event) => {
-        setPreviousSelectedKey(item.title);
+        setPreviousSelectedKey(item.key);
         setSearchMode(false);
         // @ts-expect-error FIXME
         if (event.nativeEvent.button === 2) {
           ActionSheetIOS.showActionSheetWithOptions(
             {
-              options: ['Show Info', 'Rename', 'Delete'],
+              options: ['Open list in new window', 'Show Info', 'Rename', 'Delete'],
             },
             (buttonIndex) => {
               if (buttonIndex === 0) {
+                // FIXME: data synchronization, resize listener
+                NativeModules.NewWindowModule.openWindow('WindowHost', {
+                  target: 'ReminderListWindow',
+                });
+              } else if (buttonIndex === 1) {
                 Alert.prompt(
                   `Name`,
                   undefined,
@@ -70,9 +76,9 @@ export default function RemindersListItem({
                   undefined,
                   item.title,
                 );
-              } else if (buttonIndex === 1) {
-                onRename(event);
               } else if (buttonIndex === 2) {
+                onRename(event);
+              } else if (buttonIndex === 3) {
                 onDelete(event);
               }
             },

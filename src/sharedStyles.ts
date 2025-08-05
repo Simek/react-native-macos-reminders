@@ -65,16 +65,6 @@ const sharedStyles = StyleSheet.create({
     color: PlatformColor('tertiaryLabel'),
     fontSize: 13,
   },
-  noContentWrapper: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  noContentText: {
-    fontSize: 24,
-    textAlign: 'center',
-    fontFamily: 'SF Pro Rounded',
-    color: PlatformColor('secondaryLabel'),
-  },
   remindersHeader: {
     paddingVertical: 6,
     fontSize: 20,
