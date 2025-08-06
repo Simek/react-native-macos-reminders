@@ -1,13 +1,13 @@
 import { TouchableWithoutFeedback, View } from 'react-native-macos';
 
-import { useDataContext } from '~/context/DataContext.tsx';
-import sharedStyles from '~/sharedStyles.ts';
+import { useDataContext } from '~/context/DataContext';
+import sharedStyles from '~/sharedStyles';
 
 type Props = {
   selectedKey: string;
 };
 
-export default function ReminderListFooter({ selectedKey }: Props) {
+export function ReminderListFooter({ selectedKey }: Props) {
   const { addReminder } = useDataContext();
   return (
     <TouchableWithoutFeedback onPress={() => addReminder(selectedKey)}>

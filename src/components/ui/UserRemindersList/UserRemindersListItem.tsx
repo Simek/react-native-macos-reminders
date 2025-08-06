@@ -12,10 +12,10 @@ import {
   NativeModules,
 } from 'react-native-macos';
 
-import RoundIcon from './RoundIcon';
+import { useAppContext } from '~/context/AppContext';
+import { ReminderListItemType } from '~/types';
 
-import { useAppContext } from '~/context/AppContext.tsx';
-import { ReminderListItemType } from '~/types.ts';
+import { RoundIcon } from '@ui/RoundIcon';
 
 type Props = {
   item: ReminderListItemType;
@@ -28,7 +28,7 @@ type Props = {
   onEditEnd: NonNullable<AlertButton['onPress']>;
 };
 
-export default function RemindersListItem({
+export function UserRemindersListItem({
   item,
   count,
   onPress,

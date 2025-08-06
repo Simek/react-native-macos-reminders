@@ -1,15 +1,16 @@
 import { StyleSheet, View } from 'react-native-macos';
 
-import Section from '~/components/Section';
-import { useAppContext } from '~/context/AppContext.tsx';
-import { useDataContext } from '~/context/DataContext.tsx';
-import { getRemindersCounts } from '~/utils/helpers.ts';
+import { useAppContext } from '~/context/AppContext';
+import { useDataContext } from '~/context/DataContext';
+import { getRemindersCounts } from '~/utils/helpers';
+
+import { Section } from './Section';
 
 type Props = {
   onPress: () => void;
 };
 
-function Sections({ onPress }: Props) {
+export function SectionsGrid({ onPress }: Props) {
   const { isSearchMode, selectedKey, setSelectedKey } = useAppContext();
   const { data } = useDataContext();
 
@@ -83,5 +84,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
 });
-
-export default Sections;

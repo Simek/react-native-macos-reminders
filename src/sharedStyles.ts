@@ -42,25 +42,6 @@ const sharedStyles = StyleSheet.create({
     paddingLeft: 20,
     paddingTop: 58,
   },
-  contentHeaderWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  contentHeader: {
-    fontSize: 34,
-    fontWeight: '700',
-    fontFamily: 'SF Pro Rounded',
-    lineHeight: 38,
-    color: PlatformColor('secondaryLabel'),
-  },
-  contentHeaderCustom: {
-    textTransform: 'capitalize',
-  },
-  contentHeaderCounter: {
-    marginLeft: 36,
-    marginRight: 16,
-    fontWeight: '400',
-  },
   completedVisibleText: {
     color: PlatformColor('tertiaryLabel'),
     fontSize: 13,
@@ -74,12 +55,6 @@ const sharedStyles = StyleSheet.create({
   addReminderRow: {
     width: '100%',
     height: 48,
-  },
-  addItemButton: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    zIndex: 9999,
   },
 });
 

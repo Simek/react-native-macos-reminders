@@ -9,9 +9,9 @@ import {
 
 import { DataActionType, dataReducer } from '~/reducers/dataReducer';
 import { ListActionType, listReducer } from '~/reducers/listDataReducer';
-import { ReminderItemType, ReminderListItemType, RemindersType } from '~/types.ts';
-import { INIT_STORE } from '~/utils/constants.ts';
-import { getStoredData, writeDataToStorage, writeListDataToStorage } from '~/utils/storage.ts';
+import { ReminderItemType, ReminderListItemType, RemindersType } from '~/types';
+import { INIT_STORE } from '~/utils/constants';
+import { getStoredData, writeDataToStorage, writeListDataToStorage } from '~/utils/storage';
 
 export type DataContextType = {
   data: RemindersType;

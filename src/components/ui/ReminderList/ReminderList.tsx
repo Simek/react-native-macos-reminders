@@ -3,16 +3,12 @@ import { Popover } from '@rn-macos/popover';
 import { ReactNode, useMemo, useState } from 'react';
 import { SectionList, StyleSheet, Text, View, PlatformColor } from 'react-native-macos';
 
-import AccentButton from './AccentButton';
-
-import ReminderItem from '~/components/ReminderItem.tsx';
-import ReminderListFooter from '~/components/ReminderListFooter.tsx';
-import { useAppContext } from '~/context/AppContext.tsx';
-import { useDataContext } from '~/context/DataContext.tsx';
-import clearMenu from '~/menus/ClearMenu.ts';
-import sharedStyles from '~/sharedStyles.ts';
-import { ReminderItemSection, ReminderItemType, RemindersType } from '~/types.ts';
-import { PREDEFINED_KEYS } from '~/utils/constants.ts';
+import { clearMenu } from '~/components/menus/ClearMenu';
+import { useAppContext } from '~/context/AppContext';
+import { useDataContext } from '~/context/DataContext';
+import sharedStyles from '~/sharedStyles';
+import { ReminderItemSection, ReminderItemType, RemindersType } from '~/types';
+import { PREDEFINED_KEYS } from '~/utils/constants';
 import {
   filterSearchHits,
   getListColor,
@@ -20,10 +16,15 @@ import {
   getSpecialListContent,
   getTitle,
   processRemindersList,
-} from '~/utils/helpers.ts';
-import { findAndReplaceEntry } from '~/utils/storage.ts';
+} from '~/utils/helpers';
+import { findAndReplaceEntry } from '~/utils/storage';
 
-export default function ReminderList() {
+import { AccentButton } from '@ui/AccentButton';
+import { ReminderItem } from '@ui/ReminderItem/ReminderItem';
+
+import { ReminderListFooter } from './ReminderListFooter';
+
+export function ReminderList() {
   const [popoverData, setPopoverData] = useState<ReactNode>(null);
 
   const { selectedKey, isSearchMode, searchQuery } = useAppContext();

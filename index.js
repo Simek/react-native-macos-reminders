@@ -1,9 +1,10 @@
 import { AppRegistry, NativeEventEmitter, NativeModules } from 'react-native-macos';
 
-import { name as appName } from './app.json';
-import ReminderListWindow from './src/components/ReminderListWindow';
-
 import AppWrapper from '~/AppWrapper';
+
+import ReminderListWindow from '@ui/ReminderList/ReminderListWindow';
+
+import { name as appName } from './app.json';
 
 NativeModules.DevSettings.setIsSecondaryClickToShowDevMenuEnabled(false);
 

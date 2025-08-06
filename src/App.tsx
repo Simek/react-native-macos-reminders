@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Dimensions, View } from 'react-native-macos';
 
-import ReminderList from '~/components/ReminderList';
-import ReminderListTitle from '~/components/ReminderListTitle.tsx';
-import RemindersList from '~/components/RemindersList';
-import RemindersListFooter from '~/components/RemindersListFooter';
-import { SearchInput } from '~/components/SearchInput';
-import Sections from '~/components/Sections';
-import { useAppContext } from '~/context/AppContext.tsx';
-import { useDataContext } from '~/context/DataContext.tsx';
-import sharedStyles from '~/sharedStyles.ts';
-import { ReminderListItemType } from '~/types.ts';
+import { useAppContext } from '~/context/AppContext';
+import { useDataContext } from '~/context/DataContext';
+import sharedStyles from '~/sharedStyles';
+import { ReminderListItemType } from '~/types';
 import { getListCount, getNewListEntry } from '~/utils/helpers';
+
+import { ReminderList } from '@ui/ReminderList/ReminderList';
+import { ReminderListTitle } from '@ui/ReminderList/ReminderListTitle';
+import { SearchInput } from '@ui/SearchInput/SearchInput';
+import { SectionsGrid } from '@ui/Sections/SectionsGrid';
+import { UserRemindersList } from '@ui/UserRemindersList/UserRemindersList';
+import { UserRemindersListFooter } from '@ui/UserRemindersList/UserRemindersListFooter';
 
 function App() {
   const { setSelectedKey } = useAppContext();
@@ -47,8 +48,8 @@ function App() {
     <View style={sharedStyles.container}>
       <View style={[sharedStyles.sourceList, windowSize.width <= 566 && { display: 'none' }]}>
         <SearchInput />
-        <Sections onPress={clearListTempData} />
-        <RemindersList
+        <SectionsGrid onPress={clearListTempData} />
+        <UserRemindersList
           data={listData}
           getItemCount={(item) => getListCount(data, item)}
           itemOnPress={(item) => {
@@ -91,7 +92,7 @@ function App() {
             );
           }}
         />
-        <RemindersListFooter
+        <UserRemindersListFooter
           onPress={() => {
             const entry = getNewListEntry();
             overwriteListItemsData((list) => [

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { StyleSheet, Text, PlatformColor, Pressable } from 'react-native-macos';
 
-import RoundIcon from './RoundIcon';
-
-import { useAppContext } from '~/context/AppContext.tsx';
-import { TouchableOnPressType } from '~/types.ts';
+import { useAppContext } from '~/context/AppContext';
+import { TouchableOnPressType } from '~/types';
 import { COLORS } from '~/utils/constants';
+
+import { RoundIcon } from '@ui/RoundIcon';
 
 type Props = {
   title: string;
@@ -16,7 +16,7 @@ type Props = {
   iconSize?: number;
 };
 
-export default function Section({
+export function Section({
   title,
   icon,
   onPress,

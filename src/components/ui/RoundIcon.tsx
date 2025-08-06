@@ -19,7 +19,7 @@ type Props = {
   iconStyle?: StyleProp<ViewStyle>;
 };
 
-const RoundIcon = ({
+export function RoundIcon({
   icon,
   color = PlatformColor('systemBlueColor'),
   iconColor = '#fff',
@@ -28,30 +28,32 @@ const RoundIcon = ({
   isActive = false,
   style = undefined,
   iconStyle = undefined,
-}: Props) => (
-  <View
-    style={[
-      styles.icon,
-      style,
-      {
-        backgroundColor: isActive ? '#fff' : color,
-        width: size,
-        height: size,
-      },
-    ]}>
-    <Text
+}: Props) {
+  return (
+    <View
       style={[
+        styles.icon,
+        style,
         {
-          fontSize: iconSize,
-          lineHeight: iconSize + 3,
-          color: iconColor,
+          backgroundColor: isActive ? '#fff' : color,
+          width: size,
+          height: size,
         },
-        iconStyle,
       ]}>
-      {icon}
-    </Text>
-  </View>
-);
+      <Text
+        style={[
+          {
+            fontSize: iconSize,
+            lineHeight: iconSize + 3,
+            color: iconColor,
+          },
+          iconStyle,
+        ]}>
+        {icon}
+      </Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   icon: {
@@ -62,5 +64,3 @@ const styles = StyleSheet.create({
     paddingLeft: 1.5,
   },
 });
-
-export default RoundIcon;

@@ -1,9 +1,9 @@
 import { SectionList, StyleSheet, Text, PlatformColor } from 'react-native-macos';
 
-import RemindersListItem from './RemindersListItem';
+import { useAppContext } from '~/context/AppContext';
+import { ReminderListItemType } from '~/types';
 
-import { useAppContext } from '~/context/AppContext.tsx';
-import { ReminderListItemType } from '~/types.ts';
+import { UserRemindersListItem } from './UserRemindersListItem';
 
 type Props = {
   data: ReminderListItemType[];
@@ -16,7 +16,7 @@ type Props = {
   itemOnEditEnd: (item: ReminderListItemType) => void;
 };
 
-function RemindersList({
+export function UserRemindersList({
   data = [],
   getItemCount,
   itemOnPress,
@@ -37,7 +37,7 @@ function RemindersList({
       ]}
       keyExtractor={(item, index) => item.key + index}
       renderItem={({ item }) => (
-        <RemindersListItem
+        <UserRemindersListItem
           item={item}
           count={getItemCount(item)}
           onPress={() => {
@@ -69,5 +69,3 @@ const styles = StyleSheet.create({
     opacity: 0.65,
   },
 });
-
-export default RemindersList;

@@ -2,7 +2,7 @@ import { OpaqueColorValue, PlatformColor, TextStyle } from 'react-native-macos';
 
 import { COLORS, PREDEFINED_KEYS } from './constants';
 
-import sharedStyles from '~/sharedStyles.ts';
+import sharedStyles from '~/sharedStyles';
 import {
   ReminderItemSection,
   ReminderItemType,

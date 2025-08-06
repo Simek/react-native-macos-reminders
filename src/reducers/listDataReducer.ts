@@ -1,4 +1,4 @@
-import { ReminderListItemType } from '~/types.ts';
+import { ReminderListItemType } from '~/types';
 
 export enum ListActionType {
   SET_DATA = 'SET_DATA',

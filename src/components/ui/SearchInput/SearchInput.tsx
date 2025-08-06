@@ -1,8 +1,8 @@
 import { StyleSheet, Text, TextInput, View, PlatformColor } from 'react-native-macos';
 
-import { ClearButton } from './ClearButton';
+import { useAppContext } from '~/context/AppContext';
 
-import { useAppContext } from '~/context/AppContext.tsx';
+import { ClearButton } from './ClearButton';
 
 export function SearchInput() {
   const { searchQuery, setSearchQuery, setSearchMode } = useAppContext();

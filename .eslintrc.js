@@ -15,6 +15,29 @@ module.exports = {
         ],
       },
     ],
-    'react-native/no-inline-styles': 'off',
+    'import/order': [
+      'error',
+      {
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        pathGroups: [
+          {
+            pattern: '~/**',
+            group: 'internal',
+            position: 'after',
+          },
+          {
+            pattern: '@ui/**',
+            group: 'internal',
+            position: 'after',
+          },
+        ],
+        pathGroupsExcludedImportTypes: ['builtin'],
+        'newlines-between': 'always',
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true,
+        },
+      },
+    ],
   },
 };

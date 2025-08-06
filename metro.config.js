@@ -20,6 +20,7 @@ const config = {
   resolver: {
     extraNodeModules: {
       '~': path.resolve(__dirname, 'src'),
+      '@ui': path.resolve(__dirname, 'src/components/ui'),
     },
     assetExts: assetExts.filter((ext) => ext !== 'svg'),
     sourceExts: [...sourceExts, 'svg'],

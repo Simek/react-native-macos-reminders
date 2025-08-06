@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { NativeMethods } from 'react-native-macos';
 
-import { PREDEFINED_KEYS } from '~/utils/constants.ts';
+import { PREDEFINED_KEYS } from '~/utils/constants';
 
 type AppContextType = {
   searchQuery: string;

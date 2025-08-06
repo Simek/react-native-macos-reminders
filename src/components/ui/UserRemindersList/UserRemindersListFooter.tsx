@@ -1,12 +1,12 @@
 import { StyleSheet, Text, TouchableOpacity, PlatformColor } from 'react-native-macos';
 
-import { TouchableOnPressType } from '~/types.ts';
+import { TouchableOnPressType } from '~/types';
 
 type Props = {
   onPress: TouchableOnPressType;
 };
 
-export default function RemindersListFooter({ onPress }: Props) {
+export function UserRemindersListFooter({ onPress }: Props) {
   return (
     <TouchableOpacity style={styles.listFooter} onPress={onPress} activeOpacity={1}>
       <Text style={styles.listFooterText}>

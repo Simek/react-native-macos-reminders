@@ -1,16 +1,16 @@
 import { StyleSheet, Text, View, PlatformColor } from 'react-native-macos';
 
-import Button from './Button';
-
-import { ReminderItemType } from '~/types.ts';
+import { ReminderItemType } from '~/types';
 import { COLORS } from '~/utils/constants';
+
+import { Button } from '@ui/Button';
 
 type Props = {
   item: ReminderItemType;
   onStatusChange: (fieldName: keyof ReminderItemType) => void;
 };
 
-function ReminderItemPopover({ item, onStatusChange }: Props) {
+export function ReminderItemPopover({ item, onStatusChange }: Props) {
   return (
     <View style={styles.popoverWrapper}>
       <View style={styles.popoverTitleWrapper}>
@@ -82,5 +82,3 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 });
-
-export default ReminderItemPopover;

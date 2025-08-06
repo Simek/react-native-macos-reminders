@@ -10,7 +10,7 @@ import {
   ViewStyle,
 } from 'react-native-macos';
 
-import { TouchableOnPressType } from '~/types.ts';
+import { TouchableOnPressType } from '~/types';
 
 type Props = {
   text?: string;
@@ -22,7 +22,7 @@ type Props = {
   onPress?: TouchableOnPressType;
 };
 
-export default function Button({
+export function Button({
   onPress,
   text = '',
   icon = '',

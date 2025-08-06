@@ -1,17 +1,15 @@
 import { Text } from 'react-native-macos';
 
-import sharedStyles from '~/sharedStyles.ts';
+import sharedStyles from '~/sharedStyles';
 
 type Props = {
   searchQuery: string;
 };
 
-function SearchResultsTitle({ searchQuery }: Props) {
+export function SearchResultsHeader({ searchQuery }: Props) {
   return (
     <Text style={sharedStyles.contentHeader} numberOfLines={1} ellipsizeMode="tail">
       Results for “{searchQuery}”
     </Text>
   );
 }
-
-export default SearchResultsTitle;

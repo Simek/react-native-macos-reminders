@@ -15,13 +15,14 @@ import {
   Pressable,
 } from 'react-native-macos';
 
-import Button from './Button';
-import ReminderItemPopover from './ReminderItemPopover';
-
-import { useAppContext } from '~/context/AppContext.tsx';
-import { MeasureOnSuccessParams, ReminderItemType } from '~/types.ts';
+import { useAppContext } from '~/context/AppContext';
+import { MeasureOnSuccessParams, ReminderItemType } from '~/types';
 import { COLORS } from '~/utils/constants';
-import { getListColor } from '~/utils/helpers.ts';
+import { getListColor } from '~/utils/helpers';
+
+import { Button } from '@ui/Button';
+
+import { ReminderItemPopover } from './ReminderItemPopover';
 
 const FLAGGED_OFFSET = 24;
 
@@ -34,7 +35,7 @@ type Props = {
   onEditEnd: TextInputProps['onBlur'];
 };
 
-function RemindersListItem({
+export function ReminderItem({
   item,
   sectionTitle,
   onEdit,
@@ -342,5 +343,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
-export default RemindersListItem;

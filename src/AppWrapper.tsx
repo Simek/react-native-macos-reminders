@@ -1,7 +1,7 @@
-import App from './App.tsx';
+import App from './App';
 
-import { AppProvider } from '~/context/AppContext.tsx';
-import { DataProvider } from '~/context/DataContext.tsx';
+import { AppProvider } from '~/context/AppContext';
+import { DataProvider } from '~/context/DataContext';
 
 export default function AppWrapper() {
   return (

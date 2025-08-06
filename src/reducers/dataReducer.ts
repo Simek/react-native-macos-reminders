@@ -1,5 +1,5 @@
-import { ReminderItemType, RemindersType } from '~/types.ts';
-import { getNewReminderData } from '~/utils/helpers.ts';
+import { ReminderItemType, RemindersType } from '~/types';
+import { getNewReminderData } from '~/utils/helpers';
 
 export enum DataActionType {
   SET_DATA = 'SET_DATA',

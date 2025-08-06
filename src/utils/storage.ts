@@ -1,6 +1,6 @@
 import { MMKV } from 'react-native-mmkv';
 
-import { ReminderItemType, ReminderListItemType, RemindersType } from '~/types.ts';
+import { ReminderItemType, ReminderListItemType, RemindersType } from '~/types';
 
 enum Stores {
   Data = 'remindersData',
