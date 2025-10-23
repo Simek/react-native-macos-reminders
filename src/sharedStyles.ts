@@ -56,6 +56,18 @@ const sharedStyles = StyleSheet.create({
     width: '100%',
     height: 48,
   },
+  contentHeader: {
+    fontSize: 34,
+    fontWeight: '700',
+    fontFamily: 'SF Pro Rounded',
+    lineHeight: 38,
+    color: PlatformColor('secondaryLabel'),
+    flexShrink: 1,
+  },
+  contentHeaderCustom: {
+    textTransform: 'capitalize',
+    minWidth: 40,
+  },
 });
 
 export default sharedStyles;

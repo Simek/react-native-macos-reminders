@@ -53,7 +53,7 @@ export function RoundIcon({
       </Text>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   icon: {

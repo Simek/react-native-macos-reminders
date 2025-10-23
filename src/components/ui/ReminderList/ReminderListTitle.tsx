@@ -1,4 +1,4 @@
-import { PlatformColor, StyleSheet, Text, View } from 'react-native-macos';
+import { StyleSheet, Text, View } from 'react-native-macos';
 
 import { useAppContext } from '~/context/AppContext';
 import { useDataContext } from '~/context/DataContext';
@@ -19,11 +19,7 @@ export function ReminderListTitle() {
   ) : (
     <>
       {selectedKey !== 'completed' && (
-        <Button
-          icon="􀅼"
-          onPress={() => addReminder(selectedKey)}
-          style={styles.addItemButton}
-        />
+        <Button icon="􀅼" onPress={() => addReminder(selectedKey)} style={styles.addItemButton} />
       )}
       <View style={styles.contentHeaderWrapper}>
         <Text style={getHeaderStyle(selectedKey)} numberOfLines={1} ellipsizeMode="tail">
@@ -48,18 +44,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  contentHeader: {
-    fontSize: 34,
-    fontWeight: '700',
-    fontFamily: 'SF Pro Rounded',
-    lineHeight: 38,
-    color: PlatformColor('secondaryLabel'),
-  },
-  contentHeaderCustom: {
-    textTransform: 'capitalize',
-  },
   contentHeaderCounter: {
-    marginLeft: 36,
+    marginLeft: 16,
     marginRight: 16,
     fontWeight: '400',
   },

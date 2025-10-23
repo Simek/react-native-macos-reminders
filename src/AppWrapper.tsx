@@ -1,7 +1,7 @@
-import App from './App';
-
 import { AppProvider } from '~/context/AppContext';
 import { DataProvider } from '~/context/DataContext';
+
+import App from './App';
 
 export default function AppWrapper() {
   return (

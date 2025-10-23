@@ -1,7 +1,5 @@
 import { OpaqueColorValue, PlatformColor, TextStyle } from 'react-native-macos';
 
-import { COLORS, PREDEFINED_KEYS } from './constants';
-
 import sharedStyles from '~/sharedStyles';
 import {
   ReminderItemSection,
@@ -9,6 +7,8 @@ import {
   ReminderListItemType,
   RemindersType,
 } from '~/types';
+
+import { COLORS, PREDEFINED_KEYS } from './constants';
 
 export function getListColor(key: string): OpaqueColorValue {
   if (!PREDEFINED_KEYS.includes(key)) {
