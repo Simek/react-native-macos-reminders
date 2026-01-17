@@ -45,5 +45,7 @@
 	<true/>
 	<key>NSSupportsSuddenTermination</key>
 	<true/>
+	<key>RCTNewArchEnabled</key>
+	<true/>
 </dict>
 </plist>
