@@ -1,10 +1,11 @@
-import { RoundIcon } from '@ui/RoundIcon';
 import { useState } from 'react';
 import { PlatformColor, Pressable, StyleSheet, Text } from 'react-native-macos';
 
 import { useAppContext } from '~/context/AppContext';
 import { TouchableOnPressType } from '~/types';
 import { COLORS } from '~/utils/constants';
+
+import { RoundIcon } from '@ui/RoundIcon';
 
 const TODAY_DAY = new Date().getDate();
 

@@ -1,4 +1,3 @@
-import { RoundIcon } from '@ui/RoundIcon';
 import { useState } from 'react';
 import {
   ActionSheetIOS,
@@ -13,6 +12,8 @@ import {
 
 import { useAppContext } from '~/context/AppContext';
 import { ReminderListItemType } from '~/types';
+
+import { RoundIcon } from '@ui/RoundIcon';
 
 type Props = {
   item: ReminderListItemType;

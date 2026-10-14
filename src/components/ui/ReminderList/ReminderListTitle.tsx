@@ -1,11 +1,12 @@
-import { Button } from '@ui/Button';
-import { SearchResultsHeader } from '@ui/SearchResultsHeader';
 import { StyleSheet, Text, View } from 'react-native-macos';
 
 import { useAppContext } from '~/context/AppContext';
 import { useDataContext } from '~/context/DataContext';
 import { PREDEFINED_KEYS } from '~/utils/constants';
 import { getHeaderStyle, getListCount, getRemindersCounts } from '~/utils/helpers';
+
+import { Button } from '@ui/Button';
+import { SearchResultsHeader } from '@ui/SearchResultsHeader';
 
 export function ReminderListTitle() {
   const { searchQuery, selectedKey, isSearchMode } = useAppContext();

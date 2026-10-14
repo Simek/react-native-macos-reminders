@@ -1,7 +1,5 @@
 // @ts-expect-error
 import { Popover } from '@rn-macos/popover';
-import { AccentButton } from '@ui/AccentButton';
-import { ReminderItem } from '@ui/ReminderItem/ReminderItem';
 import { ReactNode, useCallback, useState } from 'react';
 import { PlatformColor, SectionList, StyleSheet, Text, View } from 'react-native-macos';
 
@@ -20,6 +18,9 @@ import {
   processRemindersList,
 } from '~/utils/helpers';
 import { findAndReplaceEntry } from '~/utils/storage';
+
+import { AccentButton } from '@ui/AccentButton';
+import { ReminderItem } from '@ui/ReminderItem/ReminderItem';
 
 import { ReminderListFooter } from './ReminderListFooter';
 

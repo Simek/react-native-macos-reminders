@@ -1,7 +1,6 @@
 import { format } from '@formkit/tempo';
 // @ts-expect-error FIXME
 import { PopoverManager } from '@rn-macos/popover';
-import { Button } from '@ui/Button';
 import { Dispatch, ReactNode, SetStateAction, useRef, useState } from 'react';
 import {
   Dimensions,
@@ -20,6 +19,8 @@ import { useAppContext } from '~/context/AppContext';
 import { MeasureOnSuccessParams, ReminderItemType } from '~/types';
 import { COLORS } from '~/utils/constants';
 import { getListColor } from '~/utils/helpers';
+
+import { Button } from '@ui/Button';
 
 import { ReminderItemPopover } from './ReminderItemPopover';
 

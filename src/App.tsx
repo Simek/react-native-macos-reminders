@@ -1,9 +1,3 @@
-import { ReminderList } from '@ui/ReminderList/ReminderList';
-import { ReminderListTitle } from '@ui/ReminderList/ReminderListTitle';
-import { SearchInput } from '@ui/SearchInput/SearchInput';
-import { SectionsGrid } from '@ui/Sections/SectionsGrid';
-import { UserRemindersList } from '@ui/UserRemindersList/UserRemindersList';
-import { UserRemindersListFooter } from '@ui/UserRemindersList/UserRemindersListFooter';
 import { useEffect, useState } from 'react';
 import { Dimensions, View } from 'react-native-macos';
 
@@ -12,6 +6,13 @@ import { useDataContext } from '~/context/DataContext';
 import sharedStyles from '~/sharedStyles';
 import { ReminderListItemType } from '~/types';
 import { getListCount, getNewListEntry } from '~/utils/helpers';
+
+import { ReminderList } from '@ui/ReminderList/ReminderList';
+import { ReminderListTitle } from '@ui/ReminderList/ReminderListTitle';
+import { SearchInput } from '@ui/SearchInput/SearchInput';
+import { SectionsGrid } from '@ui/Sections/SectionsGrid';
+import { UserRemindersList } from '@ui/UserRemindersList/UserRemindersList';
+import { UserRemindersListFooter } from '@ui/UserRemindersList/UserRemindersListFooter';
 
 function App() {
   const { setSelectedKey } = useAppContext();

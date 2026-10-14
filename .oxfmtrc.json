@@ -10,6 +10,7 @@
   "sortPackageJson": false,
   "sortTailwindcss": { "functions": ["tw"] },
   "sortImports": {
-    "groups": [["side_effect"], ["builtin", "external"], ["internal"], ["parent"], ["sibling"], ["index"]]
+    "customGroups": [{ "groupName": "ui", "elementNamePattern": ["@ui", "@ui/**"] }],
+    "groups": [["side_effect"], ["builtin", "external"], ["internal"], ["parent", "ui"], ["sibling"], ["index"]]
   }
 }

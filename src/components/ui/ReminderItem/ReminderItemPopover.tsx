@@ -1,8 +1,9 @@
-import { Button } from '@ui/Button';
 import { PlatformColor, StyleSheet, Text, View } from 'react-native-macos';
 
 import { ReminderItemType } from '~/types';
 import { COLORS } from '~/utils/constants';
+
+import { Button } from '@ui/Button';
 
 type Props = {
   item: ReminderItemType;
