@@ -1,0 +1,50 @@
+name: Build Reminders macOS app
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install JavaScript dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install CocoaPods dependencies
+        run: pod install --project-directory=macos --deployment
+
+      - name: Build macOS app
+        run: >-
+          xcodebuild
+          -workspace macos/Reminders.xcworkspace
+          -scheme Reminders-macOS
+          -configuration Release
+          -derivedDataPath build/DerivedData
+          CODE_SIGNING_ALLOWED=NO
+          build
+
+      - name: Package app
+        run: ditto -c -k --sequesterRsrc --keepParent build/DerivedData/Build/Products/Release/Reminders.app build/Reminders-macOS.zip
+
+      - name: Upload app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Reminders-macOS
+          path: build/Reminders-macOS.zip
+          if-no-files-found: error

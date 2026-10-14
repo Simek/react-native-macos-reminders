@@ -6,8 +6,7 @@
     "start": "node node_modules/react-native-macos/local-cli/cli.js start",
     "test": "jest",
     "lint": "eslint .",
-    "pods": "npx pod-install",
-    "eas-build": "npx eas-cli build --profile production --platform ios"
+    "pods": "npx pod-install"
   },
   "dependencies": {
     "@formkit/tempo": "^0.1.2",
@@ -46,7 +45,7 @@
     "typescript": "^5.9.3"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "packageManager": "yarn@4.12.0"
 }
