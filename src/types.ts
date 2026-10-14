@@ -4,10 +4,7 @@ import { SectionListData } from 'react-native-macos/Libraries/Lists/SectionList'
 
 export type LegacyRemindersType = Record<string, ReminderItemType[]>;
 
-export type RemindersType = Record<
-  string,
-  { showCompleted?: boolean; reminders: ReminderItemType[] }
->;
+export type RemindersType = Record<string, { showCompleted?: boolean; reminders: ReminderItemType[] }>;
 
 export type ReminderItemType = {
   text?: string;

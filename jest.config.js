@@ -3,8 +3,6 @@ module.exports = {
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!(react-native|react-native-macos|@react-native|@rn-macos)/)',
-  ],
+  transformIgnorePatterns: ['node_modules/(?!(react-native|react-native-macos|@react-native|@rn-macos)/)'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
 };

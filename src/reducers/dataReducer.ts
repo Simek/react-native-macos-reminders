@@ -63,7 +63,7 @@ export function dataReducer(state: RemindersType, action: DataActions): Reminder
           ...state,
           [listKey]: {
             ...state[listKey],
-            reminders: state[listKey].reminders.filter((entry) => !keys.includes(entry.key)),
+            reminders: state[listKey].reminders.filter(entry => !keys.includes(entry.key)),
           },
         };
       } else {

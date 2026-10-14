@@ -1,13 +1,4 @@
-import {
-  createContext,
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useMemo, useState } from 'react';
 import { NativeMethods } from 'react-native-macos';
 
 import { PREDEFINED_KEYS } from '~/utils/constants';
@@ -40,26 +31,17 @@ export const AppContext = createContext({
 
 export function AppProvider({ children }: PropsWithChildren) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedKey, setSelectedKey] = useState(PREDEFINED_KEYS[0]);
   const [previousSelectedKey, setPreviousSelectedKey] = useState(PREDEFINED_KEYS[0]);
   const [isSearchMode, setSearchMode] = useState<boolean>(false);
   const [lastSelectedTarget, setLastSelectedTarget] = useState<NativeMethods | null>(null);
-
-  useEffect(() => {
-    if (isSearchMode) {
-      setPreviousSelectedKey(selectedKey);
-      setSelectedKey('all');
-    } else {
-      setSelectedKey(previousSelectedKey);
-    }
-  }, [isSearchMode]);
+  const selectedKey = isSearchMode ? 'all' : previousSelectedKey;
 
   const contextValue = useMemo(
     () => ({
       searchQuery,
       setSearchQuery,
       selectedKey,
-      setSelectedKey,
+      setSelectedKey: setPreviousSelectedKey,
       previousSelectedKey,
       setPreviousSelectedKey,
       isSearchMode,
@@ -67,7 +49,7 @@ export function AppProvider({ children }: PropsWithChildren) {
       lastSelectedTarget,
       setLastSelectedTarget,
     }),
-    [searchQuery, selectedKey, previousSelectedKey, isSearchMode, lastSelectedTarget],
+    [searchQuery, selectedKey, previousSelectedKey, isSearchMode, lastSelectedTarget]
   );
 
   return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;

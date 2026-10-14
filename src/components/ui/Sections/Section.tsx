@@ -1,14 +1,15 @@
+import { RoundIcon } from '@ui/RoundIcon';
 import { useState } from 'react';
-import { StyleSheet, Text, PlatformColor, Pressable } from 'react-native-macos';
+import { PlatformColor, Pressable, StyleSheet, Text } from 'react-native-macos';
 
 import { useAppContext } from '~/context/AppContext';
 import { TouchableOnPressType } from '~/types';
 import { COLORS } from '~/utils/constants';
 
-import { RoundIcon } from '@ui/RoundIcon';
+const TODAY_DAY = new Date().getDate();
 
 type Props = {
-  title: string;
+  title: keyof typeof COLORS;
   icon: string;
   onPress: TouchableOnPressType;
   count?: number;
@@ -16,14 +17,7 @@ type Props = {
   iconSize?: number;
 };
 
-export function Section({
-  title,
-  icon,
-  onPress,
-  count = 0,
-  isActive = false,
-  iconSize = 14,
-}: Props) {
+export function Section({ title, icon, onPress, count = 0, isActive = false, iconSize = 14 }: Props) {
   const { setSearchMode, setPreviousSelectedKey } = useAppContext();
 
   const [isPressed, setIsPressed] = useState(false);
@@ -31,7 +25,7 @@ export function Section({
 
   return (
     <Pressable
-      onPress={(event) => {
+      onPress={event => {
         onPress?.(event);
         setPreviousSelectedKey(title);
         setSearchMode(false);
@@ -51,14 +45,10 @@ export function Section({
         iconSize={iconSize}
         style={styles.tagIcon}
       />
-      {title !== 'completed' && (
-        <Text style={[styles.tagCount, isHighlighted && { color: '#fff' }]}>{count}</Text>
-      )}
+      {title !== 'completed' && <Text style={[styles.tagCount, isHighlighted && { color: '#fff' }]}>{count}</Text>}
       <Text style={[styles.tagText, isHighlighted && { color: '#fff' }]}>{title}</Text>
       {title === 'today' && (
-        <Text style={[styles.tagTodayDay, isHighlighted && { color: COLORS[title] }]}>
-          {new Date().getDate()}
-        </Text>
+        <Text style={[styles.tagTodayDay, isHighlighted && { color: COLORS[title] }]}>{TODAY_DAY}</Text>
       )}
     </Pressable>
   );

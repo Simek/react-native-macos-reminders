@@ -1,12 +1,12 @@
 import { OpaqueColorValue, PlatformColor } from 'react-native-macos';
 
-export const COLORS: Record<string, OpaqueColorValue> = {
+export const COLORS = {
   all: PlatformColor('secondaryLabel'),
   scheduled: PlatformColor('systemRed'),
   today: PlatformColor('systemBlue'),
   flagged: PlatformColor('systemOrange'),
   completed: PlatformColor('systemGray'),
-};
+} satisfies Record<string, OpaqueColorValue>;
 
 export const PREDEFINED_KEYS = ['all', 'scheduled', 'today', 'flagged', 'completed'];
 

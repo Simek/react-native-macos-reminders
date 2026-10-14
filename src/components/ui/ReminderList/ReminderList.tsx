@@ -1,7 +1,9 @@
 // @ts-expect-error
 import { Popover } from '@rn-macos/popover';
-import { ReactNode, useMemo, useState } from 'react';
-import { SectionList, StyleSheet, Text, View, PlatformColor } from 'react-native-macos';
+import { AccentButton } from '@ui/AccentButton';
+import { ReminderItem } from '@ui/ReminderItem/ReminderItem';
+import { ReactNode, useCallback, useState } from 'react';
+import { PlatformColor, SectionList, StyleSheet, Text, View } from 'react-native-macos';
 
 import { clearMenu } from '~/components/menus/ClearMenu';
 import { useAppContext } from '~/context/AppContext';
@@ -19,39 +21,27 @@ import {
 } from '~/utils/helpers';
 import { findAndReplaceEntry } from '~/utils/storage';
 
-import { AccentButton } from '@ui/AccentButton';
-import { ReminderItem } from '@ui/ReminderItem/ReminderItem';
-
 import { ReminderListFooter } from './ReminderListFooter';
+
+function processListData(list: RemindersType[string], filterFn?: (list: ReminderItemType) => boolean) {
+  return processRemindersList(filterFn ? list.reminders.filter(filterFn) : list.reminders, list.showCompleted ?? true);
+}
 
 export function ReminderList() {
   const [popoverData, setPopoverData] = useState<ReactNode>(null);
 
   const { selectedKey, isSearchMode, searchQuery } = useAppContext();
-  const { data, setData, listData, removeAllRemindersByList, overwriteSelectedListData } =
-    useDataContext();
+  const { data, setData, listData, removeAllRemindersByList, overwriteSelectedListData } = useDataContext();
 
-  const sections = useMemo(() => {
-    return getRemindersSections();
-  }, [selectedKey, data]);
-
-  function processListData(
-    list: RemindersType[string],
-    filterFn?: (list: ReminderItemType) => boolean,
-  ) {
-    return processRemindersList(
-      filterFn ? list.reminders.filter(filterFn) : list.reminders,
-      list.showCompleted ?? true,
-    );
-  }
+  const sections = getRemindersSections();
 
   function calculateCompletedForList() {
     if (isSearchMode || selectedKey === 'search') {
       return (
-        [...Object.values(data).flatMap((list) => list.reminders)]
+        [...Object.values(data).flatMap(list => list.reminders)]
           .flat()
-          .filter((entry) => entry.done)
-          .filter((entry) => filterSearchHits(searchQuery, entry)).length || 0
+          .filter(entry => entry.done)
+          .filter(entry => filterSearchHits(searchQuery, entry)).length || 0
       );
     }
     if (selectedKey === 'flagged') {
@@ -63,10 +53,7 @@ export function ReminderList() {
     return data[selectedKey].reminders.filter((entry: ReminderItemType) => entry.done).length;
   }
 
-  function multiListMapper(
-    key: string,
-    itemFilter?: (item: ReminderItemType) => boolean,
-  ): ReminderItemSection {
+  function multiListMapper(key: string, itemFilter?: (item: ReminderItemType) => boolean): ReminderItemSection {
     const title = getTitle(listData, key);
 
     if (!title) {
@@ -87,35 +74,28 @@ export function ReminderList() {
     if (isSearchMode) {
       return getSpecialListContent(
         data,
-        (key) =>
+        key =>
           multiListMapper(
             key,
-            (entry) =>
-              filterSearchHits(searchQuery, entry) &&
-              (data[selectedKey].showCompleted ? true : !entry.done),
+            entry => filterSearchHits(searchQuery, entry) && (data[selectedKey].showCompleted ? true : !entry.done)
           ),
-        (section) => (section.data ? section.data.length > 0 : false),
+        section => (section.data ? section.data.length > 0 : false)
       );
     } else if (selectedKey === 'all') {
-      return getSpecialListContent(data, (key) =>
-        multiListMapper(key, (entry) => (data[selectedKey].showCompleted ? true : !entry.done)),
+      return getSpecialListContent(data, key =>
+        multiListMapper(key, entry => (data[selectedKey].showCompleted ? true : !entry.done))
       );
     } else if (selectedKey === 'completed') {
       return getSpecialListContent(
         data,
-        (key) => multiListMapper(key, (entry) => entry.done),
-        (section) => (section.data ? section.data.filter((entry) => entry.done).length > 0 : false),
+        key => multiListMapper(key, entry => entry.done),
+        section => (section.data ? section.data.filter(entry => entry.done).length > 0 : false)
       );
     } else if (selectedKey === 'flagged') {
       return getSpecialListContent(
         data,
-        (key) =>
-          multiListMapper(
-            key,
-            (entry) => entry.flagged && (data[selectedKey].showCompleted ? true : !entry.done),
-          ),
-        (section) =>
-          section.data ? section.data.filter((entry) => entry.flagged).length > 0 : false,
+        key => multiListMapper(key, entry => entry.flagged && (data[selectedKey].showCompleted ? true : !entry.done)),
+        section => (section.data ? section.data.filter(entry => entry.flagged).length > 0 : false)
       );
     } else {
       if (data[selectedKey].reminders?.length > 0) {
@@ -130,8 +110,88 @@ export function ReminderList() {
   const completedCount = calculateCompletedForList();
 
   const shouldShowClearAction =
-    (selectedKey !== 'scheduled' && selectedKey !== 'flagged') ||
-    (isSearchMode && sections.length > 0);
+    (selectedKey !== 'scheduled' && selectedKey !== 'flagged') || (isSearchMode && sections.length > 0);
+
+  const renderItem = useCallback(
+    ({ item, section }: { item: ReminderItemType; section: ReminderItemSection }) => {
+      const dataKey = section.key || selectedKey;
+      return (
+        <ReminderItem
+          setPopoverData={setPopoverData}
+          item={item}
+          sectionTitle={section.title}
+          onEdit={(text, fieldName = 'text') => {
+            overwriteSelectedListData(dataKey, list =>
+              findAndReplaceEntry(list, item.key, () => ({ [fieldName]: text }))
+            );
+          }}
+          onEditEnd={event => {
+            if (!event.nativeEvent.text) {
+              overwriteSelectedListData(dataKey, list => list.filter(entry => entry.key !== item.key));
+            }
+          }}
+          onStatusChange={(fieldName: keyof ReminderItemType) => {
+            overwriteSelectedListData(dataKey, list =>
+              findAndReplaceEntry(list, item.key, entry => {
+                if (fieldName === 'done') {
+                  return {
+                    [fieldName]: !entry[fieldName],
+                    completedAt: !entry[fieldName] ? Date.now() : null,
+                  };
+                }
+                return {
+                  [fieldName]: !entry[fieldName],
+                };
+              })
+            );
+          }}
+        />
+      );
+    },
+    [selectedKey, overwriteSelectedListData]
+  );
+
+  const listHeaderComponent =
+    !isSearchMode && selectedKey === 'today' ? null : (
+      <View style={styles.completedHeader}>
+        <View style={styles.completedTextWrapper}>
+          <Text style={styles.completedText}>{completedCount} Completed</Text>
+          {shouldShowClearAction && (
+            <>
+              <Text style={styles.completedText}> • </Text>
+              <AccentButton
+                onPress={() =>
+                  clearMenu(completedCount, () => {
+                    const keys = data[selectedKey].reminders
+                      .filter((entry: ReminderItemType) => entry.done)
+                      .map((entry: ReminderItemType) => entry.key);
+                    removeAllRemindersByList(selectedKey, keys);
+                  })
+                }
+                color={isSearchMode ? PlatformColor('systemGray') : getListColor(selectedKey)}
+                disabled={completedCount === 0}>
+                Clear
+              </AccentButton>
+            </>
+          )}
+        </View>
+        {selectedKey !== 'completed' && (
+          <AccentButton
+            onPress={() =>
+              setData({
+                ...data,
+                [selectedKey]: {
+                  ...data[selectedKey],
+                  showCompleted: !data[selectedKey].showCompleted,
+                },
+              })
+            }
+            color={isSearchMode ? PlatformColor('systemGray') : getListColor(selectedKey)}>
+            {data[selectedKey].showCompleted ? 'Hide' : 'Show'}
+          </AccentButton>
+        )}
+      </View>
+    );
 
   return (
     <>
@@ -139,7 +199,7 @@ export function ReminderList() {
       <SectionList
         contentContainerStyle={sections?.length ? {} : { flexGrow: 2 }}
         sections={sections}
-        keyExtractor={(item) => item.key}
+        keyExtractor={item => item.key}
         renderSectionHeader={({ section: { title } }) =>
           selectedKey !== 'flagged' && selectedKey !== 'completed' && title ? (
             <View style={styles.contentStickyHeaderWrapper}>
@@ -147,89 +207,8 @@ export function ReminderList() {
             </View>
           ) : null
         }
-        renderItem={({ item, section }) => {
-          const dataKey = section.key || selectedKey;
-          return (
-            <ReminderItem
-              setPopoverData={setPopoverData}
-              item={item}
-              sectionTitle={section.title}
-              onEdit={(text, fieldName = 'text') => {
-                overwriteSelectedListData(dataKey, (list) =>
-                  findAndReplaceEntry(list, item.key, () => ({ [fieldName]: text })),
-                );
-              }}
-              onEditEnd={(event) => {
-                if (!event.nativeEvent.text) {
-                  overwriteSelectedListData(dataKey, (list) =>
-                    list.filter((entry) => entry.key !== item.key),
-                  );
-                }
-              }}
-              onStatusChange={(fieldName: keyof ReminderItemType) => {
-                overwriteSelectedListData(dataKey, (list) =>
-                  findAndReplaceEntry(list, item.key, (entry) => {
-                    if (fieldName === 'done') {
-                      return {
-                        [fieldName]: !entry[fieldName],
-                        completedAt: !entry[fieldName] ? Date.now() : null,
-                      };
-                    }
-                    return {
-                      [fieldName]: !entry[fieldName],
-                    };
-                  }),
-                );
-              }}
-            />
-          );
-        }}
-        ListHeaderComponent={() => {
-          if (!isSearchMode && selectedKey === 'today') return null;
-
-          const color = isSearchMode ? PlatformColor('systemGray') : getListColor(selectedKey);
-
-          return (
-            <View style={styles.completedHeader}>
-              <View style={styles.completedTextWrapper}>
-                <Text style={styles.completedText}>{completedCount} Completed</Text>
-                {shouldShowClearAction && (
-                  <>
-                    <Text style={styles.completedText}> • </Text>
-                    <AccentButton
-                      onPress={() =>
-                        clearMenu(completedCount, () => {
-                          const keys = data[selectedKey].reminders
-                            .filter((entry: ReminderItemType) => entry.done)
-                            .map((entry: ReminderItemType) => entry.key);
-                          removeAllRemindersByList(selectedKey, keys);
-                        })
-                      }
-                      color={color}
-                      disabled={completedCount === 0}>
-                      Clear
-                    </AccentButton>
-                  </>
-                )}
-              </View>
-              {selectedKey !== 'completed' && (
-                <AccentButton
-                  onPress={() =>
-                    setData({
-                      ...data,
-                      [selectedKey]: {
-                        ...data[selectedKey],
-                        showCompleted: !data[selectedKey].showCompleted,
-                      },
-                    })
-                  }
-                  color={color}>
-                  {data[selectedKey].showCompleted ? 'Hide' : 'Show'}
-                </AccentButton>
-              )}
-            </View>
-          );
-        }}
+        renderItem={renderItem}
+        ListHeaderComponent={listHeaderComponent}
         ListFooterComponent={
           !isSearchMode && !PREDEFINED_KEYS.includes(selectedKey) ? (
             <ReminderListFooter selectedKey={selectedKey} />

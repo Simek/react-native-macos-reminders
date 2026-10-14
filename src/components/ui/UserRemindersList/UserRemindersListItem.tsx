@@ -1,31 +1,28 @@
+import { RoundIcon } from '@ui/RoundIcon';
 import { useState } from 'react';
 import {
   ActionSheetIOS,
   Alert,
+  NativeModules,
+  PlatformColor,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
-  AlertButton,
-  PlatformColor,
-  PressableProps,
-  NativeModules,
 } from 'react-native-macos';
 
 import { useAppContext } from '~/context/AppContext';
 import { ReminderListItemType } from '~/types';
 
-import { RoundIcon } from '@ui/RoundIcon';
-
 type Props = {
   item: ReminderListItemType;
   count: number;
-  onPress: NonNullable<PressableProps['onPress']>;
-  onTextInputPress: NonNullable<PressableProps['onPress']>;
-  onDelete: NonNullable<PressableProps['onPress']>;
-  onRename: NonNullable<PressableProps['onPress']>;
-  onEdit: NonNullable<AlertButton['onPress']>;
-  onEditEnd: NonNullable<AlertButton['onPress']>;
+  onPress: (item: ReminderListItemType) => void;
+  onTextInputPress: (item: ReminderListItemType) => void;
+  onDelete: (item: ReminderListItemType) => void;
+  onRename: (item: ReminderListItemType) => void;
+  onEdit: (item: ReminderListItemType, value?: string) => void;
+  onEditEnd: (item: ReminderListItemType) => void;
 };
 
 export function UserRemindersListItem({
@@ -44,7 +41,7 @@ export function UserRemindersListItem({
 
   return (
     <Pressable
-      onPress={(event) => {
+      onPress={event => {
         setPreviousSelectedKey(item.key);
         setSearchMode(false);
         // @ts-expect-error FIXME
@@ -53,7 +50,7 @@ export function UserRemindersListItem({
             {
               options: ['Open list in new window', 'Show Info', 'Rename', 'Delete'],
             },
-            (buttonIndex) => {
+            buttonIndex => {
               if (buttonIndex === 0) {
                 // FIXME: data synchronization, resize listener
                 NativeModules.NewWindowModule.openWindow('WindowHost', {
@@ -66,28 +63,28 @@ export function UserRemindersListItem({
                   [
                     {
                       text: 'OK',
-                      onPress: (text) => {
-                        onEdit(text);
-                        onEditEnd(text);
+                      onPress: (text?: string) => {
+                        onEdit(item, text);
+                        onEditEnd(item);
                       },
                     },
                     { text: 'Cancel' },
                   ],
                   undefined,
-                  item.title,
+                  item.title
                 );
               } else if (buttonIndex === 2) {
-                onRename(event);
+                onRename(item);
               } else if (buttonIndex === 3) {
-                onDelete(event);
+                onDelete(item);
               }
-            },
+            }
           );
         } else {
-          onPress(event);
+          onPress(item);
         }
       }}
-      onPressIn={(event) => {
+      onPressIn={event => {
         // @ts-expect-error FIXME
         if (event.nativeEvent.button === 2) {
           setFocused(true);
@@ -114,15 +111,13 @@ export function UserRemindersListItem({
           value={item.title}
           style={styles.listItemInput}
           submitBehavior="blurAndSubmit"
-          onSubmitEditing={(event) => {
-            onEditEnd(event.nativeEvent.text);
-          }}
-          onChangeText={onEdit}
+          onSubmitEditing={() => onEditEnd(item)}
+          onChangeText={value => onEdit(item, value)}
           numberOfLines={1}
         />
       ) : (
         <Pressable
-          onPress={(event) => (item.selected ? onTextInputPress(event) : onPress(event))}
+          onPress={() => (item.selected ? onTextInputPress(item) : onPress(item))}
           style={styles.listItemTextWrapper}>
           <Text
             numberOfLines={1}

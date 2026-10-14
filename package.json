@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native-macos/local-cli/cli.js start",
+    "pods": "npx pod-install",
     "test": "jest",
-    "lint": "eslint .",
-    "pods": "npx pod-install"
+    "lint": "oxlint --type-aware && oxfmt --check",
+    "lint:fix": "oxlint --type-aware --fix && oxfmt"
   },
   "dependencies": {
     "@formkit/tempo": "^0.1.2",
@@ -32,20 +33,22 @@
     "@types/react-test-renderer": "19.1.0",
     "babel-jest": "^29.7.0",
     "babel-plugin-module-resolver": "^5.0.2",
-    "eslint": "^8.57.1",
-    "eslint-config-universe": "^15.0.3",
     "expo-modules-autolinking": "^1.11.3",
     "jest": "^29.7.0",
     "metro": "0.83.3",
     "metro-react-native-babel-preset": "^0.77.0",
     "metro-react-native-babel-transformer": "^0.77.0",
-    "prettier": "^3.8.0",
+    "oxfmt": "^0.73.0",
+    "oxlint": "^1.88.0",
+    "oxlint-plugin-golden": "^0.1.2",
+    "oxlint-plugin-react-doctor": "^0.9.18",
+    "oxlint-tsgolint": "^7.0.2004",
     "react-native-svg-transformer": "^1.5.2",
     "react-test-renderer": "19.1.4",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   },
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "yarn@4.12.0"
+  "packageManager": "bun@1.4.3"
 }

@@ -29,7 +29,7 @@ export function getStoredData<T>(key: string, fallback: T): T {
     const jsonValue = storage.getString(key);
     const data = jsonValue != null ? JSON.parse(jsonValue) : fallback;
 
-    if (key === Stores.Data && isArray(data['all'])) {
+    if (key === Stores.Data && Array.isArray(data['all'])) {
       return migrateLegacyDataStructure(data) as T;
     }
     return data;
@@ -41,7 +41,7 @@ export function getStoredData<T>(key: string, fallback: T): T {
 export function writeListDataToStorage(value: ReminderListItemType[]) {
   storeData<ReminderListItemType[]>(
     Stores.Lists,
-    value.map((item) => Object.assign({}, item, { selected: false, editMode: false })),
+    value.map(item => Object.assign({}, item, { selected: false, editMode: false }))
   );
 }
 
@@ -52,11 +52,9 @@ export function writeDataToStorage(value: RemindersType) {
 export function findAndReplaceEntry(
   list: ReminderItemType[],
   itemKey: string,
-  replaceTask: (item: Partial<ReminderItemType>) => Partial<ReminderItemType>,
+  replaceTask: (item: Partial<ReminderItemType>) => Partial<ReminderItemType>
 ) {
-  return list.map((entry) =>
-    entry.key === itemKey ? Object.assign({}, entry, replaceTask(entry)) : entry,
-  );
+  return list.map(entry => (entry.key === itemKey ? Object.assign({}, entry, replaceTask(entry)) : entry));
 }
 
 export function migrateLegacyDataStructure(data: any) {
@@ -66,10 +64,6 @@ export function migrateLegacyDataStructure(data: any) {
         return [key, { reminders: values }];
       }
       return [key, { showCompleted: true, reminders: values }];
-    }),
+    })
   );
-}
-
-function isArray(value: unknown): value is unknown[] {
-  return Array.isArray(value);
 }

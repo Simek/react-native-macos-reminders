@@ -1,6 +1,6 @@
-import { SectionList, StyleSheet, Text, PlatformColor } from 'react-native-macos';
+import { useCallback } from 'react';
+import { PlatformColor, SectionList, StyleSheet, Text } from 'react-native-macos';
 
-import { useAppContext } from '~/context/AppContext';
 import { ReminderListItemType } from '~/types';
 
 import { UserRemindersListItem } from './UserRemindersListItem';
@@ -26,7 +26,22 @@ export function UserRemindersList({
   itemOnRename,
   itemOnEditEnd,
 }: Props) {
-  const { setSearchMode, setPreviousSelectedKey } = useAppContext();
+  const renderItem = useCallback(
+    ({ item }: { item: ReminderListItemType }) => (
+      <UserRemindersListItem
+        item={item}
+        count={getItemCount(item)}
+        onPress={itemOnPress}
+        onTextInputPress={itemOnTextInputPress}
+        onDelete={itemOnDelete}
+        onRename={itemOnRename}
+        onEdit={itemOnEdit}
+        onEditEnd={itemOnEditEnd}
+      />
+    ),
+    [getItemCount, itemOnPress, itemOnTextInputPress, itemOnDelete, itemOnRename, itemOnEdit, itemOnEditEnd]
+  );
+
   return (
     <SectionList
       sections={[
@@ -36,25 +51,8 @@ export function UserRemindersList({
         },
       ]}
       keyExtractor={(item, index) => item.key + index}
-      renderItem={({ item }) => (
-        <UserRemindersListItem
-          item={item}
-          count={getItemCount(item)}
-          onPress={() => {
-            itemOnPress(item);
-            setPreviousSelectedKey(item.key);
-            setSearchMode(false);
-          }}
-          onTextInputPress={() => itemOnTextInputPress(item)}
-          onDelete={() => itemOnDelete(item)}
-          onRename={() => itemOnRename(item)}
-          onEdit={(value) => itemOnEdit(item, value)}
-          onEditEnd={() => itemOnEditEnd(item)}
-        />
-      )}
-      renderSectionHeader={({ section: { title } }) =>
-        title ? <Text style={styles.listHeader}>{title}</Text> : null
-      }
+      renderItem={renderItem}
+      renderSectionHeader={({ section: { title } }) => (title ? <Text style={styles.listHeader}>{title}</Text> : null)}
     />
   );
 }

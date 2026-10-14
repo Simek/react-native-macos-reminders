@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, PlatformColor } from 'react-native-macos';
+import { PlatformColor, StyleSheet, Text, TouchableOpacity } from 'react-native-macos';
 
 import { TouchableOnPressType } from '~/types';
 
@@ -8,9 +8,7 @@ type Props = {
 
 export function ClearButton({ onPress }: Props) {
   return (
-    <TouchableOpacity
-      onPressIn={onPress}
-      style={[styles.searchInputIcon, styles.searchInputClearIcon]}>
+    <TouchableOpacity onPressIn={onPress} style={[styles.searchInputIcon, styles.searchInputClearIcon]}>
       <Text style={styles.searchInputClearIconText}>􀁑</Text>
     </TouchableOpacity>
   );

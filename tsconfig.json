@@ -2,10 +2,9 @@
   "extends": "@react-native/typescript-config",
   "include": ["src/**/*"],
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
-      "~/*": ["src/*"],
-      "@ui/*": ["src/components/ui/*"]
+      "~/*": ["./src/*"],
+      "@ui/*": ["./src/components/ui/*"]
     }
   }
 }

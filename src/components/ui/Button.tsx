@@ -36,31 +36,19 @@ export function Button({
     <TouchableHighlight
       activeOpacity={1}
       underlayColor={disabled ? 'transparent' : 'rgba(140,140,140,.1)'}
-      onPressIn={(event) => {
+      onPressIn={event => {
         setFocused(true);
         onPress?.(event);
       }}
       onPressOut={() => setFocused(false)}
       // @ts-expect-error FIXME
       pointerEvents={disabled ? 'none' : 'auto'}
-      style={[
-        styles.button,
-        style,
-        disabled && styles.buttonDisabled,
-        icon && !text && styles.buttonIconOnly,
-      ]}>
+      style={[styles.button, style, disabled && styles.buttonDisabled, icon && !text && styles.buttonIconOnly]}>
       <View style={styles.buttonContent}>
         {icon ? (
-          <Text
-            style={[styles.buttonIcon, iconStyle, focused && { color: PlatformColor('label') }]}>
-            {icon}
-          </Text>
+          <Text style={[styles.buttonIcon, iconStyle, focused && { color: PlatformColor('label') }]}>{icon}</Text>
         ) : null}
-        {text ? (
-          <Text style={[styles.buttonText, icon && styles.buttonTextWithIcon, textStyle]}>
-            {text}
-          </Text>
-        ) : null}
+        {text ? <Text style={[styles.buttonText, icon && styles.buttonTextWithIcon, textStyle]}>{text}</Text> : null}
       </View>
     </TouchableHighlight>
   );

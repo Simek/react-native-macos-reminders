@@ -1,12 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  PlatformColor,
-  OpaqueColorValue,
-  StyleProp,
-  ViewStyle,
-} from 'react-native-macos';
+import { OpaqueColorValue, PlatformColor, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native-macos';
 
 type Props = {
   icon: string;

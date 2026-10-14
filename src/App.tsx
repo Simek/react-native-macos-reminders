@@ -1,3 +1,9 @@
+import { ReminderList } from '@ui/ReminderList/ReminderList';
+import { ReminderListTitle } from '@ui/ReminderList/ReminderListTitle';
+import { SearchInput } from '@ui/SearchInput/SearchInput';
+import { SectionsGrid } from '@ui/Sections/SectionsGrid';
+import { UserRemindersList } from '@ui/UserRemindersList/UserRemindersList';
+import { UserRemindersListFooter } from '@ui/UserRemindersList/UserRemindersListFooter';
 import { useEffect, useState } from 'react';
 import { Dimensions, View } from 'react-native-macos';
 
@@ -7,18 +13,10 @@ import sharedStyles from '~/sharedStyles';
 import { ReminderListItemType } from '~/types';
 import { getListCount, getNewListEntry } from '~/utils/helpers';
 
-import { ReminderList } from '@ui/ReminderList/ReminderList';
-import { ReminderListTitle } from '@ui/ReminderList/ReminderListTitle';
-import { SearchInput } from '@ui/SearchInput/SearchInput';
-import { SectionsGrid } from '@ui/Sections/SectionsGrid';
-import { UserRemindersList } from '@ui/UserRemindersList/UserRemindersList';
-import { UserRemindersListFooter } from '@ui/UserRemindersList/UserRemindersListFooter';
-
 function App() {
   const { setSelectedKey } = useAppContext();
-  const { data, setData, listData, setListData, overwriteListData, removeAllRemindersByList } =
-    useDataContext();
-  const [windowSize, setWindowSize] = useState(Dimensions.get('window'));
+  const { data, setData, listData, setListData, overwriteListData, removeAllRemindersByList } = useDataContext();
+  const [windowSize, setWindowSize] = useState(() => Dimensions.get('window'));
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener('change', ({ window }) => {
@@ -32,15 +30,11 @@ function App() {
     };
   }, []);
 
-  const overwriteListItemsData = (
-    overwriteFunc: (lists: ReminderListItemType[]) => ReminderListItemType[],
-  ) => {
+  function overwriteListItemsData(overwriteFunc: (lists: ReminderListItemType[]) => ReminderListItemType[]) {
     setListData(overwriteFunc(listData));
-  };
+  }
 
-  function clearListTempData(
-    content: Partial<ReminderListItemType> = { selected: false, editMode: false },
-  ) {
+  function clearListTempData(content: Partial<ReminderListItemType> = { selected: false, editMode: false }) {
     overwriteListData(() => content);
   }
 
@@ -51,60 +45,52 @@ function App() {
         <SectionsGrid onPress={clearListTempData} />
         <UserRemindersList
           data={listData}
-          getItemCount={(item) => getListCount(data, item)}
-          itemOnPress={(item) => {
+          getItemCount={item => getListCount(data, item)}
+          itemOnPress={item => {
             setSelectedKey(item.key);
-            overwriteListData((listItem) => ({
+            overwriteListData(listItem => ({
               selected: listItem.key === item.key,
               editMode: false,
             }));
           }}
-          itemOnTextInputPress={(item) => {
-            overwriteListData((listItem) => ({
+          itemOnTextInputPress={item => {
+            overwriteListData(listItem => ({
               editMode: listItem.key === item.key,
             }));
           }}
-          itemOnDelete={(item) => {
+          itemOnDelete={item => {
             clearListTempData();
             if (listData.length) {
               const firstUserListKey = listData[0].key;
               setSelectedKey(firstUserListKey);
-              overwriteListData((listItem) => ({
+              overwriteListData(listItem => ({
                 selected: listItem.key === firstUserListKey,
               }));
             } else {
               setSelectedKey('all');
             }
-            overwriteListItemsData((list) => list.filter((listItem) => listItem.key !== item.key));
+            overwriteListItemsData(list => list.filter(listItem => listItem.key !== item.key));
             removeAllRemindersByList(item.key);
           }}
-          itemOnRename={(item) => {
-            overwriteListData((listItem) =>
-              listItem.key === item.key ? { editMode: true, selected: true } : {},
-            );
+          itemOnRename={item => {
+            overwriteListData(listItem => (listItem.key === item.key ? { editMode: true, selected: true } : {}));
           }}
           itemOnEdit={(item, title) => {
-            overwriteListData((listItem) => (listItem.key === item.key ? { title } : {}));
+            overwriteListData(listItem => (listItem.key === item.key ? { title } : {}));
           }}
           itemOnEditEnd={() => {
-            overwriteListItemsData((list) =>
-              list.map((listItem) => Object.assign({}, listItem, { editMode: false })),
-            );
+            overwriteListItemsData(list => list.map(listItem => Object.assign({}, listItem, { editMode: false })));
           }}
         />
         <UserRemindersListFooter
           onPress={() => {
             const entry = getNewListEntry();
-            overwriteListItemsData((list) => [
-              ...list.map((listItem) =>
-                Object.assign({}, listItem, { selected: false, editMode: false }),
-              ),
+            overwriteListItemsData(list => [
+              ...list.map(listItem => Object.assign({}, listItem, { selected: false, editMode: false })),
               entry,
             ]);
             setSelectedKey(entry.key);
-            setData(
-              Object.assign({}, data, { [entry.key]: { showCompleted: true, reminders: [] } }),
-            );
+            setData(Object.assign({}, data, { [entry.key]: { showCompleted: true, reminders: [] } }));
           }}
         />
       </View>

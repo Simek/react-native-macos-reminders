@@ -5,7 +5,7 @@ export function clearMenu(completedCount: number, onDelete: () => void) {
     {
       options: ['All Completed'],
     },
-    (buttonIndex) => {
+    buttonIndex => {
       if (buttonIndex === 0) {
         Alert.alert(
           'Clear completed reminders?',
@@ -18,9 +18,9 @@ export function clearMenu(completedCount: number, onDelete: () => void) {
               onPress: onDelete,
             },
             { text: 'Cancel' },
-          ],
+          ]
         );
       }
-    },
+    }
   );
 }

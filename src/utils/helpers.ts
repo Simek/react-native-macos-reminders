@@ -1,12 +1,7 @@
 import { OpaqueColorValue, PlatformColor, TextStyle } from 'react-native-macos';
 
 import sharedStyles from '~/sharedStyles';
-import {
-  ReminderItemSection,
-  ReminderItemType,
-  ReminderListItemType,
-  RemindersType,
-} from '~/types';
+import { ReminderItemSection, ReminderItemType, ReminderListItemType, RemindersType } from '~/types';
 
 import { COLORS, PREDEFINED_KEYS } from './constants';
 
@@ -31,46 +26,43 @@ export function getNewListEntry(): ReminderListItemType {
 export function getSpecialListContent(
   data: RemindersType,
   multiListMapper: (key: string) => ReminderItemSection,
-  filter?: (item: ReminderItemSection) => boolean,
+  filter?: (item: ReminderItemSection) => boolean
 ) {
   return Object.keys(data)
-    .filter((entry) => entry.startsWith('list-'))
+    .filter(entry => entry.startsWith('list-'))
     .map(multiListMapper)
-    .filter((item) => Boolean(item) && (filter && item ? filter(item) : true));
+    .filter(item => Boolean(item) && (filter && item ? filter(item) : true));
 }
 
 export function getListCount(data: RemindersType, item: Pick<ReminderItemType, 'key'>): number {
   if (!data || !data[item.key]) {
     return 0;
   }
-  return data[item.key].reminders.filter((entry) => !entry.done).length;
+  return data[item.key].reminders.filter(entry => !entry.done).length;
 }
 
-export function getTotalCount(
-  data?: RemindersType,
-  filterFunc: (entry: any) => boolean = () => true,
-) {
+export function getTotalCount(data?: RemindersType, filterFunc: (entry: any) => boolean = () => true) {
   if (!data) {
     return 0;
   }
   return Object.keys(data)
-    .filter((entry) => entry.startsWith('list-'))
-    .map((entry) => data[entry].reminders.filter(filterFunc).length)
+    .filter(entry => entry.startsWith('list-'))
+    .map(entry => data[entry].reminders.filter(filterFunc).length)
     .reduce((acc, value) => acc + value, 0);
 }
 
 export function getRemindersCounts(data: RemindersType) {
   const totalCount = getTotalCount(data);
-  const allCount = getTotalCount(data, (entry) => !entry.done);
+  const allCount = getTotalCount(data, entry => !entry.done);
   const allCompletedCount = totalCount - allCount;
-  const flaggedCount = getTotalCount(data, (entry) => entry.flagged && !entry.done);
-  const flaggedCompletedCount = getTotalCount(data, (entry) => entry.flagged && entry.done);
+  const flaggedCount = getTotalCount(data, entry => entry.flagged && !entry.done);
+  const flaggedCompletedCount = getTotalCount(data, entry => entry.flagged && entry.done);
 
   return { totalCount, allCount, allCompletedCount, flaggedCount, flaggedCompletedCount };
 }
 
 export function getTitle(list: ReminderListItemType[], key: string) {
-  return list.find((item) => item.key === key)?.title;
+  return list.find(item => item.key === key)?.title;
 }
 
 export function getHeaderStyle(key: string, customStyles?: TextStyle): TextStyle[] {
@@ -89,11 +81,8 @@ export function remindersSort(a: ReminderItemType, b: ReminderItemType) {
   return a.createdAt > b.createdAt ? 1 : -1;
 }
 
-export function processRemindersList(
-  list: ReminderItemType[],
-  completedVisible: boolean,
-): typeof list {
-  return list.filter((entry) => (completedVisible ? true : !entry.done)).sort(remindersSort);
+export function processRemindersList(list: ReminderItemType[], completedVisible: boolean): typeof list {
+  return list.filter(entry => (completedVisible ? true : !entry.done)).sort(remindersSort);
 }
 
 function searchHit(searchQuery: string, text?: string | null) {

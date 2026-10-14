@@ -1,11 +1,4 @@
-import {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-} from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useReducer } from 'react';
 
 import { DataActionType, dataReducer } from '~/reducers/dataReducer';
 import { ListActionType, listReducer } from '~/reducers/listDataReducer';
@@ -16,10 +9,7 @@ import { getStoredData, writeDataToStorage, writeListDataToStorage } from '~/uti
 export type DataContextType = {
   data: RemindersType;
   setData: (data: RemindersType) => void;
-  overwriteSelectedListData: (
-    listKey: string,
-    fn: (items: ReminderItemType[]) => ReminderItemType[],
-  ) => void;
+  overwriteSelectedListData: (listKey: string, fn: (items: ReminderItemType[]) => ReminderItemType[]) => void;
   addReminder: (listKey: string) => void;
   removeAllRemindersByList: (listKey: string, keys?: string[]) => void;
   listData: ReminderListItemType[];
@@ -39,13 +29,12 @@ export const DataContext = createContext<DataContextType>({
 });
 
 export function DataProvider({ children }: PropsWithChildren) {
-  const [data, dispatchData] = useReducer(dataReducer, INIT_STORE);
-  const [listData, dispatchList] = useReducer(listReducer, []);
-
-  useEffect(() => {
-    setData(getStoredData<RemindersType>('remindersData', data));
-    setListData(getStoredData<ReminderListItemType[]>('remindersLists', listData));
-  }, []);
+  const [data, dispatchData] = useReducer(dataReducer, INIT_STORE, initialData =>
+    getStoredData<RemindersType>('remindersData', initialData)
+  );
+  const [listData, dispatchList] = useReducer(listReducer, [], initialListData =>
+    getStoredData<ReminderListItemType[]>('remindersLists', initialListData)
+  );
 
   useEffect(() => {
     writeDataToStorage(data);
@@ -63,10 +52,7 @@ export function DataProvider({ children }: PropsWithChildren) {
     dispatchData({ type: DataActionType.ADD_REMINDER, payload: { listKey } });
   }
 
-  function overwriteSelectedListData(
-    listKey: string,
-    fn: (items: ReminderItemType[]) => ReminderItemType[],
-  ) {
+  function overwriteSelectedListData(listKey: string, fn: (items: ReminderItemType[]) => ReminderItemType[]) {
     dispatchData({
       type: DataActionType.OVERWRITE_SELECTED_LIST_DATA,
       payload: { listKey, fn },
@@ -99,7 +85,7 @@ export function DataProvider({ children }: PropsWithChildren) {
       setListData,
       overwriteListData,
     }),
-    [data, listData],
+    [data, listData]
   );
 
   return <DataContext.Provider value={contextValue}>{children}</DataContext.Provider>;

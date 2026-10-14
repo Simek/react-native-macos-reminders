@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View, PlatformColor } from 'react-native-macos';
+import { PlatformColor, StyleSheet, Text, TextInput, View } from 'react-native-macos';
 
 import { useAppContext } from '~/context/AppContext';
 
@@ -10,7 +10,7 @@ export function SearchInput() {
   return (
     <View>
       <TextInput
-        onChangeText={(text) => {
+        onChangeText={text => {
           setSearchQuery(text);
           setSearchMode(text.length > 0);
         }}
@@ -24,7 +24,7 @@ export function SearchInput() {
       <Text style={[styles.searchInputIcon, styles.searchInputSearchIcon]}>􀊫</Text>
       {searchQuery.length ? (
         <ClearButton
-          onPress={(event) => {
+          onPress={event => {
             event.stopPropagation();
             setSearchQuery('');
             setSearchMode(false);

@@ -1,4 +1,4 @@
-import { StyleSheet, PlatformColor } from 'react-native-macos';
+import { PlatformColor, StyleSheet } from 'react-native-macos';
 
 const sharedStyles = StyleSheet.create({
   container: {

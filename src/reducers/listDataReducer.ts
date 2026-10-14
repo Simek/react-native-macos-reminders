@@ -12,15 +12,12 @@ export type ListActions =
       payload: (item: ReminderListItemType) => Partial<ReminderListItemType>;
     };
 
-export function listReducer(
-  state: ReminderListItemType[],
-  action: ListActions,
-): ReminderListItemType[] {
+export function listReducer(state: ReminderListItemType[], action: ListActions): ReminderListItemType[] {
   switch (action.type) {
     case ListActionType.SET_DATA:
       return action.payload;
     case ListActionType.OVERWRITE_LIST:
-      return state.map((item) => ({
+      return state.map(item => ({
         ...item,
         ...action.payload(item),
       }));

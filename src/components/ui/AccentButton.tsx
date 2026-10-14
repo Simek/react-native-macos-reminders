@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { Text, TouchableOpacity, OpaqueColorValue, PlatformColor } from 'react-native-macos';
+import { OpaqueColorValue, PlatformColor, Text, TouchableOpacity } from 'react-native-macos';
 
 import { TouchableOnPressType } from '~/types';
 
@@ -9,12 +9,7 @@ type Props = PropsWithChildren<{
   color?: OpaqueColorValue;
 }>;
 
-export function AccentButton({
-  children,
-  onPress,
-  disabled,
-  color = PlatformColor('systemGray'),
-}: Props) {
+export function AccentButton({ children, onPress, disabled, color = PlatformColor('systemGray') }: Props) {
   return (
     <TouchableOpacity onPress={onPress} disabled={disabled}>
       <Text style={[{ fontSize: 13, color }, disabled && { opacity: 0.4 }]}>{children}</Text>

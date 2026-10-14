@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, PlatformColor } from 'react-native-macos';
+import { PlatformColor, StyleSheet, Text, TouchableOpacity } from 'react-native-macos';
 
 import { TouchableOnPressType } from '~/types';
 
