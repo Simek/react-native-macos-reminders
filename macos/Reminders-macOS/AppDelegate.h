@@ -1,10 +1,9 @@
 #import <Cocoa/Cocoa.h>
-#import <React/RCTBridgeDelegate.h>
+#import <React-RCTAppDelegate/RCTDefaultReactNativeFactoryDelegate.h>
+#import <React-RCTAppDelegate/RCTReactNativeFactory.h>
 
-@class RCTBridge;
+@interface AppDelegate : RCTDefaultReactNativeFactoryDelegate <NSApplicationDelegate>
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, RCTBridgeDelegate>
-
-@property (nonatomic, readonly) RCTBridge *bridge;
+@property (nonatomic, strong) RCTReactNativeFactory *reactNativeFactory;
 
 @end

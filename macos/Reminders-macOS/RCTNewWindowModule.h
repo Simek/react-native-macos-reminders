@@ -2,6 +2,5 @@
 
 @interface RCTNewWindowModule : NSObject <RCTBridgeModule>
 
-@property (nonatomic, weak) RCTBridge *bridge;
 
 @end

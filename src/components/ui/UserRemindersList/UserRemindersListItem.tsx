@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import {
   ActionSheetIOS,
   Alert,
   NativeModules,
   PlatformColor,
+  type PointerEvent,
   Pressable,
   StyleSheet,
   Text,
@@ -38,67 +38,60 @@ export function UserRemindersListItem({
 }: Props) {
   const { setSearchMode, setPreviousSelectedKey } = useAppContext();
 
-  const [focused, setFocused] = useState(false);
+  function showActions() {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: ['Open list in new window', 'Show Info', 'Rename', 'Delete'],
+      },
+      buttonIndex => {
+        if (buttonIndex === 0) {
+          // FIXME: data synchronization, resize listener
+          NativeModules.NewWindowModule.openWindow('WindowHost', {
+            target: 'ReminderListWindow',
+          });
+        } else if (buttonIndex === 1) {
+          Alert.prompt(
+            'Name',
+            undefined,
+            [
+              {
+                text: 'OK',
+                onPress: (text?: string) => {
+                  onEdit(item, text);
+                  onEditEnd(item);
+                },
+              },
+              { text: 'Cancel' },
+            ],
+            undefined,
+            item.title
+          );
+        } else if (buttonIndex === 2) {
+          onRename(item);
+        } else if (buttonIndex === 3) {
+          onDelete(item);
+        }
+      }
+    );
+  }
 
   return (
     <Pressable
-      onPress={event => {
+      onPress={() => {
         setPreviousSelectedKey(item.key);
         setSearchMode(false);
-        // @ts-expect-error FIXME
-        if (event.nativeEvent.button === 2) {
-          ActionSheetIOS.showActionSheetWithOptions(
-            {
-              options: ['Open list in new window', 'Show Info', 'Rename', 'Delete'],
-            },
-            buttonIndex => {
-              if (buttonIndex === 0) {
-                // FIXME: data synchronization, resize listener
-                NativeModules.NewWindowModule.openWindow('WindowHost', {
-                  target: 'ReminderListWindow',
-                });
-              } else if (buttonIndex === 1) {
-                Alert.prompt(
-                  `Name`,
-                  undefined,
-                  [
-                    {
-                      text: 'OK',
-                      onPress: (text?: string) => {
-                        onEdit(item, text);
-                        onEditEnd(item);
-                      },
-                    },
-                    { text: 'Cancel' },
-                  ],
-                  undefined,
-                  item.title
-                );
-              } else if (buttonIndex === 2) {
-                onRename(item);
-              } else if (buttonIndex === 3) {
-                onDelete(item);
-              }
-            }
-          );
-        } else {
-          onPress(item);
-        }
+        onPress(item);
       }}
-      onPressIn={event => {
-        // @ts-expect-error FIXME
-        if (event.nativeEvent.button === 2) {
-          setFocused(true);
+      // @ts-expect-error onAuxClick is forwarded to View by Pressable at runtime
+      onAuxClick={(event: PointerEvent) => {
+        if (event.nativeEvent.button !== 2) {
+          return;
         }
+        setPreviousSelectedKey(item.key);
+        setSearchMode(false);
+        showActions();
       }}
-      onPressOut={() => setFocused(false)}
-      style={[
-        styles.listItem,
-        item.selected ? styles.listItemSelected : {},
-        focused && {
-          borderColor: PlatformColor(item.selected ? 'label' : 'selectedContentBackground'),
-        },
-      ]}>
+      style={[styles.listItem, item.selected ? styles.listItemSelected : {}]}>
       <RoundIcon
         icon="􀋲"
         iconSize={12}

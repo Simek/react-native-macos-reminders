@@ -1,3 +1,5 @@
+ENV['RCT_NEW_ARCH_ENABLED'] = '1'
+
 require_relative '../node_modules/react-native-macos/scripts/react_native_pods'
 
 prepare_react_native_project!
@@ -13,12 +15,10 @@ abstract_target 'Shared' do
     platform :macos, '14.0'
 
     config = use_native_modules!
-    flags = get_default_flags()
-
     use_react_native!(
       :path => '../node_modules/react-native-macos',
       :hermes_enabled => true,
-      :fabric_enabled => ENV['RCT_NEW_ARCH_ENABLED'] == '1',
+      :fabric_enabled => true,
       :app_path => "#{Pod::Config.instance.installation_root}/.."
     )
   end
@@ -34,6 +34,20 @@ abstract_target 'Shared' do
         target.build_configurations.each do |config|
           config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
         end
+      end
+    end
+
+    glog_module_map = File.join(__dir__, 'Pods', 'Target Support Files', 'glog', 'glog.modulemap')
+    if File.exist?(glog_module_map)
+      module_map = File.read(glog_module_map)
+      if module_map.include?('  module * { export * }') &&
+          !module_map.include?('textual header "glog/log_severity.h"')
+        replacement = [
+          '  textual header "glog/log_severity.h"',
+          '  textual header "glog/vlog_is_on.h"',
+          '  module * { export * }',
+        ].join("\n")
+        File.write(glog_module_map, module_map.sub('  module * { export * }', replacement))
       end
     end
   end

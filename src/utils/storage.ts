@@ -1,4 +1,4 @@
-import { MMKV } from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 
 import { ReminderItemType, ReminderListItemType, RemindersType } from '~/types';
 
@@ -7,7 +7,7 @@ enum Stores {
   Lists = 'remindersLists',
 }
 
-const storage = new MMKV({
+const storage = createMMKV({
   id: 'rnmacos-reminders',
 });
 

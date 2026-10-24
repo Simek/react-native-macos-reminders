@@ -1,6 +1,5 @@
 #import "RCTNewWindowModule.h"
-#import <React/RCTBridge.h>
-#import <React/RCTRootView.h>
+#import "AppDelegate.h"
 #import <Cocoa/Cocoa.h>
 
 @implementation RCTNewWindowModule
@@ -25,7 +24,10 @@ RCT_EXPORT_METHOD(openWindow:(NSString *)moduleName
     window.movableByWindowBackground = YES;
     window.minSize = NSMakeSize(350, 520);
 
-    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:self.bridge moduleName:moduleName initialProperties:initialProps];
+    AppDelegate *appDelegate = (AppDelegate *)[NSApp delegate];
+    NSView *rootView = [appDelegate.reactNativeFactory.rootViewFactory viewWithModuleName:moduleName
+                                                                         initialProperties:initialProps]; 
+    ((RCTUIView *)rootView).backgroundColor = [NSColor clearColor];
     window.contentView = rootView;
 
     [window makeKeyAndOrderFront:nil];

@@ -1,22 +1,15 @@
 #import "AppDelegate.h"
 
-#import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
-
-#if DEBUG
-#import <React/RCTDevLoadingView.h>
-#endif
+#import "RCTAppDependencyProvider.h"
 
 @implementation AppDelegate
 
 - (void)awakeFromNib {
   [super awakeFromNib];
 
-  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:nil];
-  #if DEBUG
-    [bridge moduleForClass:[RCTDevLoadingView class]];
-  #endif
-  _bridge = bridge;
+  self.dependencyProvider = [RCTAppDependencyProvider new];
+  self.reactNativeFactory = [[RCTReactNativeFactory alloc] initWithDelegate:self];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -27,9 +20,9 @@
   // Insert code here to tear down your application
 }
 
-#pragma mark - RCTBridgeDelegate Methods
+#pragma mark - RCTReactNativeFactoryDelegate Methods
 
-- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge {
+- (NSURL *)bundleURL {
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
