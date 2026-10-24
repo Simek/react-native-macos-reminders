@@ -11,9 +11,9 @@ if linkage != nil
 end
 
 abstract_target 'Shared' do
-  target 'Reminders-macOS' do
-    platform :macos, '14.0'
+  platform :macos, '14.0'
 
+  target 'Reminders-macOS' do
     config = use_native_modules!
     use_react_native!(
       :path => '../node_modules/react-native-macos',
